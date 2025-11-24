@@ -69,6 +69,12 @@
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+.btn.accent {
+  background: rgba(58, 92, 249, 0.15);
+  color: var(--vp-c-brand);
+  border: 1px solid rgba(58, 92, 249, 0.35);
+}
+
 .btn.ghost {
   color: var(--vp-c-text-2);
 }

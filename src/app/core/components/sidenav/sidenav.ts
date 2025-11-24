@@ -83,6 +83,12 @@ export class SidenavComponent implements OnInit {
 
   private appendStaticItems(grouped: Map<string, NavItem[]>) {
     const extras: Record<string, NavItem[]> = {
+      Configs: [
+        {
+          title: 'Settings Hub',
+          path: '/settings'
+        }
+      ],
       Tools: [
         {
           title: 'Keybindings',

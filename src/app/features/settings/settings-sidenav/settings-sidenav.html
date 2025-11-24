@@ -1,0 +1,20 @@
+<nav class="settings-nav">
+  <div class="nav-intro">
+    <p class="eyebrow">Modules</p>
+    <h2>Configuration Areas</h2>
+    <p class="muted">Jump directly to the stack you want to tune.</p>
+  </div>
+
+  <ul class="nav-list">
+    <li *ngFor="let section of sections">
+      <button type="button" (click)="navigate(section.id)">
+        <span class="icon">{{ section.icon }}</span>
+        <span class="details">
+          <strong>{{ section.label }}</strong>
+          <small>{{ section.description }}</small>
+        </span>
+      </button>
+    </li>
+  </ul>
+</nav>
+

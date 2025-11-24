@@ -1,0 +1,24 @@
+<div class="settings-shell">
+  <header class="settings-header">
+    <a routerLink="/" class="brand-link">
+      <span aria-hidden="true">←</span>
+      Back to Docs
+    </a>
+    <div class="header-actions">
+      <a routerLink="/docs/welcome.md">Docs</a>
+      <a routerLink="/keybindings">Shortcuts</a>
+    </div>
+  </header>
+
+  <div class="settings-body">
+    <aside class="settings-sidenav">
+      <app-settings-sidenav></app-settings-sidenav>
+    </aside>
+
+    <section class="settings-main">
+      <router-outlet></router-outlet>
+    </section>
+  </div>
+</div>
+
+

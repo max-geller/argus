@@ -1,0 +1,133 @@
+<section class="settings-hero">
+  <div>
+    <p class="eyebrow">Configuration</p>
+    <h1>Settings Hub</h1>
+    <p class="subtitle">
+      Curate and launch Hyprland-ready configs without digging through dotfiles. Jump directly into the
+      markdown source or refresh the index when you sync new files.
+    </p>
+    <div class="hero-actions">
+      <button mat-flat-button color="primary" [routerLink]="['/docs', 'configs/hyprland.md']">
+        Open Hyprland Config
+      </button>
+      <button mat-stroked-button color="accent" (click)="refreshConfigs()" [disabled]="isLoading()">
+        Refresh Index
+      </button>
+    </div>
+  </div>
+  <div class="hero-meta">
+    <div class="meta-card">
+      <span class="metric">{{ configCount() }}</span>
+      <p>tracked configs</p>
+    </div>
+    <div class="meta-card muted" *ngIf="lastRefresh() as refreshed">
+      <span class="metric">↻</span>
+      <p>Updated {{ refreshed | date:'shortTime' }}</p>
+    </div>
+  </div>
+</section>
+
+<ng-container *ngIf="!isLoading(); else loadingState">
+  <section class="settings-grid" *ngIf="cards().length; else emptyState">
+    <mat-card class="config-card" *ngFor="let card of cards(); trackBy: trackByPath" [attr.id]="getAnchorId(card)">
+      <div class="card-header">
+        <div class="icon-badge">{{ card.icon }}</div>
+        <div>
+          <div class="card-status" [class.managed]="card.status === 'managed'" [class.experimental]="card.status === 'experimental'">
+            {{ card.status | titlecase }}
+          </div>
+          <h3>{{ card.title }}</h3>
+          <p class="card-description">
+            {{ card.description }}
+          </p>
+          <p class="last-updated" *ngIf="card.lastUpdated">Updated {{ card.lastUpdated }}</p>
+        </div>
+      </div>
+
+      <mat-chip-set aria-label="Configuration tags">
+        <mat-chip *ngFor="let tag of card.tags" class="config-chip">{{ tag }}</mat-chip>
+      </mat-chip-set>
+
+      <div class="card-actions">
+        <a mat-flat-button color="primary" [routerLink]="['/docs', card.docPath]">
+          View Config
+        </a>
+        <button mat-stroked-button color="accent" (click)="copyPath(card.docPath)">
+          Copy Path
+        </button>
+      </div>
+    </mat-card>
+  </section>
+</ng-container>
+
+<section class="roadmap">
+  <article class="roadmap-card" id="waybar">
+    <div class="roadmap-header">
+      <div class="icon-badge">📊</div>
+      <div>
+        <p class="eyebrow">Waybar</p>
+        <h3>Status Bar Modules</h3>
+        <p class="card-description">
+          Capture module presets, CSS variables, and animation timings for your preferred Waybar layouts.
+        </p>
+      </div>
+      <span class="roadmap-tag">In Progress</span>
+    </div>
+    <p class="muted">
+      Sync your <code>waybar/config</code> and <code>style.css</code> with Argus to unlock tracked diffs and quick rollbacks.
+    </p>
+  </article>
+
+  <article class="roadmap-card" id="theme">
+    <div class="roadmap-header">
+      <div class="icon-badge">🎨</div>
+      <div>
+        <p class="eyebrow">Theme</p>
+        <h3>Palette & Tokens</h3>
+        <p class="card-description">
+          Centralize Catppuccin-inspired palettes, typography tokens, and export them to Hyprland, GTK, and the terminal.
+        </p>
+      </div>
+      <span class="roadmap-tag planned">Planned</span>
+    </div>
+    <p class="muted">
+      Map tokens to <code>custom-theme.scss</code> so UI states stay in sync with your compositor and bar themes.
+    </p>
+  </article>
+</section>
+
+<section class="quick-links">
+  <h2>Quick Links</h2>
+  <div class="link-grid">
+    <a class="link-card" routerLink="/keybindings">
+      <span>⌨️</span>
+      <div>
+        <h3>Keyboard Shortcuts</h3>
+        <p>Keep configs aligned with your muscle memory.</p>
+      </div>
+    </a>
+    <a class="link-card" [routerLink]="['/docs', 'welcome.md']">
+      <span>📘</span>
+      <div>
+        <h3>Documentation</h3>
+        <p>Revisit the landing overview and onboarding flow.</p>
+      </div>
+    </a>
+  </div>
+</section>
+
+<ng-template #loadingState>
+  <div class="loading-state">
+    <mat-progress-spinner mode="indeterminate" diameter="48"></mat-progress-spinner>
+    <p>Loading configuration index…</p>
+  </div>
+</ng-template>
+
+<ng-template #emptyState>
+  <div class="empty-state">
+    <h3>No configs yet</h3>
+    <p>Drop markdown files under <code>~/.config/argus/docs/configs</code> and refresh the index.</p>
+    <button mat-stroked-button color="accent" (click)="refreshConfigs()">Try Again</button>
+  </div>
+</ng-template>
+

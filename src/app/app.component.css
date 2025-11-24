@@ -1,11 +1,1 @@
-.sidenav-container {
-  height: 100vh;
-}
-
-.content-wrapper {
-  padding: 40px;
-  max-width: 100%;
-  box-sizing: border-box;
-  overflow-y: auto;
-  height: calc(100vh - 64px);
-}
+/* Intentionally left blank; layout styles live in shell components. */
