@@ -34,6 +34,13 @@ interface NavGroup {
 export class SidenavComponent {
   navGroups: NavGroup[] = [
     {
+      title: 'Home',
+      expanded: true,
+      items: [
+        { title: 'Landing', path: '/' },
+      ]
+    },
+    {
       title: 'Guides',
       expanded: true,
       items: [
@@ -55,6 +62,18 @@ export class SidenavComponent {
           title: 'Keybindings', 
           path: '/keybindings' 
         }
+      ]
+    },
+    {
+      title: 'Documentation',
+      expanded: true,
+      items: [
+        { title: 'Keybindings Cheatsheet', path: ['/docs', '/home/maxgeller/Code/Angular/Tauri/argus/src/assets/docs/cheatsheets/keybindings.md'] },
+        { title: 'Daily Ops', path: ['/docs', '/home/maxgeller/Code/Angular/Tauri/argus/src/assets/docs/guides/daily-ops.md'] },
+        { title: 'Hyprland Config', path: ['/docs', '/home/maxgeller/Code/Angular/Tauri/argus/src/assets/docs/configs/hyprland.md'] },
+        { title: 'Fedora Prereqs', path: ['/docs', '/home/maxgeller/Code/Angular/Tauri/argus/src/assets/docs/setup/fedora-prereqs.md'] },
+        { title: 'Dashboard Widgets', path: ['/docs', '/home/maxgeller/Code/Angular/Tauri/argus/src/assets/docs/widgets/dashboard.md'] },
+        { title: 'Dotfile Sync', path: ['/docs', '/home/maxgeller/Code/Angular/Tauri/argus/src/assets/docs/tools/dotfile-sync.md'] },
       ]
     }
   ];

@@ -1,19 +1,23 @@
 <div class="sidenav-header">
-  <span class="brand-logo">ARGUS DOCUMENTATION</span>
+  <a class="brand-logo" routerLink="/">ARGUS DOCUMENTATION</a>
 </div>
 
-<div class="nav-group" *ngFor="let group of navGroups">
-  <div class="nav-group-header" (click)="toggleGroup(group)">
-    <span class="nav-group-title">{{ group.title }}</span>
-    <i class="fas fa-chevron-right group-icon" [class.expanded]="group.expanded"></i>
+<ng-container *ngFor="let group of navGroups; let idx = index">
+  <div class="nav-group">
+    <div class="nav-group-header" (click)="toggleGroup(group)">
+      <span class="nav-group-title">{{ group.title }}</span>
+      <i class="fas fa-chevron-right group-icon" [class.expanded]="group.expanded"></i>
+    </div>
+    
+    <div class="nav-group-items" [@expandCollapse]="group.expanded ? 'expanded' : 'collapsed'">
+      <a *ngFor="let item of group.items" 
+         class="nav-link" 
+         [routerLink]="item.path" 
+         routerLinkActive="active">
+        {{ item.title }}
+      </a>
+    </div>
   </div>
-  
-  <div class="nav-group-items" [@expandCollapse]="group.expanded ? 'expanded' : 'collapsed'">
-    <a *ngFor="let item of group.items" 
-       class="nav-link" 
-       [routerLink]="item.path" 
-       routerLinkActive="active">
-      {{ item.title }}
-    </a>
-  </div>
-</div>
+
+  <div class="nav-divider" *ngIf="idx !== navGroups.length - 1"></div>
+</ng-container>

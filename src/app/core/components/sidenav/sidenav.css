@@ -13,6 +13,13 @@
   color: var(--vp-c-text-1);
 }
 
+.brand-logo {
+  text-decoration: none;
+  color: inherit;
+  letter-spacing: 0.2em;
+  display: inline-block;
+}
+
 .nav-group {
   margin-bottom: 16px;
 }
@@ -73,5 +80,11 @@
   color: var(--vp-c-brand);
   border-left-color: var(--vp-c-brand);
   background-color: rgba(100, 100, 100, 0.05);
+}
+
+.nav-divider {
+  height: 1px;
+  margin: 12px 24px;
+  background: rgba(255, 255, 255, 0.06);
 }
 
