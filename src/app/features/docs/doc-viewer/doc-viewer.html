@@ -1,7 +1,9 @@
 <div class="doc-container">
   <!-- Main Content -->
   <main class="doc-main prose">
-    <markdown [data]="content"></markdown>
+    <div #markdownHost>
+      <markdown [data]="content"></markdown>
+    </div>
   </main>
 
   <!-- Right Hand TOC -->
