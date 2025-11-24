@@ -1,24 +1,15 @@
-<div class="settings-shell">
-  <header class="settings-header">
-    <a routerLink="/" class="brand-link">
-      <span aria-hidden="true">←</span>
-      Back to Docs
-    </a>
-    <div class="header-actions">
-      <a routerLink="/docs/welcome.md">Docs</a>
-      <a routerLink="/keybindings">Shortcuts</a>
-    </div>
-  </header>
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #settingsNav mode="side" opened class="sidenav flat-sidenav">
+    <app-settings-sidenav></app-settings-sidenav>
+  </mat-sidenav>
 
-  <div class="settings-body">
-    <aside class="settings-sidenav">
-      <app-settings-sidenav></app-settings-sidenav>
-    </aside>
+  <mat-sidenav-content>
+    <app-navbar [sidenav]="settingsNav"></app-navbar>
 
-    <section class="settings-main">
+    <div class="content-wrapper">
       <router-outlet></router-outlet>
-    </section>
-  </div>
-</div>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
 
 

@@ -1,63 +1,73 @@
 :host {
   display: block;
+  padding: 24px;
 }
 
-.nav-intro .eyebrow {
+.sidenav-header {
+  margin-bottom: 24px;
+}
+
+.brand-logo {
+  font-size: 0.85rem;
+  letter-spacing: 0.25em;
   text-transform: uppercase;
-  letter-spacing: 0.3em;
-  font-size: 0.7rem;
-  color: var(--vp-c-brand);
-  margin-bottom: 8px;
-}
-
-.nav-intro h2 {
-  margin: 0;
-  font-size: 1.4rem;
-  color: var(--vp-c-text-1);
-}
-
-.nav-intro .muted {
   color: var(--vp-c-text-2);
-  margin: 6px 0 18px;
+  text-decoration: none;
 }
 
-.nav-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.nav-group {
+  margin-bottom: 12px;
+}
+
+.nav-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 6px;
+  cursor: pointer;
+  color: var(--vp-c-text-2);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.75rem;
+}
+
+.group-icon {
+  transition: transform 0.2s ease;
+}
+
+.group-icon.expanded {
+  transform: rotate(90deg);
+}
+
+.nav-group-items {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
+  padding-left: 6px;
 }
 
-.nav-list li button {
+.nav-link {
   width: 100%;
   display: flex;
-  gap: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background-color: rgba(255, 255, 255, 0.02);
-  border-radius: 14px;
-  padding: 14px 16px;
-  color: inherit;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: none;
+  background: none;
+  color: var(--vp-c-text-1);
+  text-align: left;
   cursor: pointer;
-  transition: border-color 0.2s, transform 0.2s;
+  font-size: 0.95rem;
+  transition: background-color 0.2s, color 0.2s;
 }
 
-.nav-list li button:hover {
-  border-color: var(--vp-c-brand);
-  transform: translateX(4px);
+.nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+  color: var(--vp-c-brand);
 }
 
-.icon {
-  font-size: 1.5rem;
-}
-
-.details strong {
-  display: block;
-  font-size: 1rem;
-}
-
-.details small {
-  color: var(--vp-c-text-2);
+.nav-link-icon {
+  font-size: 1.2rem;
 }
 

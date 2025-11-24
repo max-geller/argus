@@ -1,20 +1,22 @@
-<nav class="settings-nav">
-  <div class="nav-intro">
-    <p class="eyebrow">Modules</p>
-    <h2>Configuration Areas</h2>
-    <p class="muted">Jump directly to the stack you want to tune.</p>
+<div class="sidenav-header">
+  <a class="brand-logo" routerLink="/settings">ARGUS SETTINGS</a>
+</div>
+
+<div class="nav-group" *ngFor="let group of navGroups">
+  <div class="nav-group-header" (click)="toggleGroup(group)">
+    <span class="nav-group-title">{{ group.title }}</span>
+    <i class="fas fa-chevron-right group-icon" [class.expanded]="group.expanded"></i>
   </div>
 
-  <ul class="nav-list">
-    <li *ngFor="let section of sections">
-      <button type="button" (click)="navigate(section.id)">
-        <span class="icon">{{ section.icon }}</span>
-        <span class="details">
-          <strong>{{ section.label }}</strong>
-          <small>{{ section.description }}</small>
-        </span>
-      </button>
-    </li>
-  </ul>
-</nav>
+  <div class="nav-group-items" [@expandCollapse]="group.expanded ? 'expanded' : 'collapsed'">
+    <button
+      type="button"
+      class="nav-link"
+      *ngFor="let item of group.items"
+      (click)="navigate(item)">
+      <span class="nav-link-icon" *ngIf="item.icon">{{ item.icon }}</span>
+      {{ item.title }}
+    </button>
+  </div>
+</div>
 

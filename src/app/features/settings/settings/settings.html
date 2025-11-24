@@ -96,6 +96,53 @@
   </article>
 </section>
 
+<section class="config-notes">
+  <article class="note-card" id="hyprland-monitors">
+    <header>
+      <span class="icon">🖵</span>
+      <div>
+        <h3>Monitor Profiles</h3>
+        <p>Keep curated `monitor=` stanzas ready for desk, mobile, or stream setups.</p>
+      </div>
+    </header>
+    <ul>
+      <li>Store each profile as a fenced block inside `configs/hyprland.md` for quick copy.</li>
+      <li>Use Argus to preview differences before syncing to `~/.config/hypr/hyprland.conf`.</li>
+      <li>Leverage snippets to inject display rules into Hyprland's `source=profiles/desk.conf` pattern.</li>
+    </ul>
+  </article>
+
+  <article class="note-card" id="waybar-styles">
+    <header>
+      <span class="icon">🎛️</span>
+      <div>
+        <h3>Waybar Styles</h3>
+        <p>Mirror CSS custom properties between Argus and `~/.config/waybar/style.css`.</p>
+      </div>
+    </header>
+    <ul>
+      <li>Document module presets (workspaces, media, system) with screenshots or JSON snippets.</li>
+      <li>Track palette tokens so glow/blur values stay synchronized with Hyprland animations.</li>
+      <li>Export ready-made module blocks directly into the Waybar config using copy buttons.</li>
+    </ul>
+  </article>
+
+  <article class="note-card" id="theme-exports">
+    <header>
+      <span class="icon">🔗</span>
+      <div>
+        <h3>Theme Exports</h3>
+        <p>Bridge Argus tokens into terminal, GTK, Stylus themes, and dashboard widgets.</p>
+      </div>
+    </header>
+    <ul>
+      <li>Keep a single `tokens.json` reference in assets and describe how to sync via dotfile scripts.</li>
+      <li>Document mappings from semantic tokens (surface, accent) to CSS variables in `custom-theme.scss`.</li>
+      <li>Use the Settings Hub roadmap to flag downstream apps that need regeneration after palette tweaks.</li>
+    </ul>
+  </article>
+</section>
+
 <section class="quick-links">
   <h2>Quick Links</h2>
   <div class="link-grid">
