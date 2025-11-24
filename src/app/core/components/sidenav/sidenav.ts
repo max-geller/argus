@@ -44,13 +44,13 @@ export class SidenavComponent {
       title: 'Guides',
       expanded: true,
       items: [
-        { 
-          title: 'Welcome', 
-          path: ['/docs', 'default/welcome.md'] 
+        {
+          title: 'Welcome',
+          path: ['/docs', 'welcome.md']
         },
-        { 
-          title: 'Cheatsheet', 
-          path: ['/docs', 'default/cheatsheet.md'] 
+        {
+          title: 'Cheatsheet',
+          path: ['/docs', 'cheatsheet.md']
         }
       ]
     },
@@ -68,12 +68,12 @@ export class SidenavComponent {
       title: 'Documentation',
       expanded: true,
       items: [
-        { title: 'Keybindings Cheatsheet', path: ['/docs', 'docs/cheatsheets/keybindings.md'] },
-        { title: 'Daily Ops', path: ['/docs', 'docs/guides/daily-ops.md'] },
-        { title: 'Hyprland Config', path: ['/docs', 'docs/configs/hyprland.md'] },
-        { title: 'Fedora Prereqs', path: ['/docs', 'docs/setup/fedora-prereqs.md'] },
-        { title: 'Dashboard Widgets', path: ['/docs', 'docs/widgets/dashboard.md'] },
-        { title: 'Dotfile Sync', path: ['/docs', 'docs/tools/dotfile-sync.md'] },
+        { title: 'Keybindings Cheatsheet', path: ['/docs', 'cheatsheets/keybindings.md'] },
+        { title: 'Daily Ops', path: ['/docs', 'guides/daily-ops.md'] },
+        { title: 'Hyprland Config', path: ['/docs', 'configs/hyprland.md'] },
+        { title: 'Fedora Prereqs', path: ['/docs', 'setup/fedora-prereqs.md'] },
+        { title: 'Dashboard Widgets', path: ['/docs', 'widgets/dashboard.md'] },
+        { title: 'Dotfile Sync', path: ['/docs', 'tools/dotfile-sync.md'] },
       ]
     }
   ];

@@ -8,5 +8,5 @@ Your custom Hyprland documentation and control center.
 - **Configuration**: (Coming Soon) Manage your dotfiles.
 
 ## Quick Links
-- [View Cheatsheet](docs/src/assets/cheatsheet.md)
+- [View Cheatsheet](cheatsheet.md)
 

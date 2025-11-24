@@ -13,12 +13,12 @@ export class SearchService {
   // Simple mock index for now
   // In future, this could scan the assets/docs directory
   private index: SearchResult[] = [
-    { title: 'Welcome', path: ['/docs', '/home/maxgeller/Code/Angular/Tauri/argus/src/assets/welcome.md'], category: 'Guides' },
-    { title: 'Cheatsheet', path: ['/docs', '/home/maxgeller/Code/Angular/Tauri/argus/src/assets/cheatsheet.md'], category: 'Guides' },
+    { title: 'Welcome', path: ['/docs', 'welcome.md'], category: 'Guides' },
+    { title: 'Cheatsheet', path: ['/docs', 'cheatsheet.md'], category: 'Guides' },
     { title: 'Keybindings', path: '/keybindings', category: 'Tools' },
     // Add mock sub-headers for better search feel
-    { title: 'Hyprland Shortcuts', path: ['/docs', '/home/maxgeller/Code/Angular/Tauri/argus/src/assets/cheatsheet.md'], category: 'Cheatsheet' },
-    { title: 'Terminal Commands', path: ['/docs', '/home/maxgeller/Code/Angular/Tauri/argus/src/assets/cheatsheet.md'], category: 'Cheatsheet' },
+    { title: 'Hyprland Shortcuts', path: ['/docs', 'cheatsheets/keybindings.md'], category: 'Cheatsheet' },
+    { title: 'Terminal Commands', path: ['/docs', 'cheatsheets/keybindings.md'], category: 'Cheatsheet' },
   ];
 
   search(query: string): SearchResult[] {
