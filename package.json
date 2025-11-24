@@ -19,6 +19,7 @@
     "@angular/material": "^20.2.14",
     "@angular/platform-browser": "^20.1.4",
     "@angular/router": "^20.1.4",
+    "@fortawesome/fontawesome-free": "^7.1.0",
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-opener": "^2",
     "ngx-markdown": "^20.1.0",

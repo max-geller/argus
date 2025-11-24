@@ -1,0 +1,8 @@
+<div class="toc-container" *ngIf="toc.length > 0">
+  <div class="toc-header">On this page</div>
+  <ul class="toc-list">
+    <li *ngFor="let item of toc" [class.level-3]="item.level === 3">
+      <a [class.active]="item.active" (click)="scrollTo(item.id)">{{ item.title }}</a>
+    </li>
+  </ul>
+</div>

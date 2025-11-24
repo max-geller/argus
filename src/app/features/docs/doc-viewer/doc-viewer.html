@@ -1,3 +1,11 @@
-<div class="prose dark:prose-invert max-w-none p-6">
-  <markdown [data]="content"></markdown>
+<div class="doc-container">
+  <!-- Main Content -->
+  <main class="doc-main prose">
+    <markdown [data]="content"></markdown>
+  </main>
+
+  <!-- Right Hand TOC -->
+  <aside class="doc-aside">
+    <app-toc [content]="content"></app-toc>
+  </aside>
 </div>

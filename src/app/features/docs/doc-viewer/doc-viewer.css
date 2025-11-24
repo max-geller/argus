@@ -1,0 +1,128 @@
+.doc-container {
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+  max-width: 1100px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.doc-main {
+  flex: 1;
+  max-width: 768px; /* Optimum reading width */
+  min-width: 0; /* Prevent flex overflow */
+}
+
+/* VitePress Typography Overrides */
+::ng-deep .prose {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--vp-c-text-1);
+}
+
+::ng-deep .prose h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 48px;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+::ng-deep .prose h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 48px 0 16px;
+  padding-top: 24px;
+  border-top: 1px solid var(--vp-c-border);
+  letter-spacing: -0.01em;
+}
+
+::ng-deep .prose h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 32px 0 12px;
+}
+
+::ng-deep .prose p {
+  margin-bottom: 1.2em;
+}
+
+::ng-deep .prose ul {
+  padding-left: 1.5em;
+  margin-bottom: 1.2em;
+}
+
+::ng-deep .prose li {
+  margin-bottom: 0.5em;
+}
+
+::ng-deep .prose code {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.85em;
+  padding: 3px 6px;
+  border-radius: 4px;
+  background-color: var(--vp-c-bg-alt);
+  color: var(--vp-c-text-1);
+  transition: color 0.3s, background-color 0.3s;
+}
+
+::ng-deep .prose pre {
+  background-color: #161618;
+  padding: 20px;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 24px 0;
+  font-size: 14px;
+  border: 1px solid var(--vp-c-border);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+::ng-deep .prose pre code {
+  background: none;
+  color: #fff;
+  padding: 0;
+}
+
+/* Styled Alerts / Blockquotes */
+::ng-deep .prose blockquote {
+  margin: 16px 0;
+  padding: 16px 20px;
+  background-color: var(--vp-c-bg-alt);
+  border-left: 4px solid var(--vp-c-brand);
+  border-radius: 4px;
+  color: var(--vp-c-text-2);
+  transition: color 0.3s, background-color 0.3s;
+}
+
+/* Warning Alert Style - Usage: > [!WARNING] */
+::ng-deep .prose blockquote:has(strong:first-child) {
+  border-left-color: #eab308;
+  background-color: rgba(234, 179, 8, 0.1);
+}
+
+::ng-deep .prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+  display: block;
+  overflow-x: auto;
+}
+
+::ng-deep .prose th, 
+::ng-deep .prose td {
+  border: 1px solid var(--vp-c-border);
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 14px;
+}
+
+::ng-deep .prose th {
+  background-color: var(--vp-c-bg-alt);
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+}
+
+::ng-deep .prose td {
+  background-color: var(--vp-c-bg);
+  color: var(--vp-c-text-2);
+}

@@ -1,35 +1,90 @@
-
-// Include theming for Angular Material with `mat.theme()`.
-// This Sass mixin will define CSS variables that are used for styling Angular Material
-// components according to the Material 3 design spec.
-// Learn more about theming and how to use it for your application's
-// custom components at https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
 
+// Custom fonts
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+$font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+
+// Define palettes
+$light-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$azure-palette,
+    tertiary: mat.$blue-palette
+  ),
+  typography: (
+    plain-family: $font-family,
+    brand-family: $font-family
+  ),
+  density: (
+    scale: 0
+  )
+));
+
+$dark-theme: mat.define-theme((
+  color: (
+    theme-type: dark,
+    primary: mat.$azure-palette,
+    tertiary: mat.$blue-palette
+  ),
+  typography: (
+    plain-family: $font-family,
+    brand-family: $font-family
+  ),
+  density: (
+    scale: 0
+  )
+));
+
+// Apply themes
 html {
-  @include mat.theme((
-    color: (
-      primary: mat.$azure-palette,
-      tertiary: mat.$blue-palette,
-    ),
-    typography: Roboto,
-    density: 0,
-  ));
+  // Default to light theme variables
+  @include mat.all-component-themes($light-theme);
+  
+  // CSS Variables for VitePress look
+  --vp-c-bg: #ffffff;
+  --vp-c-bg-alt: #f6f6f7;
+  --vp-c-text-1: #213547;
+  --vp-c-text-2: #3c3c43c7;
+  --vp-c-brand: #3451b2;
+  --vp-c-border: #e2e2e3;
+  --vp-sidebar-bg: #f6f6f7;
+  --vp-nav-bg: rgba(255, 255, 255, 0.7);
+  
+  &.dark-theme {
+    @include mat.all-component-colors($dark-theme);
+    
+    --vp-c-bg: #1b1b1f;
+    --vp-c-bg-alt: #161618;
+    --vp-c-text-1: rgba(255, 255, 255, 0.87);
+    --vp-c-text-2: rgba(235, 235, 245, 0.6);
+    --vp-c-brand: #a8b1ff;
+    --vp-c-border: #2e2e32;
+    --vp-sidebar-bg: #161618;
+    --vp-nav-bg: rgba(27, 27, 31, 0.7);
+  }
 }
 
 body {
-  // Default the application to a light color theme. This can be changed to
-  // `dark` to enable the dark color theme, or to `light dark` to defer to the
-  // user's system settings.
-  color-scheme: light;
-
-  // Set a default background, font and text colors for the application using
-  // Angular Material's system-level CSS variables. Learn more about these
-  // variables at https://material.angular.dev/guide/system-variables
-  background-color: var(--mat-sys-surface);
-  color: var(--mat-sys-on-surface);
-  font: var(--mat-sys-body-medium);
-
-  // Reset the user agent margin.
   margin: 0;
+  font-family: $font-family;
+  background-color: var(--vp-c-bg);
+  color: var(--vp-c-text-1);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+// Override Material Specifics for "Flat" look
+.mat-mdc-sidenav-container {
+  background-color: var(--vp-c-bg) !important;
+}
+
+.mat-mdc-sidenav {
+  background-color: var(--vp-sidebar-bg) !important;
+  border-right: 1px solid var(--vp-c-border) !important;
+  box-shadow: none !important;
+}
+
+.mat-toolbar {
+  background: transparent !important;
+  color: var(--vp-c-text-1) !important;
 }

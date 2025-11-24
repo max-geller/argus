@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { MarkdownComponent } from 'ngx-markdown';
 import { ContentService } from '../../../core/services/content.service';
+import { TocComponent } from '../toc/toc';
 
 @Component({
   selector: 'app-doc-viewer',
   standalone: true,
-  imports: [CommonModule, MarkdownComponent],
+  imports: [CommonModule, MarkdownComponent, TocComponent],
   templateUrl: './doc-viewer.html',
   styleUrl: './doc-viewer.css'
 })
