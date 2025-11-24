@@ -35,12 +35,14 @@
   padding-top: 24px;
   border-top: 1px solid var(--vp-c-border);
   letter-spacing: -0.01em;
+  scroll-margin-top: 96px;
 }
 
 ::ng-deep .prose h3 {
   font-size: 1.25rem;
   font-weight: 600;
   margin: 32px 0 12px;
+  scroll-margin-top: 96px;
 }
 
 ::ng-deep .prose p {

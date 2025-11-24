@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, Input, OnChanges, Inject, PLATFORM_ID, OnDestroy } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 
 export interface TocItem {
@@ -15,10 +15,12 @@ export interface TocItem {
   templateUrl: './toc.html',
   styleUrl: './toc.css'
 })
-export class TocComponent implements OnChanges {
+export class TocComponent implements OnChanges, OnDestroy {
   @Input() content: string = '';
+  @Input() host?: HTMLElement | null;
   toc: TocItem[] = [];
   private isBrowser: boolean;
+  private observer?: IntersectionObserver;
 
   constructor(@Inject(PLATFORM_ID) platformId: Object) {
     this.isBrowser = isPlatformBrowser(platformId);
@@ -30,6 +32,10 @@ export class TocComponent implements OnChanges {
       // Small delay to let DOM render
       setTimeout(() => this.setupScrollSpy(), 100);
     }
+  }
+
+  ngOnDestroy(): void {
+    this.disconnectObserver();
   }
 
   parseToc() {
@@ -50,22 +56,87 @@ export class TocComponent implements OnChanges {
   }
 
   scrollTo(id: string) {
-    const element = document.getElementById(id);
+    if (!this.isBrowser) {
+      return;
+    }
+
+    const element = this.queryHeading(id);
     if (element) {
-      // Offset for sticky header
-      const y = element.getBoundingClientRect().top + window.scrollY - 80;
-      window.scrollTo({ top: y, behavior: 'smooth' });
-      
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
       // Manually set active state
-      this.toc.forEach(i => i.active = false);
-      const item = this.toc.find(i => i.id === id);
-      if (item) item.active = true;
+      this.toc.forEach(i => (i.active = i.id === id));
     }
   }
 
   setupScrollSpy() {
-    // Basic IntersectionObserver logic could go here
-    // For now, let's stick to the manual active state on click
-    // implementing a full scroll spy requires tracking all headers
+    this.disconnectObserver();
+
+    if (!this.isBrowser || !this.host || !this.toc.length) {
+      return;
+    }
+
+    const headings = Array.from(this.host.querySelectorAll<HTMLElement>('h2[id], h3[id]'));
+    if (!headings.length) {
+      return;
+    }
+
+    this.observer = new IntersectionObserver(
+      entries => {
+        const visible = entries
+          .filter(entry => entry.isIntersecting)
+          .sort((a, b) => a.target.getBoundingClientRect().top - b.target.getBoundingClientRect().top);
+
+        const activeId = visible.length
+          ? (visible[0].target as HTMLElement).id
+          : this.findNearestHeadingAbove();
+
+        if (activeId) {
+          this.toc.forEach(item => (item.active = item.id === activeId));
+        }
+      },
+      {
+        root: null,
+        rootMargin: '-120px 0px -60% 0px',
+        threshold: [0, 0.25, 0.6, 1]
+      }
+    );
+
+    headings.forEach(h => this.observer?.observe(h));
+  }
+
+  private disconnectObserver() {
+    if (this.observer) {
+      this.observer.disconnect();
+      this.observer = undefined;
+    }
+  }
+
+  private queryHeading(id: string): HTMLElement | null {
+    if (!this.host) {
+      return document.getElementById(id);
+    }
+    return this.host.querySelector<HTMLElement>(`#${id}`);
+  }
+
+  private findNearestHeadingAbove(): string | undefined {
+    if (!this.host) {
+      return undefined;
+    }
+
+    const headings = Array.from(this.host.querySelectorAll<HTMLElement>('h2[id], h3[id]'));
+    const threshold = 140;
+    let closest: { id: string; top: number } | undefined;
+
+    headings.forEach(heading => {
+      const top = heading.getBoundingClientRect().top;
+      if (top <= threshold) {
+        if (!closest || top > closest.top) {
+          closest = { id: heading.id, top };
+        }
+      }
+    });
+
+    return closest?.id;
   }
 }

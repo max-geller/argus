@@ -16,7 +16,7 @@ export class DocViewerComponent implements OnInit, AfterViewInit {
   content: string = 'Loading...';
   private route = inject(ActivatedRoute);
   private contentService = inject(ContentService);
-  @ViewChild('markdownHost') markdownHost?: ElementRef<HTMLElement>;
+  @ViewChild('markdownHostEl') markdownHost?: ElementRef<HTMLElement>;
 
   ngOnInit() {
     this.route.params.subscribe(params => {

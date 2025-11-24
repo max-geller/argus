@@ -1,13 +1,13 @@
 <div class="doc-container">
   <!-- Main Content -->
   <main class="doc-main prose">
-    <div #markdownHost>
+    <div #markdownHostEl>
       <markdown [data]="content" (ready)="onMarkdownReady()"></markdown>
     </div>
   </main>
 
   <!-- Right Hand TOC -->
   <aside class="doc-aside">
-    <app-toc [content]="content"></app-toc>
+    <app-toc [content]="content" [host]="markdownHost?.nativeElement"></app-toc>
   </aside>
 </div>
