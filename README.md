@@ -48,3 +48,12 @@ The output binary will be located at: `src-tauri/target/release/bundle/deb/` (or
   - **`src/assets/`**: Location for your local `keybindings.json` and markdown docs.
 - **`src-tauri/`**: Rust backend code.
   - **`src-tauri/src/lib.rs`**: Custom commands (e.g., file reading).
+
+## Changelog
+
+### 2025-11-24
+
+- **Dynamic docs explorer**: Rust `list_docs` command plus Angular services now scan `~/.config/argus/docs`, categorize files by subfolder, and keep the sidenav/search automatically in sync when new markdown files are added.
+- **Document search/nav refresh**: Search dialog builds its index from the same dynamic data, and the sidenav groups are generated at runtime with fallback entries such as Keybindings.
+- **TOC parity with VitePress**: The “On This Page” component now uses IntersectionObserver + smooth scrolling, giving section highlighting and anchor jumps that match modern doc sites.
+- **UX polish**: Default Tauri window opens at 1280×900 with sensible minimums; heading styles include `scroll-margin-top` so anchor jumps account for the sticky layout.
