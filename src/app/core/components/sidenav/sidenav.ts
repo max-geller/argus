@@ -34,13 +34,6 @@ interface NavGroup {
 export class SidenavComponent {
   navGroups: NavGroup[] = [
     {
-      title: 'Home',
-      expanded: true,
-      items: [
-        { title: 'Landing', path: '/' },
-      ]
-    },
-    {
       title: 'Guides',
       expanded: true,
       items: [
