@@ -37,10 +37,14 @@ export class DocViewerComponent implements OnInit, AfterViewInit {
         // Decoding the path if it was encoded in URL
         const decodedPath = decodeURIComponent(path);
         this.content = await this.contentService.getContent(decodedPath);
-        setTimeout(() => this.applyHeadingAnchors(), 0);
     } catch (e) {
         this.content = `# Error loading document\n\nCould not load ${path}.\n\nError: ${e}`;
     }
+  }
+
+  onMarkdownReady() {
+    // Wait one microtask to ensure DOM nodes exist
+    setTimeout(() => this.applyHeadingAnchors(), 0);
   }
 
   private applyHeadingAnchors() {

@@ -2,7 +2,7 @@
   <!-- Main Content -->
   <main class="doc-main prose">
     <div #markdownHost>
-      <markdown [data]="content"></markdown>
+      <markdown [data]="content" (ready)="onMarkdownReady()"></markdown>
     </div>
   </main>
 
