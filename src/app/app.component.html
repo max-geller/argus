@@ -1,0 +1,41 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #sidenav mode="side" opened class="sidenav">
+    <mat-toolbar color="primary">
+      <span>Argus</span>
+    </mat-toolbar>
+    <mat-nav-list>
+      <h3 matSubheader>Guides</h3>
+      <a mat-list-item [routerLink]="['/docs', '/home/maxgeller/Code/Angular/Tauri/argus/src/assets/welcome.md']" routerLinkActive="active">
+        <mat-icon matListItemIcon>home</mat-icon>
+        <span matListItemTitle>Welcome</span>
+      </a>
+      <a mat-list-item [routerLink]="['/docs', '/home/maxgeller/Code/Angular/Tauri/argus/src/assets/cheatsheet.md']" routerLinkActive="active">
+        <mat-icon matListItemIcon>description</mat-icon>
+        <span matListItemTitle>Cheatsheet</span>
+      </a>
+
+      <mat-divider></mat-divider>
+      <h3 matSubheader>Tools</h3>
+
+      <a mat-list-item routerLink="/keybindings" routerLinkActive="active">
+        <mat-icon matListItemIcon>keyboard</mat-icon>
+        <span matListItemTitle>Keybindings</span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar>
+      <button mat-icon-button (click)="sidenav.toggle()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <button mat-icon-button [routerLink]="['/docs', '/home/maxgeller/Code/Angular/Tauri/argus/src/assets/welcome.md']">
+        <mat-icon>home</mat-icon>
+      </button>
+      <span class="spacer"></span>
+      <!-- We can add more global actions here later, like Settings or Refresh -->
+    </mat-toolbar>
+    <div class="content-wrapper">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

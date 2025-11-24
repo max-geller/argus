@@ -1,0 +1,25 @@
+.sidenav-container {
+  height: 100vh;
+}
+
+.sidenav {
+  width: 250px;
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+mat-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.content-wrapper {
+  padding: 20px;
+  overflow-y: auto;
+  height: calc(100vh - 64px); /* Adjust for toolbar height */
+  box-sizing: border-box;
+}
