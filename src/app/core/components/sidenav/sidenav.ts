@@ -46,11 +46,11 @@ export class SidenavComponent {
       items: [
         { 
           title: 'Welcome', 
-          path: ['/docs', '/home/maxgeller/Code/Angular/Tauri/argus/src/assets/welcome.md'] 
+          path: ['/docs', 'default/welcome.md'] 
         },
         { 
           title: 'Cheatsheet', 
-          path: ['/docs', '/home/maxgeller/Code/Angular/Tauri/argus/src/assets/cheatsheet.md'] 
+          path: ['/docs', 'default/cheatsheet.md'] 
         }
       ]
     },
@@ -68,12 +68,12 @@ export class SidenavComponent {
       title: 'Documentation',
       expanded: true,
       items: [
-        { title: 'Keybindings Cheatsheet', path: ['/docs', '/home/maxgeller/Code/Angular/Tauri/argus/src/assets/docs/cheatsheets/keybindings.md'] },
-        { title: 'Daily Ops', path: ['/docs', '/home/maxgeller/Code/Angular/Tauri/argus/src/assets/docs/guides/daily-ops.md'] },
-        { title: 'Hyprland Config', path: ['/docs', '/home/maxgeller/Code/Angular/Tauri/argus/src/assets/docs/configs/hyprland.md'] },
-        { title: 'Fedora Prereqs', path: ['/docs', '/home/maxgeller/Code/Angular/Tauri/argus/src/assets/docs/setup/fedora-prereqs.md'] },
-        { title: 'Dashboard Widgets', path: ['/docs', '/home/maxgeller/Code/Angular/Tauri/argus/src/assets/docs/widgets/dashboard.md'] },
-        { title: 'Dotfile Sync', path: ['/docs', '/home/maxgeller/Code/Angular/Tauri/argus/src/assets/docs/tools/dotfile-sync.md'] },
+        { title: 'Keybindings Cheatsheet', path: ['/docs', 'docs/cheatsheets/keybindings.md'] },
+        { title: 'Daily Ops', path: ['/docs', 'docs/guides/daily-ops.md'] },
+        { title: 'Hyprland Config', path: ['/docs', 'docs/configs/hyprland.md'] },
+        { title: 'Fedora Prereqs', path: ['/docs', 'docs/setup/fedora-prereqs.md'] },
+        { title: 'Dashboard Widgets', path: ['/docs', 'docs/widgets/dashboard.md'] },
+        { title: 'Dotfile Sync', path: ['/docs', 'docs/tools/dotfile-sync.md'] },
       ]
     }
   ];
