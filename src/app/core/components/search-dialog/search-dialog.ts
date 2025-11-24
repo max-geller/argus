@@ -32,6 +32,10 @@ export class SearchDialogComponent implements AfterViewInit {
   }
 
   onKeydown(event: KeyboardEvent) {
+    if (!this.results.length) {
+      return;
+    }
+
     if (event.key === 'ArrowDown') {
       this.selectedIndex = (this.selectedIndex + 1) % this.results.length;
       event.preventDefault();
@@ -39,9 +43,7 @@ export class SearchDialogComponent implements AfterViewInit {
       this.selectedIndex = (this.selectedIndex - 1 + this.results.length) % this.results.length;
       event.preventDefault();
     } else if (event.key === 'Enter') {
-      if (this.results.length > 0) {
-        this.navigateTo(this.results[this.selectedIndex]);
-      }
+      this.navigateTo(this.results[this.selectedIndex]);
     }
   }
 
