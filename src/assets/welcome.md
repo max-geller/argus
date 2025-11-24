@@ -1,4 +1,4 @@
-# Welcome to Argus 👁️
+# Welcome to Argus 
 
 Your custom Hyprland documentation and control center.
 

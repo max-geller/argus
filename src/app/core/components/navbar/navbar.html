@@ -1,0 +1,28 @@
+<div class="top-navbar">
+  <div class="nav-left">
+    <button class="icon-btn" (click)="sidenav.toggle()">
+      <i class="fas fa-bars"></i>
+    </button>
+    <button class="icon-btn" [routerLink]="['/docs', '/home/maxgeller/Code/Angular/Tauri/argus/src/assets/welcome.md']">
+      <i class="fas fa-home"></i>
+    </button>
+  </div>
+
+  <div class="nav-center">
+    <!-- Placeholder Search -->
+    <div class="search-bar">
+      <i class="fas fa-search"></i>
+      <span>Search</span>
+      <kbd>Ctrl K</kbd>
+    </div>
+  </div>
+
+  <div class="nav-right">
+    <button class="icon-btn" (click)="themeService.toggleTheme()">
+      <i class="fas" [class.fa-moon]="!themeService.isDark()" [class.fa-sun]="themeService.isDark()"></i>
+    </button>
+    <a href="https://github.com/max-geller/argus" target="_blank" class="icon-btn">
+      <i class="fab fa-github"></i>
+    </a>
+  </div>
+</div>

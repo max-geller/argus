@@ -1,0 +1,77 @@
+/* VitePress Sidebar Style */
+:host {
+  display: block;
+  width: 280px;
+  padding: 24px 0;
+  box-sizing: border-box;
+}
+
+.sidenav-header {
+  padding: 0 24px 24px 24px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--vp-c-text-1);
+}
+
+.nav-group {
+  margin-bottom: 16px;
+}
+
+.nav-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 24px;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.25s;
+}
+
+.nav-group-header:hover .nav-group-title {
+  color: var(--vp-c-text-1);
+}
+
+.nav-group-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--vp-c-text-2);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.group-icon {
+  font-size: 10px;
+  color: var(--vp-c-text-2);
+  transition: transform 0.25s;
+}
+
+.group-icon.expanded {
+  transform: rotate(90deg);
+}
+
+.nav-group-items {
+  overflow: hidden;
+  display: block;
+}
+
+.nav-link {
+  display: block;
+  padding: 8px 24px;
+  color: var(--vp-c-text-2);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.25s;
+  border-left: 2px solid transparent;
+}
+
+.nav-link:hover {
+  color: var(--vp-c-brand);
+}
+
+.nav-link.active {
+  color: var(--vp-c-brand);
+  border-left-color: var(--vp-c-brand);
+  background-color: rgba(100, 100, 100, 0.05);
+}
+

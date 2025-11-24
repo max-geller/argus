@@ -1,0 +1,40 @@
+<div class="search-container">
+  <div class="search-header">
+    <i class="fas fa-search search-icon"></i>
+    <input 
+      #searchInput
+      type="text" 
+      placeholder="Search documentation" 
+      class="search-input"
+      (input)="onSearch($event)"
+      (keydown)="onKeydown($event)"
+    >
+    <button class="close-btn" mat-dialog-close>
+      <kbd>Esc</kbd>
+    </button>
+  </div>
+
+  <div class="search-results" *ngIf="results.length > 0">
+    <div 
+      *ngFor="let result of results; let i = index" 
+      class="search-result-item"
+      [class.selected]="i === selectedIndex"
+      (click)="navigateTo(result)"
+    >
+      <div class="result-icon">
+        <i class="fas fa-hashtag"></i>
+      </div>
+      <div class="result-content">
+        <div class="result-title">{{ result.title }}</div>
+        <div class="result-category">{{ result.category }}</div>
+      </div>
+      <div class="result-action">
+        <i class="fas fa-arrow-right"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="search-empty" *ngIf="results.length === 0">
+    <span class="empty-text">No recent searches</span>
+  </div>
+</div>
