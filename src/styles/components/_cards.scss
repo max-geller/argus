@@ -10,6 +10,10 @@ mat-card.doc-card,
 mat-card.feature-card {
   @include card-elevated;
   @include card-hover;
+  padding: $spacing-xl; // 24px
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
 }
 
 // Icon Badge (used in cards)
@@ -31,6 +35,11 @@ mat-card.feature-card {
   gap: $spacing-lg;
   align-items: flex-start;
 
+  > div:not(.icon-badge):not(.card-badge) {
+    flex: 1;
+    min-width: 0;
+  }
+
   h3, h4 {
     margin: 0 0 4px;
     font-size: 1.1rem;
@@ -49,6 +58,7 @@ mat-card.feature-card {
   letter-spacing: 0.15em;
   color: var(--vp-c-text-2);
   margin-bottom: 6px;
+  white-space: nowrap;
 
   &::before {
     content: '';
@@ -56,6 +66,7 @@ mat-card.feature-card {
     height: 6px;
     border-radius: 50%;
     background-color: var(--vp-c-text-2);
+    flex-shrink: 0;
   }
 
   &.managed::before { background-color: #34c759; }
@@ -68,10 +79,14 @@ mat-card.feature-card {
   border-radius: 999px;
   background-color: rgba(58, 92, 249, 0.15);
   color: var(--vp-c-brand);
-  font-size: 0.75rem;
+  font-size: 0.7rem;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   margin-left: auto;
+  white-space: nowrap;
+  flex-shrink: 0;
+  height: fit-content;
 
   &.planned {
     background-color: rgba(245, 165, 36, 0.15);
