@@ -10,10 +10,18 @@
     <mat-label>Description (Optional)</mat-label>
     <textarea matInput [(ngModel)]="description" rows="3"></textarea>
   </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Assign to Release</mat-label>
+    <mat-select [(ngModel)]="selectedReleaseId">
+      <mat-option *ngFor="let release of taskService.releases()" [value]="release.id">
+        {{ release.version }} <span *ngIf="release.status === 'active'">(Active)</span>
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Cancel</button>
   <button mat-flat-button color="primary" (click)="save()" [disabled]="!title.trim()">Add Task</button>
 </mat-dialog-actions>
-

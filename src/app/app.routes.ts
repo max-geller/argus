@@ -6,6 +6,7 @@ import { SettingsShellComponent } from "./shared/layouts/settings-layout/setting
 import { TaskLayoutComponent } from "./shared/layouts/task-layout/task.layout";
 import { TaskDashboardComponent } from "./features/tasks/pages/task-dashboard/task-dashboard";
 import { TaskListComponent } from "./features/tasks/pages/task-list/task-list";
+import { ReleasesPageComponent } from "./features/tasks/pages/releases/releases";
 import { DOCS_ROUTES } from "./features/docs/docs.routes";
 import { SETTINGS_ROUTES } from "./features/settings/settings.routes";
 
@@ -28,7 +29,8 @@ export const routes: Routes = [
     children: [
       { path: "", redirectTo: "board", pathMatch: "full" },
       { path: "board", component: TaskDashboardComponent },
-      { path: "list", component: TaskListComponent }
+      { path: "list", component: TaskListComponent },
+      { path: "releases", component: ReleasesPageComponent }
     ]
   },
   { path: "**", component: NotFoundComponent },

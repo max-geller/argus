@@ -95,14 +95,14 @@ export class TaskService {
     }
   }
 
-  async addTask(title: string, description?: string) {
+  async addTask(title: string, description?: string, releaseId?: string) {
     const current = this.state();
     const newTask: Task = {
       id: crypto.randomUUID(),
       title,
       description,
       status: 'todo',
-      releaseId: this.activeRelease()?.id,
+      releaseId: releaseId || this.activeRelease()?.id,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       order: current.tasks.length
@@ -173,6 +173,31 @@ export class TaskService {
       currentVersion: nextVersion
     };
 
+    await this.saveData(newData);
+  }
+
+  async addRelease(version: string, description?: string) {
+    const current = this.state();
+    const newRelease: Release = {
+      id: crypto.randomUUID(),
+      version,
+      status: 'active', // For now, created as active/planned
+      description
+    };
+    
+    const newData = {
+      ...current,
+      releases: [...current.releases, newRelease]
+    };
+    await this.saveData(newData);
+  }
+
+  async deleteRelease(releaseId: string) {
+    const current = this.state();
+    const newData = {
+      ...current,
+      releases: current.releases.filter(r => r.id !== releaseId)
+    };
     await this.saveData(newData);
   }
 }

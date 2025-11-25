@@ -1,0 +1,73 @@
+<div class="page-header">
+  <h1>Release Management</h1>
+  <button mat-flat-button color="primary" (click)="openAddRelease()">
+    <i class="fas fa-plus"></i> Plan Release
+  </button>
+</div>
+
+<div class="releases-container">
+  <!-- Active Release -->
+  <section class="release-section active" *ngIf="taskService.activeRelease() as active">
+    <div class="section-header">
+      <h2>Active Sprint</h2>
+      <span class="status-badge active">Current</span>
+    </div>
+    
+    <div class="release-card active-card">
+      <div class="release-header">
+        <span class="version">{{ active.version }}</span>
+        <div class="meta">
+          <span class="task-count">{{ activeTaskCount() }} Tasks</span>
+        </div>
+      </div>
+      
+      <div class="progress-bar">
+        <div class="progress" [style.width.%]="activeProgress()"></div>
+      </div>
+      
+      <div class="release-actions">
+        <button mat-stroked-button (click)="editRelease(active)">Edit Details</button>
+        <button mat-flat-button color="primary" [disabled]="!canShip()" (click)="shipRelease()">
+          Ship Release
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Planned Releases -->
+  <section class="release-section">
+    <h2>Planned Releases</h2>
+    <div class="release-grid">
+      <div class="release-card" *ngFor="let release of plannedReleases()">
+        <div class="release-header">
+          <span class="version">{{ release.version }}</span>
+          <span class="status-badge planned">Planned</span>
+        </div>
+        <p class="description" *ngIf="release.description">{{ release.description }}</p>
+        <div class="release-actions">
+          <button mat-icon-button (click)="editRelease(release)"><i class="fas fa-edit"></i></button>
+          <button mat-icon-button color="warn" (click)="deleteRelease(release)"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>
+      
+      <div class="empty-state" *ngIf="plannedReleases().length === 0">
+        No planned releases
+      </div>
+    </div>
+  </section>
+
+  <!-- Past Releases -->
+  <section class="release-section">
+    <h2>Release History</h2>
+    <div class="history-list">
+      <div class="history-item" *ngFor="let release of pastReleases()">
+        <div class="version-info">
+          <span class="version">{{ release.version }}</span>
+          <span class="date">Released {{ release.releasedAt | date }}</span>
+        </div>
+        <div class="description">{{ release.description || 'No description' }}</div>
+      </div>
+    </div>
+  </section>
+</div>
+

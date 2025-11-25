@@ -49,13 +49,13 @@ export class TaskLayoutComponent {
           { title: 'List', path: '/tasks/list', icon: '<i class="fas fa-list"></i>' }
         ]
       },
-      // {
-      //   title: 'Management',
-      //   expanded: true,
-      //   items: [
-      //     { title: 'Releases', path: '/tasks/releases', icon: '<i class="fas fa-code-branch"></i>' }
-      //   ]
-      // }
+      {
+        title: 'Management',
+        expanded: true,
+        items: [
+          { title: 'Releases', path: '/tasks/releases', icon: '<i class="fas fa-code-branch"></i>' }
+        ]
+      }
     ]
   };
 }
