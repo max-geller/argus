@@ -34,14 +34,14 @@
   <mat-tab-group class="config-tabs" animationDuration="200ms" *ngIf="config() as cfg">
     <!-- General Settings -->
     <mat-tab label="General">
-      <div class="tab-content">
+      <div class="tab-content" *ngIf="cfg.general as gen">
         <mat-card class="config-section">
           <h3>Layout & Gaps</h3>
           
           <div class="form-row">
             <mat-form-field appearance="outline">
               <mat-label>Window Layout</mat-label>
-              <mat-select [(ngModel)]="cfg.general.layout" (ngModelChange)="onConfigChange()">
+              <mat-select [(ngModel)]="gen.layout" (ngModelChange)="onConfigChange()">
                 <mat-option *ngFor="let layout of layouts" [value]="layout">
                   {{ layout | titlecase }}
                 </mat-option>
@@ -50,28 +50,31 @@
           </div>
 
           <div class="form-row">
-            <div class="slider-field">
-              <label>Inner Gaps: {{ cfg.general.gaps_in }}px</label>
+            <div class="slider-field" [class.using-default]="!isValueSet(gen.gaps_in)">
+              <label>
+                Inner Gaps: {{ gen.gaps_in }}px
+                <span class="default-badge" *ngIf="!isValueSet(gen.gaps_in)">using default</span>
+              </label>
               <mat-slider min="0" max="50" step="1" discrete showTickMarks>
-                <input matSliderThumb [(ngModel)]="cfg.general.gaps_in" (ngModelChange)="onConfigChange()">
+                <input matSliderThumb [(ngModel)]="gen.gaps_in" (ngModelChange)="onConfigChange()">
               </mat-slider>
             </div>
           </div>
 
           <div class="form-row">
             <div class="slider-field">
-              <label>Outer Gaps: {{ cfg.general.gaps_out }}px</label>
+              <label>Outer Gaps: {{ gen.gaps_out }}px</label>
               <mat-slider min="0" max="50" step="1" discrete showTickMarks>
-                <input matSliderThumb [(ngModel)]="cfg.general.gaps_out" (ngModelChange)="onConfigChange()">
+                <input matSliderThumb [(ngModel)]="gen.gaps_out" (ngModelChange)="onConfigChange()">
               </mat-slider>
             </div>
           </div>
 
           <div class="form-row">
             <div class="slider-field">
-              <label>Border Size: {{ cfg.general.border_size }}px</label>
+              <label>Border Size: {{ gen.border_size }}px</label>
               <mat-slider min="0" max="10" step="1" discrete showTickMarks>
-                <input matSliderThumb [(ngModel)]="cfg.general.border_size" (ngModelChange)="onConfigChange()">
+                <input matSliderThumb [(ngModel)]="gen.border_size" (ngModelChange)="onConfigChange()">
               </mat-slider>
             </div>
           </div>
@@ -79,12 +82,12 @@
           <div class="form-row">
             <mat-form-field appearance="outline">
               <mat-label>Active Border Color</mat-label>
-              <input matInput [(ngModel)]="cfg.general.col_active_border" (ngModelChange)="onConfigChange()" placeholder="rgba(33ccffee)">
+              <input matInput [(ngModel)]="gen.col_active_border" (ngModelChange)="onConfigChange()" placeholder="rgba(33ccffee)">
             </mat-form-field>
 
             <mat-form-field appearance="outline">
               <mat-label>Inactive Border Color</mat-label>
-              <input matInput [(ngModel)]="cfg.general.col_inactive_border" (ngModelChange)="onConfigChange()" placeholder="rgba(595959aa)">
+              <input matInput [(ngModel)]="gen.col_inactive_border" (ngModelChange)="onConfigChange()" placeholder="rgba(595959aa)">
             </mat-form-field>
           </div>
         </mat-card>
@@ -93,66 +96,66 @@
 
     <!-- Decoration -->
     <mat-tab label="Decoration">
-      <div class="tab-content">
+      <div class="tab-content" *ngIf="cfg.decoration as deco">
         <mat-card class="config-section">
           <h3>Visual Effects</h3>
           
           <div class="form-row">
             <div class="slider-field">
-              <label>Corner Rounding: {{ cfg.decoration.rounding }}px</label>
+              <label>Corner Rounding: {{ deco.rounding }}px</label>
               <mat-slider min="0" max="30" step="1" discrete showTickMarks>
-                <input matSliderThumb [(ngModel)]="cfg.decoration.rounding" (ngModelChange)="onConfigChange()">
+                <input matSliderThumb [(ngModel)]="deco.rounding" (ngModelChange)="onConfigChange()">
               </mat-slider>
             </div>
           </div>
         </mat-card>
 
-        <mat-card class="config-section">
+        <mat-card class="config-section" *ngIf="deco.blur as blur">
           <div class="section-header">
             <h3>Blur Effects</h3>
             <mat-slide-toggle 
-              [(ngModel)]="cfg.decoration.blur_enabled" 
+              [(ngModel)]="blur.enabled" 
               (ngModelChange)="onConfigChange()"
               color="primary">
               Enable Blur
             </mat-slide-toggle>
           </div>
 
-          <div class="form-row" *ngIf="cfg.decoration.blur_enabled">
+          <div class="form-row" *ngIf="blur.enabled">
             <div class="slider-field">
-              <label>Blur Size: {{ cfg.decoration.blur_size }}</label>
+              <label>Blur Size: {{ blur.size }}</label>
               <mat-slider min="1" max="20" step="1" discrete showTickMarks>
-                <input matSliderThumb [(ngModel)]="cfg.decoration.blur_size" (ngModelChange)="onConfigChange()">
+                <input matSliderThumb [(ngModel)]="blur.size" (ngModelChange)="onConfigChange()">
               </mat-slider>
             </div>
           </div>
 
-          <div class="form-row" *ngIf="cfg.decoration.blur_enabled">
+          <div class="form-row" *ngIf="blur.enabled">
             <div class="slider-field">
-              <label>Blur Passes: {{ cfg.decoration.blur_passes }}</label>
+              <label>Blur Passes: {{ blur.passes }}</label>
               <mat-slider min="1" max="5" step="1" discrete showTickMarks>
-                <input matSliderThumb [(ngModel)]="cfg.decoration.blur_passes" (ngModelChange)="onConfigChange()">
+                <input matSliderThumb [(ngModel)]="blur.passes" (ngModelChange)="onConfigChange()">
               </mat-slider>
             </div>
           </div>
         </mat-card>
 
-        <mat-card class="config-section">
+        <mat-card class="config-section" *ngIf="deco.shadow as shadow">
           <div class="section-header">
             <h3>Drop Shadow</h3>
             <mat-slide-toggle 
-              [(ngModel)]="cfg.decoration.shadow_enabled" 
+              [(ngModel)]="shadow.enabled" 
               (ngModelChange)="onConfigChange()"
               color="primary">
               Enable Shadow
             </mat-slide-toggle>
           </div>
 
-          <div class="form-row" *ngIf="cfg.decoration.shadow_enabled">
+          <div class="form-row" *ngIf="shadow.enabled">
             <div class="slider-field">
-              <label>Shadow Range: {{ cfg.decoration.shadow_range }}</label>
+              <label>Shadow Range: {{ shadow.range }}</label>
               <mat-slider min="1" max="20" step="1" discrete showTickMarks>
-                <input matSliderThumb [(ngModel)]="cfg.decoration.shadow_range" (ngModelChange)="onConfigChange()">
+                <input matSliderThumb [(ngModel)]="shadow.range" (ngModelChange)="onConfigChange()">
               </mat-slider>
             </div>
           </div>
@@ -162,29 +165,20 @@
 
     <!-- Animations -->
     <mat-tab label="Animations">
-      <div class="tab-content">
+      <div class="tab-content" *ngIf="cfg.animations as anim">
         <mat-card class="config-section">
           <div class="section-header">
             <h3>Window Animations</h3>
             <mat-slide-toggle 
-              [(ngModel)]="cfg.animations.enabled" 
+              [(ngModel)]="anim.enabled" 
               (ngModelChange)="onConfigChange()"
               color="primary">
               Enable Animations
             </mat-slide-toggle>
           </div>
 
-          <div class="form-row" *ngIf="cfg.animations.enabled">
-            <div class="slider-field">
-              <label>Animation Speed: {{ cfg.animations.speed }}</label>
-              <mat-slider min="1" max="20" step="1" discrete showTickMarks>
-                <input matSliderThumb [(ngModel)]="cfg.animations.speed" (ngModelChange)="onConfigChange()">
-              </mat-slider>
-            </div>
-          </div>
-
-          <p class="muted" *ngIf="cfg.animations.enabled">
-            Higher values = faster animations. Recommended: 6-8 for smooth transitions.
+          <p class="muted" *ngIf="anim.enabled">
+            Note: Animation speed, bezier curves, and individual animation timing are preserved in your config but not yet editable in this GUI.
           </p>
         </mat-card>
       </div>
@@ -192,33 +186,37 @@
 
     <!-- Input -->
     <mat-tab label="Input">
-      <div class="tab-content">
+      <div class="tab-content" *ngIf="cfg.input as inp">
         <mat-card class="config-section">
-          <h3>Keyboard & Mouse</h3>
-
+          <h3>Keyboard Settings</h3>
+          
           <div class="form-row">
             <mat-form-field appearance="outline">
               <mat-label>Keyboard Layout</mat-label>
-              <mat-select [(ngModel)]="cfg.input.kb_layout" (ngModelChange)="onConfigChange()">
+              <mat-select [(ngModel)]="inp.kb_layout" (ngModelChange)="onConfigChange()">
                 <mat-option *ngFor="let layout of keyboardLayouts" [value]="layout">
                   {{ layout | uppercase }}
                 </mat-option>
               </mat-select>
             </mat-form-field>
           </div>
+        </mat-card>
 
+        <mat-card class="config-section">
+          <h3>Mouse Settings</h3>
+          
           <div class="form-row">
             <mat-slide-toggle 
-              [(ngModel)]="cfg.input.follow_mouse" 
+              [(ngModel)]="inp.follow_mouse" 
               (ngModelChange)="onConfigChange()"
               color="primary">
               Focus Follows Mouse
             </mat-slide-toggle>
           </div>
 
-          <div class="form-row">
+          <div class="form-row" *ngIf="inp.touchpad as tp">
             <mat-slide-toggle 
-              [(ngModel)]="cfg.input.natural_scroll" 
+              [(ngModel)]="tp.natural_scroll" 
               (ngModelChange)="onConfigChange()"
               color="primary">
               Natural Scrolling (Touchpad)
@@ -227,9 +225,9 @@
 
           <div class="form-row">
             <div class="slider-field">
-              <label>Mouse Sensitivity: {{ cfg.input.sensitivity }}</label>
-              <mat-slider min="-1" max="1" step="0.1" discrete>
-                <input matSliderThumb [(ngModel)]="cfg.input.sensitivity" (ngModelChange)="onConfigChange()">
+              <label>Mouse Sensitivity: {{ inp.sensitivity }}</label>
+              <mat-slider min="-1" max="1" step="0.1" discrete showTickMarks>
+                <input matSliderThumb [(ngModel)]="inp.sensitivity" (ngModelChange)="onConfigChange()">
               </mat-slider>
             </div>
           </div>
@@ -240,130 +238,198 @@
     <!-- Monitors -->
     <mat-tab label="Monitors">
       <div class="tab-content">
-        <div class="list-header">
-          <h3>Display Configuration</h3>
-          <button mat-stroked-button color="accent" (click)="addMonitor()">
-            <mat-icon>add</mat-icon>
-            Add Monitor
-          </button>
-        </div>
-
-        <mat-card class="config-section" *ngFor="let monitor of cfg.monitors; let i = index">
+        <mat-card class="config-section">
           <div class="section-header">
-            <h4>{{ monitor.name }}</h4>
-            <button mat-icon-button color="warn" (click)="removeMonitor(i)" *ngIf="cfg.monitors.length > 1">
-              <mat-icon>delete</mat-icon>
+            <h3>Monitor Configuration</h3>
+            <button mat-stroked-button color="primary" (click)="addMonitor()">
+              <mat-icon>add</mat-icon>
+              Add Monitor
             </button>
           </div>
 
-          <div class="form-row">
-            <mat-form-field appearance="outline">
-              <mat-label>Monitor Name</mat-label>
-              <input matInput [(ngModel)]="monitor.name" (ngModelChange)="onConfigChange()">
-            </mat-form-field>
+          <div class="monitor-list" *ngIf="cfg.monitors.length > 0">
+            <div class="monitor-item" *ngFor="let monitor of cfg.monitors; let i = index">
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    {{ monitor.name }} - {{ monitor.resolution }}@{{ monitor.refreshRate }}Hz
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
 
-            <mat-form-field appearance="outline">
-              <mat-label>Resolution</mat-label>
-              <input matInput [(ngModel)]="monitor.resolution" (ngModelChange)="onConfigChange()" placeholder="1920x1080">
-            </mat-form-field>
+                <div class="form-row">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Monitor Name</mat-label>
+                    <input matInput [(ngModel)]="monitor.name" (ngModelChange)="onConfigChange()" placeholder="HDMI-A-1">
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Resolution</mat-label>
+                    <input matInput [(ngModel)]="monitor.resolution" (ngModelChange)="onConfigChange()" placeholder="1920x1080">
+                  </mat-form-field>
+                </div>
+
+                <div class="form-row">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Refresh Rate (Hz)</mat-label>
+                    <input matInput type="number" [(ngModel)]="monitor.refreshRate" (ngModelChange)="onConfigChange()">
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Scale</mat-label>
+                    <input matInput type="number" step="0.1" [(ngModel)]="monitor.scale" (ngModelChange)="onConfigChange()">
+                  </mat-form-field>
+                </div>
+
+                <div class="form-row">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Position X</mat-label>
+                    <input matInput type="number" [(ngModel)]="monitor.position.x" (ngModelChange)="onConfigChange()">
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Position Y</mat-label>
+                    <input matInput type="number" [(ngModel)]="monitor.position.y" (ngModelChange)="onConfigChange()">
+                  </mat-form-field>
+                </div>
+
+                <button mat-stroked-button color="warn" (click)="removeMonitor(i)">
+                  Remove Monitor
+                </button>
+              </mat-expansion-panel>
+            </div>
           </div>
 
-          <div class="form-row">
-            <mat-form-field appearance="outline">
-              <mat-label>Refresh Rate (Hz)</mat-label>
-              <input matInput type="number" [(ngModel)]="monitor.refreshRate" (ngModelChange)="onConfigChange()">
-            </mat-form-field>
+          <p class="muted" *ngIf="cfg.monitors.length === 0">
+            No monitors configured. Click "Add Monitor" to configure your displays.
+          </p>
+        </mat-card>
+      </div>
+    </mat-tab>
 
-            <mat-form-field appearance="outline">
-              <mat-label>Scale</mat-label>
-              <input matInput type="number" step="0.1" [(ngModel)]="monitor.scale" (ngModelChange)="onConfigChange()">
-            </mat-form-field>
+    <!-- Snapshots -->
+    <mat-tab label="Snapshots">
+      <div class="tab-content">
+        <mat-card class="config-section">
+          <div class="section-header">
+            <h3>Configuration Snapshots</h3>
+            <button mat-flat-button color="primary" (click)="createSnapshot()">
+              <mat-icon>save</mat-icon>
+              Create Snapshot
+            </button>
           </div>
 
-          <div class="form-row">
-            <mat-form-field appearance="outline">
-              <mat-label>Position X</mat-label>
-              <input matInput type="number" [(ngModel)]="monitor.position.x" (ngModelChange)="onConfigChange()">
-            </mat-form-field>
+          <p class="muted">
+            Create snapshots of your configuration to easily restore previous settings.
+            Snapshots preserve your entire Hyprland configuration including keybindings and window rules.
+          </p>
 
-            <mat-form-field appearance="outline">
-              <mat-label>Position Y</mat-label>
-              <input matInput type="number" [(ngModel)]="monitor.position.y" (ngModelChange)="onConfigChange()">
-            </mat-form-field>
+          <!-- Snapshot List -->
+          <div class="snapshot-list" *ngIf="snapshots().length > 0">
+            <div class="snapshot-item" *ngFor="let snapshot of snapshots()">
+              <div class="snapshot-info">
+                <h4>{{ snapshot.description }}</h4>
+                <p class="snapshot-meta">
+                  {{ snapshot.timestamp * 1000 | date:'medium' }}
+                </p>
+              </div>
+              <div class="snapshot-actions">
+                <button mat-stroked-button (click)="restoreSnapshot(snapshot.id)">
+                  <mat-icon>restore</mat-icon>
+                  Restore
+                </button>
+                <button mat-icon-button color="warn" (click)="deleteSnapshot(snapshot.id)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="empty-state" *ngIf="snapshots().length === 0">
+            <p>No snapshots yet. Create your first snapshot to preserve your current configuration.</p>
           </div>
         </mat-card>
       </div>
     </mat-tab>
 
-    <!-- Autostart -->
-    <mat-tab label="Autostart">
+    <!-- Advanced -->
+    <mat-tab label="Advanced">
       <div class="tab-content">
-        <div class="list-header">
-          <h3>Startup Applications</h3>
-          <button mat-stroked-button color="accent" (click)="addAutostartApp()">
-            <mat-icon>add</mat-icon>
-            Add Application
-          </button>
-        </div>
-
-        <mat-card class="config-section app-item" *ngFor="let app of cfg.autostart; let i = index">
-          <div class="app-header">
-            <mat-form-field appearance="outline" class="flex-grow">
-              <mat-label>Command</mat-label>
-              <input matInput [(ngModel)]="app.command" (ngModelChange)="onConfigChange()" placeholder="/usr/bin/application">
-            </mat-form-field>
-            <button mat-icon-button color="warn" (click)="removeAutostartApp(i)">
-              <mat-icon>delete</mat-icon>
+        <mat-card class="config-section">
+          <div class="section-header">
+            <h3>Autostart Applications</h3>
+            <button mat-stroked-button color="primary" (click)="addAutostartApp()">
+              <mat-icon>add</mat-icon>
+              Add App
             </button>
           </div>
 
-          <div class="form-row">
-            <mat-form-field appearance="outline">
-              <mat-label>Workspace (optional)</mat-label>
-              <input matInput type="number" [(ngModel)]="app.workspace" (ngModelChange)="onConfigChange()" placeholder="1-10">
-            </mat-form-field>
+          <div class="app-list" *ngIf="cfg.autostart.length > 0">
+            <div class="app-item" *ngFor="let app of cfg.autostart; let i = index">
+              <mat-form-field appearance="outline" class="flex-grow">
+                <mat-label>Command</mat-label>
+                <input matInput [(ngModel)]="app.command" (ngModelChange)="onConfigChange()" placeholder="/usr/bin/app">
+              </mat-form-field>
 
-            <mat-slide-toggle 
-              [(ngModel)]="app.silent" 
-              (ngModelChange)="onConfigChange()"
-              color="primary">
-              Silent Launch
-            </mat-slide-toggle>
+              <mat-form-field appearance="outline">
+                <mat-label>Workspace (optional)</mat-label>
+                <input matInput type="number" [(ngModel)]="app.workspace" (ngModelChange)="onConfigChange()">
+              </mat-form-field>
+
+              <mat-slide-toggle [(ngModel)]="app.silent" (ngModelChange)="onConfigChange()">
+                Silent
+              </mat-slide-toggle>
+
+              <button mat-icon-button color="warn" (click)="removeAutostartApp(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
           </div>
         </mat-card>
-      </div>
-    </mat-tab>
 
-    <!-- Environment -->
-    <mat-tab label="Environment">
-      <div class="tab-content">
-        <div class="list-header">
-          <h3>Environment Variables</h3>
-          <button mat-stroked-button color="accent" (click)="addEnvironmentVar()">
-            <mat-icon>add</mat-icon>
-            Add Variable
-          </button>
-        </div>
-
-        <mat-card class="config-section env-item" *ngFor="let env of cfg.environment; let i = index">
-          <div class="form-row">
-            <mat-form-field appearance="outline">
-              <mat-label>Variable Name</mat-label>
-              <input matInput [(ngModel)]="env.key" (ngModelChange)="onConfigChange()" placeholder="VARIABLE_NAME">
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Value</mat-label>
-              <input matInput [(ngModel)]="env.value" (ngModelChange)="onConfigChange()">
-            </mat-form-field>
-
-            <button mat-icon-button color="warn" (click)="removeEnvironmentVar(i)">
-              <mat-icon>delete</mat-icon>
+        <mat-card class="config-section">
+          <div class="section-header">
+            <h3>Environment Variables</h3>
+            <button mat-stroked-button color="primary" (click)="addEnvironmentVar()">
+              <mat-icon>add</mat-icon>
+              Add Variable
             </button>
+          </div>
+
+          <div class="env-list" *ngIf="cfg.environment.length > 0">
+            <div class="env-item" *ngFor="let env of cfg.environment; let i = index">
+              <mat-form-field appearance="outline">
+                <mat-label>Variable Name</mat-label>
+                <input matInput [(ngModel)]="env.key" (ngModelChange)="onConfigChange()" placeholder="VARIABLE_NAME">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="flex-grow">
+                <mat-label>Value</mat-label>
+                <input matInput [(ngModel)]="env.value" (ngModelChange)="onConfigChange()" placeholder="value">
+              </mat-form-field>
+
+              <button mat-icon-button color="warn" (click)="removeEnvironmentVar(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+        </mat-card>
+
+        <mat-card class="config-section">
+          <h3>Preserved Configuration</h3>
+          <p class="muted">
+            Your keybindings, window rules, and layout settings are preserved in your config file
+            but are not yet editable in this GUI. They will not be lost when you save.
+          </p>
+          
+          <div class="preserved-stats">
+            <mat-chip-set>
+              <mat-chip>{{ cfg.rawSections.keybindings.length }} Keybindings</mat-chip>
+              <mat-chip>{{ cfg.rawSections.windowRules.length }} Window Rules</mat-chip>
+              <mat-chip>{{ cfg.rawSections.layouts.length }} Layout Lines</mat-chip>
+            </mat-chip-set>
           </div>
         </mat-card>
       </div>
     </mat-tab>
   </mat-tab-group>
 </div>
-
