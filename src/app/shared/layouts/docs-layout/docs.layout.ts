@@ -21,7 +21,7 @@ import { ContentService, DocEntry } from '@core/services/content.service';
 })
 export class DocsShellComponent implements OnInit {
   private contentService = inject(ContentService);
-  private readonly categoryOrder = ['Guides', 'Cheatsheets', 'Configs', 'Setup', 'Widgets', 'Tools', 'General'];
+  private readonly categoryOrder = ['Introduction', 'Guides', 'Cheatsheets', 'Configs', 'Setup', 'Widgets', 'Tools', 'General'];
 
   sidenavConfig: SidenavConfig = {
     brandText: 'MaxOS Guide',
@@ -59,7 +59,7 @@ export class DocsShellComponent implements OnInit {
     return Array.from(grouped.entries())
       .map(([title, items]) => ({
         title,
-        expanded: true,
+        expanded: title === 'Introduction',
         items: items.sort((a, b) => a.title.localeCompare(b.title))
       }))
       .sort((a, b) => {
