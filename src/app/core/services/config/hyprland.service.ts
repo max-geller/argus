@@ -28,6 +28,7 @@ export interface RawSections {
   layouts: string[];            // dwindle/master blocks
   animationLines: string[];     // bezier/animation directive lines
   misc: string[];               // misc block
+  variables: string[];          // variable definitions like $mainMod = SUPER
   comments: string[];           // comment lines with their positions
   unknown: string[];            // anything we don't recognize
 }
@@ -264,8 +265,19 @@ export class HyprlandService {
   async restoreSnapshot(snapshotId: string): Promise<void> {
     const content = await this.snapshotService.restoreSnapshot('hyprland', snapshotId);
     const parsedConfig = this.parseConfig(content);
+    
+    // Ensure defaults are set
+    this.ensureDefaults(parsedConfig);
+    
+    // Set the config in memory
     this.config.set(parsedConfig);
     this.initialConfig.set(JSON.parse(JSON.stringify(parsedConfig)));
+    
+    // Actually write the restored config to disk
+    await this.saveConfig();
+    
+    // Reload Hyprland to apply the changes
+    await this.reloadHyprland();
   }
 
   /**
@@ -295,6 +307,7 @@ export class HyprlandService {
         layouts: [],
         animationLines: [],
         misc: [],
+        variables: [],
         comments: [],
         unknown: []
       },
@@ -304,37 +317,54 @@ export class HyprlandService {
     const lines = configText.split('\n');
     let currentBlock: string | null = null;
     let blockContent: string[] = [];
-    let blockIndent = 0;
+    let nestingDepth = 0;
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
       const trimmed = line.trim();
 
-      // Track comments
-      if (trimmed.startsWith('#') || trimmed === '') {
+      // Track comments outside of blocks
+      if ((trimmed.startsWith('#') || trimmed === '') && !currentBlock) {
         config.rawSections.comments.push(line);
         continue;
       }
 
       // Detect block start
       if (trimmed.endsWith('{')) {
-        const blockName = trimmed.slice(0, -1).trim();
-        currentBlock = blockName;
-        blockContent = [];
-        blockIndent = line.indexOf(blockName);
-        
-        if (!config.sectionOrder.includes(blockName)) {
-          config.sectionOrder.push(blockName);
+        if (!currentBlock) {
+          // This is a top-level block
+          const blockName = trimmed.slice(0, -1).trim();
+          currentBlock = blockName;
+          blockContent = [];
+          nestingDepth = 1;
+          
+          if (!config.sectionOrder.includes(blockName)) {
+            config.sectionOrder.push(blockName);
+          }
+          continue;
+        } else {
+          // This is a nested block - add to content and increase depth
+          blockContent.push(line);
+          nestingDepth++;
+          continue;
         }
-        continue;
       }
 
       // Detect block end
-      if (trimmed === '}' && currentBlock) {
-        this.processBlock(currentBlock, blockContent, config);
-        currentBlock = null;
-        blockContent = [];
-        continue;
+      if (trimmed === '}') {
+        if (currentBlock && nestingDepth > 0) {
+          nestingDepth--;
+          if (nestingDepth === 0) {
+            // End of top-level block
+            this.processBlock(currentBlock, blockContent, config);
+            currentBlock = null;
+            blockContent = [];
+          } else {
+            // End of nested block - add to content
+            blockContent.push(line);
+          }
+          continue;
+        }
       }
 
       // Inside a block
@@ -353,6 +383,10 @@ export class HyprlandService {
       } else if (trimmed.startsWith('env')) {
         config.sectionOrder.push('env');
         this.parseEnv(trimmed, config);
+      } else if (trimmed.startsWith('$')) {
+        // Variable definitions like $mainMod = SUPER
+        config.sectionOrder.push('variables');
+        config.rawSections.variables.push(line);
       } else if (trimmed.startsWith('bind')) {
         config.sectionOrder.push('bind');
         config.rawSections.keybindings.push(line);
@@ -744,6 +778,11 @@ export class HyprlandService {
           }
           break;
 
+        case 'variables':
+          lines.push(...config.rawSections.variables);
+          lines.push('');
+          break;
+
         case 'bind':
           lines.push(...config.rawSections.keybindings);
           lines.push('');
@@ -828,6 +867,7 @@ export class HyprlandService {
         layouts: [],
         animationLines: [],
         misc: [],
+        variables: [],
         comments: [],
         unknown: []
       },
