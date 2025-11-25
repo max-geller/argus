@@ -1,0 +1,12 @@
+{
+  "tasks": [],
+  "releases": [
+    {
+      "id": "initial-release",
+      "version": "v0.0.1",
+      "status": "active"
+    }
+  ],
+  "currentVersion": "v0.0.1"
+}
+

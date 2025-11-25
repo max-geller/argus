@@ -3,7 +3,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { readFile, writeFile, exists } from '@tauri-apps/plugin-fs';
 import { Task, Release, TaskData, TaskStatus } from '../models/task.model';
 
-const TASKS_FILE_PATH = '/home/maxgeller/Code/Angular/MaxOS/tasks.json';
+const TASKS_FILE_PATH = '/home/maxgeller/Code/Angular/MaxOS/argus/src/assets/tasks/tasks.json';
 
 const INITIAL_DATA: TaskData = {
   tasks: [],
