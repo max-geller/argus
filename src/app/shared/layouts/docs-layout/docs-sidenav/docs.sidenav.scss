@@ -62,24 +62,32 @@
 }
 
 .nav-link {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   padding: 8px 24px;
   color: var(--vp-c-text-2);
   text-decoration: none;
   font-size: 14px;
   font-weight: 500;
-  transition: color 0.25s;
+  transition: color 0.25s, background-color 0.25s;
   border-left: 2px solid transparent;
 }
 
 .nav-link:hover {
   color: var(--vp-c-brand);
+  background-color: rgba(100, 100, 100, 0.05);
 }
 
 .nav-link.active {
   color: var(--vp-c-brand);
   border-left-color: var(--vp-c-brand);
   background-color: rgba(100, 100, 100, 0.05);
+}
+
+.nav-link-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
 }
 
 .nav-divider {

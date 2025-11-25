@@ -1,22 +1,26 @@
 <div class="sidenav-header">
-  <a class="brand-logo" routerLink="/settings">MAXOS SETTINGS</a>
+  <a class="brand-logo" routerLink="/settings">MaxOS Settings</a>
 </div>
 
-<div class="nav-group" *ngFor="let group of navGroups">
-  <div class="nav-group-header" (click)="toggleGroup(group)">
-    <span class="nav-group-title">{{ group.title }}</span>
-    <i class="fas fa-chevron-right group-icon" [class.expanded]="group.expanded"></i>
+<ng-container *ngFor="let group of navGroups; let idx = index">
+  <div class="nav-group">
+    <div class="nav-group-header" (click)="toggleGroup(group)">
+      <span class="nav-group-title">{{ group.title }}</span>
+      <i class="fas fa-chevron-right group-icon" [class.expanded]="group.expanded"></i>
+    </div>
+
+    <div class="nav-group-items" [@expandCollapse]="group.expanded ? 'expanded' : 'collapsed'">
+      <button
+        type="button"
+        class="nav-link"
+        *ngFor="let item of group.items"
+        (click)="navigate(item)">
+        <span class="nav-link-icon" *ngIf="item.icon">{{ item.icon }}</span>
+        {{ item.title }}
+      </button>
+    </div>
   </div>
 
-  <div class="nav-group-items" [@expandCollapse]="group.expanded ? 'expanded' : 'collapsed'">
-    <button
-      type="button"
-      class="nav-link"
-      *ngFor="let item of group.items"
-      (click)="navigate(item)">
-      <span class="nav-link-icon" *ngIf="item.icon">{{ item.icon }}</span>
-      {{ item.title }}
-    </button>
-  </div>
-</div>
+  <div class="nav-divider" *ngIf="idx !== navGroups.length - 1"></div>
+</ng-container>
 

@@ -1,5 +1,5 @@
 <div class="sidenav-header">
-  <a class="brand-logo" routerLink="/">MAXOS DOCUMENTATION</a>
+  <a class="brand-logo" routerLink="/">MaxOS Guide</a>
 </div>
 
 <ng-container *ngFor="let group of navGroups; let idx = index">
@@ -14,6 +14,7 @@
          class="nav-link" 
          [routerLink]="item.path" 
          routerLinkActive="active">
+        <span class="nav-link-icon" *ngIf="item.icon">{{ item.icon }}</span>
         {{ item.title }}
       </a>
     </div>

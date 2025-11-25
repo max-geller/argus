@@ -1,38 +1,55 @@
+/* VitePress Sidebar Style - Settings Variant */
 :host {
   display: block;
-  padding: 24px;
+  width: 280px;
+  padding: 24px 0;
+  box-sizing: border-box;
 }
 
 .sidenav-header {
-  margin-bottom: 24px;
+  padding: 0 24px 24px 24px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--vp-c-text-1);
 }
 
 .brand-logo {
-  font-size: 0.85rem;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--vp-c-text-2);
   text-decoration: none;
+  color: inherit;
+  letter-spacing: 0.2em;
+  display: inline-block;
 }
 
 .nav-group {
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .nav-group-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 6px;
+  padding: 8px 24px;
   cursor: pointer;
+  user-select: none;
+  transition: color 0.25s;
+}
+
+.nav-group-header:hover .nav-group-title {
+  color: var(--vp-c-text-1);
+}
+
+.nav-group-title {
+  font-size: 13px;
+  font-weight: 700;
   color: var(--vp-c-text-2);
   text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-size: 0.75rem;
+  letter-spacing: 0.4px;
 }
 
 .group-icon {
-  transition: transform 0.2s ease;
+  font-size: 10px;
+  color: var(--vp-c-text-2);
+  transition: transform 0.25s;
 }
 
 .group-icon.expanded {
@@ -40,34 +57,41 @@
 }
 
 .nav-group-items {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding-left: 6px;
+  overflow: hidden;
+  display: block;
 }
 
 .nav-link {
-  width: 100%;
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 12px;
-  border-radius: 8px;
+  width: 100%;
+  padding: 8px 24px;
   border: none;
   background: none;
-  color: var(--vp-c-text-1);
+  color: var(--vp-c-text-2);
+  text-decoration: none;
   text-align: left;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
-  font-size: 0.95rem;
-  transition: background-color 0.2s, color 0.2s;
+  transition: color 0.25s, background-color 0.25s;
+  border-left: 2px solid transparent;
 }
 
 .nav-link:hover {
-  background-color: rgba(255, 255, 255, 0.06);
   color: var(--vp-c-brand);
+  background-color: rgba(100, 100, 100, 0.05);
 }
 
 .nav-link-icon {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.nav-divider {
+  height: 1px;
+  margin: 12px 24px;
+  background: rgba(255, 255, 255, 0.06);
 }
 
