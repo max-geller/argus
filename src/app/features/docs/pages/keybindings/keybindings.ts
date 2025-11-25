@@ -11,6 +11,7 @@ interface Keybinding {
   key: string;
   action: string;
   description: string;
+  source: string;
 }
 
 @Component({
@@ -27,7 +28,7 @@ interface Keybinding {
   styleUrl: './keybindings.scss'
 })
 export class KeybindingsComponent implements OnInit {
-  displayedColumns: string[] = ['category', 'key', 'action', 'description'];
+  displayedColumns: string[] = ['source', 'category', 'key', 'action', 'description'];
   dataSource = new MatTableDataSource<Keybinding>();
   private http = inject(HttpClient);
 

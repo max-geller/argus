@@ -1,12 +1,11 @@
 [
-  { "category": "Window", "key": "Super + Q", "action": "Close Window", "description": "Kill the active window" },
-  { "category": "Window", "key": "Super + F", "action": "Fullscreen", "description": "Toggle fullscreen state" },
-  { "category": "Window", "key": "Super + V", "action": "Float", "description": "Toggle floating state" },
-  { "category": "Launcher", "key": "Super + Space", "action": "App Launcher", "description": "Open Wofi/Rofi" },
-  { "category": "Launcher", "key": "Super + Return", "action": "Terminal", "description": "Open default terminal" },
-  { "category": "System", "key": "Super + Shift + E", "action": "Exit", "description": "Exit Hyprland session" },
-  { "category": "System", "key": "Super + L", "action": "Lock", "description": "Lock screen" },
-  { "category": "Workspace", "key": "Super + 1-9", "action": "Switch Workspace", "description": "Go to workspace 1-9" },
-  { "category": "Workspace", "key": "Super + Shift + 1-9", "action": "Move Window", "description": "Move active window to workspace" }
+  { "category": "Window", "key": "Super + Q", "action": "Close Window", "description": "Kill the active window", "source": "Hyprland" },
+  { "category": "Window", "key": "Super + F", "action": "Fullscreen", "description": "Toggle fullscreen state", "source": "Hyprland" },
+  { "category": "Window", "key": "Super + V", "action": "Float", "description": "Toggle floating state", "source": "Hyprland" },
+  { "category": "Launcher", "key": "Super + Space", "action": "App Launcher", "description": "Open Wofi/Rofi", "source": "Hyprland" },
+  { "category": "Launcher", "key": "Super + Return", "action": "Terminal", "description": "Open default terminal", "source": "Hyprland" },
+  { "category": "System", "key": "Super + Shift + E", "action": "Exit", "description": "Exit Hyprland session", "source": "Hyprland" },
+  { "category": "System", "key": "Super + L", "action": "Lock", "description": "Lock screen", "source": "Hyprland" },
+  { "category": "Workspace", "key": "Super + 1-9", "action": "Switch Workspace", "description": "Go to workspace 1-9", "source": "Hyprland" },
+  { "category": "Workspace", "key": "Super + Shift + 1-9", "action": "Move Window", "description": "Move active window to workspace", "source": "Hyprland" }
 ]
-

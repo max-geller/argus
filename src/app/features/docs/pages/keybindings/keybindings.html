@@ -5,6 +5,16 @@
   </mat-form-field>
 
   <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+    <!-- Source Column -->
+    <ng-container matColumnDef="source">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Source </th>
+      <td mat-cell *matCellDef="let element"> 
+        <span class="source-badge" [class.hyprland]="element.source === 'Hyprland'" [class.kitty]="element.source === 'kitty'">
+          {{element.source}}
+        </span>
+      </td>
+    </ng-container>
+
     <!-- Category Column -->
     <ng-container matColumnDef="category">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Category </th>
