@@ -1,37 +1,37 @@
-/* VitePress Sidebar Style - Unified */
+/* Material Design 3 Navigation Drawer */
 :host {
   display: block;
-  width: 280px;
-  padding: 24px 0;
   box-sizing: border-box;
 }
 
 .sidenav-header {
-  padding: 0 24px 24px 24px;
+  padding: 16px 12px;
   font-weight: 600;
-  font-size: 1.1rem;
+  font-size: 0.875rem;
   color: var(--vp-c-text-1);
 }
 
 .brand-logo {
   text-decoration: none;
   color: inherit;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.1em;
   display: inline-block;
+  text-transform: uppercase;
 }
 
 .nav-group {
-  margin-bottom: 16px;
+  margin-bottom: 4px;
 }
 
 .nav-group-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 24px;
+  padding: 4px 12px;
   cursor: pointer;
   user-select: none;
-  transition: color 0.25s;
+  transition: color 0.2s;
+  min-height: 32px;
 }
 
 .nav-group-header:hover .nav-group-title {
@@ -39,17 +39,17 @@
 }
 
 .nav-group-title {
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 600;
   color: var(--vp-c-text-2);
   text-transform: uppercase;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.8px;
 }
 
 .group-icon {
   font-size: 10px;
   color: var(--vp-c-text-2);
-  transition: transform 0.25s;
+  transition: transform 0.2s;
 }
 
 .group-icon.expanded {
@@ -64,12 +64,13 @@
 .nav-link {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   width: 100%;
-  padding: 8px 24px;
+  padding: 10px 12px;
+  margin: 0 8px;
+  width: calc(100% - 16px);
   border: none;
-  border-left: 2px solid transparent;
-  border-radius: 0;
+  border-radius: 100px;
   background: none;
   color: var(--vp-c-text-2);
   text-decoration: none;
@@ -78,28 +79,29 @@
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
-  transition: color 0.25s, background-color 0.25s;
+  transition: background-color 0.2s, color 0.2s;
+  min-height: 40px;
 }
 
 .nav-link:hover {
-  color: var(--vp-c-brand);
-  background-color: rgba(100, 100, 100, 0.05);
+  color: var(--vp-c-text-1);
+  background-color: rgba(100, 100, 100, 0.08);
 }
 
 .nav-link.active {
   color: var(--vp-c-brand);
-  border-left-color: var(--vp-c-brand);
-  background-color: rgba(100, 100, 100, 0.05);
+  background-color: rgba(58, 92, 249, 0.12);
+  font-weight: 600;
 }
 
 .nav-link-icon {
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   flex-shrink: 0;
 }
 
 .nav-divider {
   height: 1px;
-  margin: 12px 24px;
+  margin: 8px 12px;
   background: rgba(255, 255, 255, 0.06);
 }
 

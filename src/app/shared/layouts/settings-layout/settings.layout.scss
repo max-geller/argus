@@ -3,6 +3,13 @@
   background: radial-gradient(circle at top left, rgba(58, 92, 249, 0.12), transparent 45%);
 }
 
+// Material Design 3 standard navigation drawer width
+.sidenav {
+  width: 256px !important;
+  min-width: 256px !important;
+  max-width: 256px !important;
+}
+
 .content-wrapper {
   padding: 40px;
   max-width: 100%;
