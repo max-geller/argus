@@ -39,6 +39,54 @@ mat-card.feature-card {
   }
 }
 
+// Status Indicators & Badges
+.card-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--vp-c-text-2);
+  margin-bottom: 6px;
+
+  &::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--vp-c-text-2);
+  }
+
+  &.managed::before { background-color: #34c759; }
+  &.experimental::before { background-color: #f5a524; }
+  &.active::before { background-color: var(--vp-c-brand); }
+}
+
+.card-badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background-color: rgba(58, 92, 249, 0.15);
+  color: var(--vp-c-brand);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-left: auto;
+
+  &.planned {
+    background-color: rgba(245, 165, 36, 0.15);
+    color: #f5a524;
+  }
+}
+
+.card-chip {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: var(--vp-c-text-1);
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 0.85rem;
+}
+
 // Card Descriptions
 .card-description {
   margin: 0;

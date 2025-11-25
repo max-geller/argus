@@ -1,5 +1,5 @@
 <section class="settings-hero">
-  <div>
+  <div class="hero-content">
     <p class="eyebrow">Configuration</p>
     <h1>Settings Hub</h1>
     <p class="subtitle">
@@ -29,7 +29,7 @@
 
 <ng-container *ngIf="!isLoading(); else loadingState">
   <section class="settings-grid" *ngIf="cards().length; else emptyState">
-    <mat-card class="config-card" *ngFor="let card of cards(); trackBy: trackByPath" [attr.id]="getAnchorId(card)">
+    <mat-card class="card" *ngFor="let card of cards(); trackBy: trackByPath" [attr.id]="getAnchorId(card)">
       <div class="card-header">
         <div class="icon-badge">{{ card.icon }}</div>
         <div>
@@ -45,7 +45,7 @@
       </div>
 
       <mat-chip-set aria-label="Configuration tags">
-        <mat-chip *ngFor="let tag of card.tags" class="config-chip">{{ tag }}</mat-chip>
+        <mat-chip *ngFor="let tag of card.tags" class="card-chip">{{ tag }}</mat-chip>
       </mat-chip-set>
 
       <div class="card-actions">
@@ -60,9 +60,9 @@
   </section>
 </ng-container>
 
-<section class="roadmap">
-  <article class="roadmap-card" id="waybar">
-    <div class="roadmap-header">
+<section class="roadmap-grid">
+  <article class="card" id="waybar">
+    <div class="card-header">
       <div class="icon-badge">📊</div>
       <div>
         <p class="eyebrow">Waybar</p>
@@ -71,15 +71,15 @@
           Capture module presets, CSS variables, and animation timings for your preferred Waybar layouts.
         </p>
       </div>
-      <span class="roadmap-tag">In Progress</span>
+      <span class="card-badge">In Progress</span>
     </div>
     <p class="muted">
       Sync your <code>waybar/config</code> and <code>style.scss</code> with Argus to unlock tracked diffs and quick rollbacks.
     </p>
   </article>
 
-  <article class="roadmap-card" id="theme">
-    <div class="roadmap-header">
+  <article class="card" id="theme">
+    <div class="card-header">
       <div class="icon-badge">🎨</div>
       <div>
         <p class="eyebrow">Theme</p>
@@ -88,7 +88,7 @@
           Centralize Catppuccin-inspired palettes, typography tokens, and export them to Hyprland, GTK, and the terminal.
         </p>
       </div>
-      <span class="roadmap-tag planned">Planned</span>
+      <span class="card-badge planned">Planned</span>
     </div>
     <p class="muted">
       Map tokens to <code>custom-theme.scss</code> so UI states stay in sync with your compositor and bar themes.
@@ -96,13 +96,13 @@
   </article>
 </section>
 
-<section class="config-notes">
-  <article class="note-card" id="hyprland-monitors">
-    <header>
-      <span class="icon">🖵</span>
+<section class="roadmap-grid config-notes">
+  <article class="card note-card" id="hyprland-monitors">
+    <header class="card-header">
+      <div class="icon-badge">🖵</div>
       <div>
         <h3>Monitor Profiles</h3>
-        <p>Keep curated `monitor=` stanzas ready for desk, mobile, or stream setups.</p>
+        <p class="card-description">Keep curated `monitor=` stanzas ready for desk, mobile, or stream setups.</p>
       </div>
     </header>
     <ul>
@@ -112,12 +112,12 @@
     </ul>
   </article>
 
-  <article class="note-card" id="waybar-styles">
-    <header>
-      <span class="icon">🎛️</span>
+  <article class="card note-card" id="waybar-styles">
+    <header class="card-header">
+      <div class="icon-badge">🎛️</div>
       <div>
         <h3>Waybar Styles</h3>
-        <p>Mirror CSS custom properties between Argus and `~/.config/waybar/style.scss`.</p>
+        <p class="card-description">Mirror CSS custom properties between Argus and `~/.config/waybar/style.scss`.</p>
       </div>
     </header>
     <ul>
@@ -127,12 +127,12 @@
     </ul>
   </article>
 
-  <article class="note-card" id="theme-exports">
-    <header>
-      <span class="icon">🔗</span>
+  <article class="card note-card" id="theme-exports">
+    <header class="card-header">
+      <div class="icon-badge">🔗</div>
       <div>
         <h3>Theme Exports</h3>
-        <p>Bridge Argus tokens into terminal, GTK, Stylus themes, and dashboard widgets.</p>
+        <p class="card-description">Bridge Argus tokens into terminal, GTK, Stylus themes, and dashboard widgets.</p>
       </div>
     </header>
     <ul>
@@ -177,4 +177,3 @@
     <button mat-stroked-button color="accent" (click)="refreshConfigs()">Try Again</button>
   </div>
 </ng-template>
-

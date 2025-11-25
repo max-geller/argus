@@ -7,8 +7,13 @@
   background: radial-gradient(circle at top, rgba(52, 81, 178, 0.12), transparent 55%);
 }
 
+// Override global hero padding for landing specifically if needed
 .hero {
   padding: 80px 40px 40px;
+  
+  @media (max-width: 768px) {
+    padding: 40px 20px;
+  }
 }
 
 // Landing-specific graphic elements
@@ -30,20 +35,20 @@
   opacity: 0.6;
 
   &.orb-blue {
-  background: #3a5cf9;
-  top: 0;
-  right: 30%;
-}
+    background: #3a5cf9;
+    top: 0;
+    right: 30%;
+  }
 
   &.orb-purple {
-  background: #8a3ffc;
-  bottom: 0;
-  left: 20%;
+    background: #8a3ffc;
+    bottom: 0;
+    left: 20%;
   }
 }
 
-// Hero card (special styling for landing)
-.card {
+// Special "Floating Card" for the hero graphic
+.floating-card {
   position: relative;
   background: var(--vp-c-bg);
   border-radius: 32px;
@@ -57,9 +62,8 @@
   font-weight: 600;
 
   span {
-  font-size: 2.5rem;
-  display: block;
-  margin-bottom: 12px;
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 12px;
+  }
 }
-}
-
