@@ -7,7 +7,7 @@
       what you configured last month.
     </p>
     <div class="hero-actions">
-      <button mat-flat-button color="primary" [routerLink]="['/docs', 'welcome.md']">
+      <button mat-flat-button color="primary" routerLink="/docs/welcome.md">
         Getting Started
       </button>
       <button mat-stroked-button color="accent" (click)="refreshDocs()" [disabled]="isLoading()">
