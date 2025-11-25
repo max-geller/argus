@@ -1,0 +1,52 @@
+<div class="quick-list-header">
+  <h2>Active Tasks</h2>
+  <button mat-icon-button (click)="close()">
+    <i class="fas fa-times"></i>
+  </button>
+</div>
+
+<div class="quick-list-content">
+  <div class="section">
+    <h3>In Progress</h3>
+    <div class="empty-state" *ngIf="taskService.inProgressTasks().length === 0">
+      No tasks in progress
+    </div>
+    <div class="task-item" *ngFor="let task of taskService.inProgressTasks()">
+      <mat-checkbox [checked]="false" (change)="completeTask(task)">
+        {{ task.title }}
+      </mat-checkbox>
+      <div class="task-actions">
+        <i class="fas fa-arrow-right" title="Move to Done" (click)="completeTask(task)"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>To Do</h3>
+    <div class="empty-state" *ngIf="taskService.todoTasks().length === 0">
+      No tasks to do
+    </div>
+    <div class="task-item" *ngFor="let task of taskService.todoTasks()">
+      <mat-checkbox [checked]="false" (change)="startTask(task)">
+        {{ task.title }}
+      </mat-checkbox>
+    </div>
+  </div>
+</div>
+
+<div class="quick-list-footer">
+  <button mat-flat-button color="primary" (click)="viewBoard()">
+    View Task Board
+  </button>
+  
+  <div class="quick-add">
+    <input #taskInput 
+           type="text" 
+           placeholder="Add a task..." 
+           (keyup.enter)="addTask(taskInput.value); taskInput.value = ''">
+    <button mat-icon-button (click)="addTask(taskInput.value); taskInput.value = ''">
+      <i class="fas fa-plus"></i>
+    </button>
+  </div>
+</div>
+

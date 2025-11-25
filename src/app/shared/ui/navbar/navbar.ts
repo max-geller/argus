@@ -5,6 +5,8 @@ import { MatSidenav } from '@angular/material/sidenav';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ThemeService } from '@core/services/theme.service';
 import { SearchDialogComponent } from './search-dialog/search-dialog';
+import { TaskService } from '@core/services/task.service';
+import { LayoutService } from '@core/services/layout.service';
 
 @Component({
   selector: 'app-navbar',
@@ -16,6 +18,8 @@ import { SearchDialogComponent } from './search-dialog/search-dialog';
 export class NavbarComponent {
   @Input() sidenav?: MatSidenav;
   themeService = inject(ThemeService);
+  taskService = inject(TaskService);
+  layoutService = inject(LayoutService);
   private dialog = inject(MatDialog);
 
   @HostListener('window:keydown', ['$event'])

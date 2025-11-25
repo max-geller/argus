@@ -1,1 +1,13 @@
-      <router-outlet></router-outlet>
+<mat-sidenav-container class="global-sidenav-container" [hasBackdrop]="true">
+  <mat-sidenav #taskSidenav 
+               mode="over" 
+               position="end" 
+               class="task-sidenav"
+               (closed)="onSidenavClosed()">
+    <app-quick-task-list></app-quick-task-list>
+  </mat-sidenav>
+  
+  <mat-sidenav-content>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

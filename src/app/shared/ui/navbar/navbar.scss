@@ -5,3 +5,29 @@
   display: block;
 }
 
+.version-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--bg-card);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  margin-right: 0.5rem;
+  font-family: var(--font-mono, monospace);
+}
+
+.task-btn {
+  position: relative;
+  
+  .badge-dot {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #ff4081;
+    border: 1px solid var(--bg-navbar, #fff);
+  }
+}

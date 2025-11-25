@@ -1,0 +1,19 @@
+<h2 mat-dialog-title>Add New Task</h2>
+
+<mat-dialog-content class="dialog-content">
+  <mat-form-field appearance="outline">
+    <mat-label>Task Title</mat-label>
+    <input matInput [(ngModel)]="title" placeholder="What needs to be done?" (keyup.enter)="save()" autoFocus>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Description (Optional)</mat-label>
+    <textarea matInput [(ngModel)]="description" rows="3"></textarea>
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-flat-button color="primary" (click)="save()" [disabled]="!title.trim()">Add Task</button>
+</mat-dialog-actions>
+
