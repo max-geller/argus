@@ -1,6 +1,6 @@
-# Argus 👁️
+# Argus 
 
-**Argus** is a custom "Control Center" and documentation hub for Linux "ricers" (specifically Hyprland/Fedora). It serves as an onboarding dashboard to help you remember keybindings, view cheat sheets, and manage your system configuration after time away.
+**Argus** is a custom "Control Center" and documentation hub for the MaxOS (a customized Hyprland/Fedora 43 rice). It serves as an onboarding dashboard to help you remember keybindings, view cheat sheets, and manage your system configuration after time away.
 
 Built with **Tauri v2**, **Angular 18+**, and **Angular Material**.
 
