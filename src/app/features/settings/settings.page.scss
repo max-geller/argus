@@ -2,15 +2,10 @@
   display: block;
   padding: 48px 40px 80px;
 
-  @media (max-width: 768px) {
-    padding: 32px 20px 60px;
+  @media (max-width: 599px) {
+    padding: 24px 16px;
   }
 }
-
-// Most styles have been moved to global components:
-// - _layouts.scss (hero, grids)
-// - _cards.scss (cards, badges, status)
-// - _typography.scss (headings)
 
 .quick-links {
   border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -33,7 +28,7 @@
 // Note card specific layout (if not fully covered by card)
 .note-card {
   background-color: rgba(8, 12, 22, 0.85); // Slightly darker than standard card
-  
+
   ul {
     margin: 0;
     padding-left: 20px;
