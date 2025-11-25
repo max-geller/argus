@@ -24,6 +24,13 @@ export class SettingsShellComponent {
     brandLink: '/settings',
     groups: [
       {
+        title: 'General',
+        expanded: true,
+        items: [
+          { title: 'Documentation', path: '/settings/documentation', icon: '📚' }
+        ]
+      },
+      {
         title: 'Compositor',
         expanded: true,
         items: [

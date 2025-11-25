@@ -2,9 +2,10 @@ import { Component, OnInit, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { CommonModule } from '@angular/common';
-import { SidenavComponent, SidenavConfig, NavGroup } from '@shared/ui/sidenav/sidenav';
+import { SidenavComponent, SidenavConfig } from '@shared/ui/sidenav/sidenav';
 import { NavbarComponent } from '@shared/ui/navbar/navbar';
-import { ContentService, DocEntry } from '@core/services/content.service';
+import { ContentService } from '@core/services/content.service';
+import { DocsConfigService } from '@core/services/config/docs-config.service';
 
 @Component({
   selector: 'app-docs-shell',
@@ -21,7 +22,7 @@ import { ContentService, DocEntry } from '@core/services/content.service';
 })
 export class DocsShellComponent implements OnInit {
   private contentService = inject(ContentService);
-  private readonly categoryOrder = ['Introduction', 'Guides', 'Cheatsheets', 'Configs', 'Setup', 'Widgets', 'Tools', 'General'];
+  private docsConfigService = inject(DocsConfigService);
 
   sidenavConfig: SidenavConfig = {
     brandText: 'MaxOS Guide',
@@ -36,58 +37,10 @@ export class DocsShellComponent implements OnInit {
   private async loadDocsNav() {
     try {
       const docs = await this.contentService.listDocs();
-      this.sidenavConfig.groups = this.buildGroups(docs);
+      this.sidenavConfig.groups = this.docsConfigService.getOrderedGroups(docs);
     } catch (error) {
       console.error('Failed to load docs for navigation', error);
-      this.sidenavConfig.groups = this.buildGroups([]);
+      this.sidenavConfig.groups = this.docsConfigService.getOrderedGroups([]);
     }
   }
-
-  private buildGroups(docs: DocEntry[]): NavGroup[] {
-    const grouped = new Map<string, any[]>();
-
-    docs.forEach(doc => {
-      const path: any[] = ['/docs', doc.path];
-      if (!grouped.has(doc.category)) {
-        grouped.set(doc.category, []);
-      }
-      grouped.get(doc.category)?.push({ title: doc.title, path });
-    });
-
-    this.appendStaticItems(grouped);
-
-    return Array.from(grouped.entries())
-      .map(([title, items]) => ({
-        title,
-        expanded: title === 'Introduction',
-        items: items.sort((a, b) => a.title.localeCompare(b.title))
-      }))
-      .sort((a, b) => {
-        const diff = this.categorySortValue(a.title) - this.categorySortValue(b.title);
-        return diff !== 0 ? diff : a.title.localeCompare(b.title);
-      });
-  }
-
-  private appendStaticItems(grouped: Map<string, any[]>) {
-    const extras: Record<string, any[]> = {
-      Tools: [
-        {
-          title: 'Keybindings',
-          path: '/docs/keybindings'
-        }
-      ]
-    };
-
-    Object.entries(extras).forEach(([category, items]) => {
-      const existing = grouped.get(category) ?? [];
-      grouped.set(category, [...existing, ...items]);
-    });
-  }
-
-  private categorySortValue(title: string): number {
-    const index = this.categoryOrder.indexOf(title);
-    return index === -1 ? this.categoryOrder.length : index;
-  }
 }
-
-

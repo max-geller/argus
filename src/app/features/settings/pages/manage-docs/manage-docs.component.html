@@ -1,0 +1,42 @@
+<div class="manage-docs-container">
+  <div class="header">
+    <div class="title">
+      <h1>Manage Documentation</h1>
+      <p class="subtitle">Drag and drop to reorder categories and documents</p>
+    </div>
+    <button mat-stroked-button (click)="resetToDefault()">
+      <mat-icon>restore</mat-icon>
+      Reset to Default
+    </button>
+  </div>
+
+  <div class="groups-list" cdkDropList (cdkDropListDropped)="dropGroup($event)">
+    <mat-accordion displayMode="flat" multi>
+      @for (group of groups(); track group.title) {
+        <mat-expansion-panel class="group-panel" cdkDrag [expanded]="true">
+          <mat-expansion-panel-header>
+            <mat-panel-title class="group-title">
+              <mat-icon class="drag-handle" cdkDragHandle>drag_indicator</mat-icon>
+              {{ group.title }}
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <div class="items-list" cdkDropList (cdkDropListDropped)="dropItem($event, group)" [cdkDropListData]="group.items">
+            @for (item of group.items; track item.title) {
+              <div class="doc-item" cdkDrag>
+                <div class="doc-item-content">
+                  <mat-icon class="item-drag-handle">drag_indicator</mat-icon>
+                  <span>{{ item.title }}</span>
+                </div>
+                <div *cdkDragPlaceholder class="item-placeholder"></div>
+              </div>
+            }
+          </div>
+          
+          <div *cdkDragPlaceholder class="group-placeholder"></div>
+        </mat-expansion-panel>
+      }
+    </mat-accordion>
+  </div>
+</div>
+
