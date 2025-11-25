@@ -85,30 +85,43 @@ export class HyprlandService {
    * Load Hyprland configuration from file
    */
   async loadConfig(): Promise<void> {
+    console.log('=== HyprlandService.loadConfig() called ===');
     this.isLoading.set(true);
     this.error.set(null);
 
     try {
       // Check if running in Tauri
+      console.log('Checking if running in Tauri...');
       if (!this.tauriService.isRunningInTauri()) {
+        console.error('✗ Not running in Tauri environment');
         throw new Error('Not running in Tauri environment. Please launch the app with `npm run tauri dev` or as a desktop application.');
       }
+      console.log('✓ Running in Tauri environment');
 
       // Call Tauri command to read hyprland.conf
+      console.log('Invoking read_hyprland_config command...');
       const configText = await this.tauriService.invoke<string>('read_hyprland_config');
+      console.log(`✓ Received config text (${configText.length} chars)`);
+      
+      console.log('Parsing config...');
       const parsedConfig = this.parseConfig(configText);
+      console.log('✓ Config parsed successfully:', parsedConfig);
+      
       this.config.set(parsedConfig);
       this.hasUnsavedChanges.set(false);
       
       this.snackBar.open('Hyprland config loaded successfully', 'Dismiss', { duration: 2000 });
+      console.log('=== loadConfig() completed successfully ===');
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load Hyprland configuration';
       this.error.set(errorMessage);
-      console.error('Error loading Hyprland config:', err);
+      console.error('✗ Error loading Hyprland config:', err);
+      console.error('Error details:', { errorMessage, err });
       
       this.snackBar.open(`Error: ${errorMessage}`, 'Dismiss', { duration: 5000 });
       
       // Set default config as fallback
+      console.log('Setting default config as fallback');
       this.config.set(this.getDefaultConfig());
     } finally {
       this.isLoading.set(false);

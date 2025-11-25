@@ -12,11 +12,29 @@ fn greet(name: &str) -> String {
 
 #[tauri::command]
 fn read_hyprland_config() -> Result<String, String> {
-    let config_path = get_hyprland_config_path()?;
-    println!("Reading Hyprland config from: {:?}", config_path);
+    println!("=== read_hyprland_config called ===");
     
-    fs::read_to_string(&config_path)
-        .map_err(|e| format!("Failed to read Hyprland config from {:?}: {}", config_path, e))
+    let config_path = match get_hyprland_config_path() {
+        Ok(path) => {
+            println!("✓ Config path resolved: {:?}", path);
+            path
+        }
+        Err(e) => {
+            eprintln!("✗ Failed to get config path: {}", e);
+            return Err(e);
+        }
+    };
+    
+    match fs::read_to_string(&config_path) {
+        Ok(content) => {
+            println!("✓ Successfully read config ({} bytes)", content.len());
+            Ok(content)
+        }
+        Err(e) => {
+            eprintln!("✗ Failed to read config file: {}", e);
+            Err(format!("Failed to read Hyprland config from {:?}: {}", config_path, e))
+        }
+    }
 }
 
 #[tauri::command]
@@ -54,15 +72,28 @@ fn reload_hyprland() -> Result<String, String> {
 }
 
 fn get_hyprland_config_path() -> Result<PathBuf, String> {
-    let home = std::env::var("HOME")
-        .map_err(|_| "Could not determine HOME directory".to_string())?;
+    println!("Getting Hyprland config path...");
     
-    let config_path = PathBuf::from(home).join(".config/hypr/hyprland.conf");
+    let home = match std::env::var("HOME") {
+        Ok(h) => {
+            println!("  HOME = {}", h);
+            h
+        }
+        Err(e) => {
+            eprintln!("  ✗ Could not read HOME env var: {}", e);
+            return Err("Could not determine HOME directory".to_string());
+        }
+    };
+    
+    let config_path = PathBuf::from(&home).join(".config/hypr/hyprland.conf");
+    println!("  Checking path: {:?}", config_path);
     
     if !config_path.exists() {
+        eprintln!("  ✗ Config file does not exist!");
         return Err(format!("Hyprland config not found at {:?}", config_path));
     }
     
+    println!("  ✓ Config file exists");
     Ok(config_path)
 }
 
