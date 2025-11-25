@@ -27,7 +27,7 @@ export class SettingsShellComponent {
         title: 'Compositor',
         expanded: true,
         items: [
-          { title: 'Hyprland Config', fragment: 'hyprland', icon: '🌀' },
+          { title: 'Hyprland Config', path: '/settings/hyprland', icon: '🌀' },
           { title: 'Monitor Profiles', fragment: 'hyprland-monitors', icon: '🖵' }
         ]
       },
