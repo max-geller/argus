@@ -312,6 +312,17 @@
       </div>
     </mat-tab>
 
+    <!-- Keybindings -->
+    <mat-tab label="Keybindings">
+      <div class="tab-content">
+        <app-keybinding-editor 
+          [keybindings]="cfg.keybindings"
+          (keybindingsChange)="cfg.keybindings = $event"
+          (configChanged)="onConfigChange()">
+        </app-keybinding-editor>
+      </div>
+    </mat-tab>
+
     <!-- Snapshots -->
     <mat-tab label="Snapshots">
       <div class="tab-content">

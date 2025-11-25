@@ -16,6 +16,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { HyprlandService } from '@core/services/config/hyprland.service';
 import { SnapshotService } from '@core/services/snapshot.service';
+import { KeybindingEditorComponent } from '../../components/keybinding-editor/keybinding-editor.component';
 
 @Component({
   selector: 'app-hyprland-config',
@@ -35,7 +36,8 @@ import { SnapshotService } from '@core/services/snapshot.service';
     MatChipsModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    MatDialogModule
+    MatDialogModule,
+    KeybindingEditorComponent
   ],
   templateUrl: './hyprland.page.html',
   styleUrl: './hyprland.page.scss'

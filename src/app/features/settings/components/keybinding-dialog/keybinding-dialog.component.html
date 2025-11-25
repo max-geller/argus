@@ -1,0 +1,153 @@
+<h2 mat-dialog-title>{{ data.keybinding ? 'Edit' : 'Add' }} Keybinding</h2>
+
+<mat-dialog-content>
+  <div class="dialog-content">
+    <!-- Key Combination Section -->
+    <section class="section">
+      <h3>Key Combination</h3>
+      
+      <div class="modifiers">
+        <mat-checkbox *ngFor="let mod of modifiers"
+                     [checked]="selectedModifiers().has(mod.value)"
+                     (change)="toggleModifier(mod.value)">
+          {{ mod.label }}
+        </mat-checkbox>
+      </div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Search Key</mat-label>
+        <input matInput [(ngModel)]="searchTerm" placeholder="Type to search...">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Key</mat-label>
+        <mat-select [(ngModel)]="selectedKey" (ngModelChange)="onKeyChange()">
+          <mat-optgroup *ngFor="let category of ['Letters', 'Numbers', 'Function', 'Navigation', 'Editing', 'Special', 'Media', 'Mouse']" [label]="category">
+            <mat-option *ngFor="let key of getKeysByCategory(category)" [value]="key.value">
+              {{ key.label }}
+            </mat-option>
+          </mat-optgroup>
+        </mat-select>
+      </mat-form-field>
+
+      <div class="preview">
+        <strong>Preview:</strong> {{ getKeyCombo() }}
+      </div>
+
+      <div class="conflict-warning" *ngIf="conflictWarning()">
+        ⚠️ {{ conflictWarning() }}
+      </div>
+    </section>
+
+    <!-- Action Section -->
+    <section class="section">
+      <h3>Action</h3>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Action Type</mat-label>
+        <mat-select [(ngModel)]="actionType">
+          <mat-option value="exec">Execute Command</mat-option>
+          <mat-option value="window">Window Action</mat-option>
+          <mat-option value="workspace">Workspace</mat-option>
+          <mat-option value="focus">Focus Direction</mat-option>
+          <mat-option value="custom">Custom</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Execute Command -->
+      <mat-form-field *ngIf="actionType() === 'exec'" appearance="outline" class="full-width">
+        <mat-label>Command</mat-label>
+        <input matInput [(ngModel)]="actionParams" placeholder="kitty">
+      </mat-form-field>
+
+      <!-- Window Action -->
+      <mat-form-field *ngIf="actionType() === 'window'" appearance="outline" class="full-width">
+        <mat-label>Window Action</mat-label>
+        <mat-select [(ngModel)]="actionValue">
+          <mat-option *ngFor="let action of windowActions" [value]="action.value">
+            {{ action.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Workspace -->
+      <div *ngIf="actionType() === 'workspace'">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Workspace Action</mat-label>
+          <mat-select [(ngModel)]="actionValue">
+            <mat-option *ngFor="let action of workspaceActions" [value]="action.value">
+              {{ action.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Workspace Number</mat-label>
+          <input matInput type="number" [(ngModel)]="actionParams" min="1" max="10">
+        </mat-form-field>
+      </div>
+
+      <!-- Focus -->
+      <div *ngIf="actionType() === 'focus'">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Focus Action</mat-label>
+          <mat-select [(ngModel)]="actionValue">
+            <mat-option *ngFor="let action of focusActions" [value]="action.value">
+              {{ action.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Direction</mat-label>
+          <mat-select [(ngModel)]="actionParams">
+            <mat-option value="l">Left</mat-option>
+            <mat-option value="r">Right</mat-option>
+            <mat-option value="u">Up</mat-option>
+            <mat-option value="d">Down</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <!-- Custom -->
+      <div *ngIf="actionType() === 'custom'">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Action Name</mat-label>
+          <input matInput [(ngModel)]="actionValue" placeholder="custom_action">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Parameters (optional)</mat-label>
+          <input matInput [(ngModel)]="actionParams" placeholder="param1, param2">
+        </mat-form-field>
+      </div>
+    </section>
+
+    <!-- Options Section -->
+    <section class="section">
+      <h3>Options</h3>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Binding Type</mat-label>
+        <mat-select [(ngModel)]="bindingType">
+          <mat-option value="bind">Standard (press once)</mat-option>
+          <mat-option value="binde">Repeating (hold)</mat-option>
+          <mat-option value="bindm">Mouse</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Description (optional)</mat-label>
+        <input matInput [(ngModel)]="description" placeholder="What does this keybinding do?">
+      </mat-form-field>
+    </section>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-flat-button color="primary" (click)="onSave()" [disabled]="!selectedKey()">
+    {{ data.keybinding ? 'Update' : 'Add' }}
+  </button>
+</mat-dialog-actions>
+

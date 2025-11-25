@@ -1,0 +1,67 @@
+<div class="keybinding-editor">
+  <div class="editor-header">
+    <div class="filters">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Search</mat-label>
+        <input matInput [(ngModel)]="searchTerm" placeholder="Search by key, action, or description...">
+        <mat-icon matPrefix>search</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="category-field">
+        <mat-label>Category</mat-label>
+        <mat-select [(ngModel)]="selectedCategory">
+          <mat-option *ngFor="let cat of categories" [value]="cat.value">
+            {{ cat.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <button mat-flat-button color="primary" (click)="addKeybinding()">
+      <mat-icon>add</mat-icon>
+      Add Keybinding
+    </button>
+  </div>
+
+  <div class="keybinding-list">
+    <mat-card *ngFor="let kb of filteredKeybindings()" class="keybinding-card">
+      <div class="keybinding-content">
+        <div class="keybinding-info">
+          <div class="key-combo">
+            <mat-chip-set>
+              <mat-chip *ngFor="let mod of kb.modifiers">
+                {{ mod === '$mainMod' ? 'Super' : mod }}
+              </mat-chip>
+              <mat-chip highlighted>{{ kb.key }}</mat-chip>
+            </mat-chip-set>
+          </div>
+          
+          <div class="action-info">
+            <strong>{{ getActionDisplay(kb) }}</strong>
+            <span class="category-badge">{{ getCategoryLabel(kb.category) }}</span>
+          </div>
+
+          <p class="description" *ngIf="kb.description">
+            {{ kb.description }}
+          </p>
+        </div>
+
+        <div class="keybinding-actions">
+          <button mat-icon-button (click)="editKeybinding(kb)" matTooltip="Edit">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteKeybinding(kb)" matTooltip="Delete">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+    </mat-card>
+
+    <div class="empty-state" *ngIf="filteredKeybindings().length === 0">
+      <mat-icon>keyboard</mat-icon>
+      <p>No keybindings found</p>
+      <p class="muted">Try adjusting your search or category filter</p>
+    </div>
+  </div>
+</div>
+
