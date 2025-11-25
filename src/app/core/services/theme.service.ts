@@ -11,6 +11,10 @@ export class ThemeService {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
       this.isDark.set(savedTheme === 'dark');
+    } else {
+      // No saved preference, apply dark theme immediately
+      document.documentElement.classList.add('dark-theme');
+      localStorage.setItem('theme', 'dark');
     }
 
     effect(() => {
