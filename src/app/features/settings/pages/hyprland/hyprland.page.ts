@@ -87,7 +87,12 @@ export class HyprlandPageComponent implements OnInit {
   }
 
   onConfigChange(): void {
-    // hasUnsavedChanges is a computed signal, it updates automatically
+    // Force the config signal to update by creating a new reference
+    // This ensures the computed signal detects the change
+    const currentConfig = this.config();
+    if (currentConfig) {
+      this.hyprlandService.updateConfig(() => ({ ...currentConfig }));
+    }
   }
 
   addMonitor(): void {
