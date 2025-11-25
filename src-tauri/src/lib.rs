@@ -2,11 +2,68 @@
 use serde::Serialize;
 use std::fs;
 use std::path::{Path, PathBuf};
+use std::process::Command;
 use walkdir::WalkDir;
 
 #[tauri::command]
 fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
+}
+
+#[tauri::command]
+fn read_hyprland_config() -> Result<String, String> {
+    let config_path = get_hyprland_config_path()?;
+    println!("Reading Hyprland config from: {:?}", config_path);
+    
+    fs::read_to_string(&config_path)
+        .map_err(|e| format!("Failed to read Hyprland config from {:?}: {}", config_path, e))
+}
+
+#[tauri::command]
+fn write_hyprland_config(content: String) -> Result<(), String> {
+    let config_path = get_hyprland_config_path()?;
+    println!("Writing Hyprland config to: {:?}", config_path);
+    
+    // Create a backup before writing
+    let backup_path = config_path.with_extension("conf.backup");
+    if config_path.exists() {
+        fs::copy(&config_path, &backup_path)
+            .map_err(|e| format!("Failed to create backup: {}", e))?;
+    }
+    
+    fs::write(&config_path, content)
+        .map_err(|e| format!("Failed to write Hyprland config to {:?}: {}", config_path, e))
+}
+
+#[tauri::command]
+fn reload_hyprland() -> Result<String, String> {
+    println!("Reloading Hyprland configuration...");
+    
+    let output = Command::new("hyprctl")
+        .arg("reload")
+        .output()
+        .map_err(|e| format!("Failed to execute hyprctl reload: {}", e))?;
+    
+    if output.status.success() {
+        let stdout = String::from_utf8_lossy(&output.stdout);
+        Ok(stdout.to_string())
+    } else {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        Err(format!("hyprctl reload failed: {}", stderr))
+    }
+}
+
+fn get_hyprland_config_path() -> Result<PathBuf, String> {
+    let home = std::env::var("HOME")
+        .map_err(|_| "Could not determine HOME directory".to_string())?;
+    
+    let config_path = PathBuf::from(home).join(".config/hypr/hyprland.conf");
+    
+    if !config_path.exists() {
+        return Err(format!("Hyprland config not found at {:?}", config_path));
+    }
+    
+    Ok(config_path)
 }
 
 #[tauri::command]
@@ -122,7 +179,14 @@ fn capitalize_word(word: &str) -> String {
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![greet, get_content, list_docs])
+        .invoke_handler(tauri::generate_handler![
+            greet,
+            get_content,
+            list_docs,
+            read_hyprland_config,
+            write_hyprland_config,
+            reload_hyprland
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

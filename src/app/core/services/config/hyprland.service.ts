@@ -1,5 +1,6 @@
-import { Injectable, signal } from '@angular/core';
-import { invoke } from '@tauri-apps/api/core';
+import { Injectable, signal, inject } from '@angular/core';
+import { TauriService } from '@core/services/tauri.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 export interface HyprlandConfig {
   monitors: MonitorConfig[];
@@ -66,6 +67,9 @@ export interface EnvironmentVar {
   providedIn: 'root'
 })
 export class HyprlandService {
+  private tauriService = inject(TauriService);
+  private snackBar = inject(MatSnackBar);
+
   // Signals for reactive state
   config = signal<HyprlandConfig | null>(null);
   isLoading = signal<boolean>(false);
@@ -85,15 +89,24 @@ export class HyprlandService {
     this.error.set(null);
 
     try {
+      // Check if running in Tauri
+      if (!this.tauriService.isRunningInTauri()) {
+        throw new Error('Not running in Tauri environment. Please launch the app with `npm run tauri dev` or as a desktop application.');
+      }
+
       // Call Tauri command to read hyprland.conf
-      const configText = await invoke<string>('read_hyprland_config');
+      const configText = await this.tauriService.invoke<string>('read_hyprland_config');
       const parsedConfig = this.parseConfig(configText);
       this.config.set(parsedConfig);
       this.hasUnsavedChanges.set(false);
+      
+      this.snackBar.open('Hyprland config loaded successfully', 'Dismiss', { duration: 2000 });
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load Hyprland configuration';
       this.error.set(errorMessage);
       console.error('Error loading Hyprland config:', err);
+      
+      this.snackBar.open(`Error: ${errorMessage}`, 'Dismiss', { duration: 5000 });
       
       // Set default config as fallback
       this.config.set(this.getDefaultConfig());
@@ -108,6 +121,7 @@ export class HyprlandService {
   async saveConfig(): Promise<void> {
     const currentConfig = this.config();
     if (!currentConfig) {
+      this.snackBar.open('No configuration to save', 'Dismiss', { duration: 3000 });
       throw new Error('No configuration to save');
     }
 
@@ -119,13 +133,16 @@ export class HyprlandService {
       const configText = this.stringifyConfig(currentConfig);
       
       // Call Tauri command to write hyprland.conf
-      await invoke('write_hyprland_config', { content: configText });
+      await this.tauriService.invoke('write_hyprland_config', { content: configText });
       
       this.hasUnsavedChanges.set(false);
+      this.snackBar.open('Hyprland config saved successfully', 'Dismiss', { duration: 2000 });
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to save Hyprland configuration';
       this.error.set(errorMessage);
       console.error('Error saving Hyprland config:', err);
+      
+      this.snackBar.open(`Error saving: ${errorMessage}`, 'Dismiss', { duration: 5000 });
       throw err;
     } finally {
       this.isLoading.set(false);
@@ -155,10 +172,13 @@ export class HyprlandService {
    */
   async reloadHyprland(): Promise<void> {
     try {
-      await invoke('reload_hyprland');
+      const result = await this.tauriService.invoke<string>('reload_hyprland');
+      this.snackBar.open('Hyprland reloaded successfully', 'Dismiss', { duration: 2000 });
+      console.log('Hyprland reload result:', result);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to reload Hyprland';
       this.error.set(errorMessage);
+      this.snackBar.open(`Error reloading: ${errorMessage}`, 'Dismiss', { duration: 5000 });
       throw err;
     }
   }
