@@ -1,9 +1,10 @@
 import { Injectable, computed, signal, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { readFile, writeFile, exists } from '@tauri-apps/plugin-fs';
+import { readFile, writeFile, exists, BaseDirectory } from '@tauri-apps/plugin-fs';
 import { Task, Release, TaskData, TaskStatus } from '../models/task.model';
 
-const TASKS_FILE_PATH = '/home/maxgeller/Code/Angular/MaxOS/argus/src/assets/tasks/tasks.json';
+// Relative path from Home directory
+const TASKS_FILE_PATH = 'Code/Angular/MaxOS/argus/src/assets/tasks/tasks.json';
 
 const INITIAL_DATA: TaskData = {
   tasks: [],
@@ -63,9 +64,9 @@ export class TaskService {
     }
 
     try {
-      const fileExists = await exists(TASKS_FILE_PATH);
+      const fileExists = await exists(TASKS_FILE_PATH, { baseDir: BaseDirectory.Home });
       if (fileExists) {
-        const contents = await readFile(TASKS_FILE_PATH);
+        const contents = await readFile(TASKS_FILE_PATH, { baseDir: BaseDirectory.Home });
         const text = new TextDecoder().decode(contents);
         const data = JSON.parse(text) as TaskData;
         this.state.set(data);
@@ -87,7 +88,7 @@ export class TaskService {
     try {
       const text = JSON.stringify(data, null, 2);
       const bytes = new TextEncoder().encode(text);
-      await writeFile(TASKS_FILE_PATH, bytes);
+      await writeFile(TASKS_FILE_PATH, bytes, { baseDir: BaseDirectory.Home });
       this.state.set(data);
     } catch (error) {
       console.error('Failed to save tasks:', error);

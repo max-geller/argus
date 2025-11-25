@@ -1,5 +1,15 @@
 {
-  "tasks": [],
+  "tasks": [
+    {
+      "id": "c800cb59-4dc1-448c-9920-abd7cfd6dd54",
+      "title": "Test",
+      "status": "done",
+      "releaseId": "initial-release",
+      "createdAt": "2025-11-25T17:45:47.513Z",
+      "updatedAt": "2025-11-25T17:46:57.793Z",
+      "order": 0
+    }
+  ],
   "releases": [
     {
       "id": "initial-release",
@@ -9,4 +19,3 @@
   ],
   "currentVersion": "v0.0.1"
 }
-

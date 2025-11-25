@@ -7,17 +7,12 @@
     "core:default",
     "opener:default",
     "fs:default",
+    "fs:allow-read-file",
+    "fs:allow-write-file",
+    "fs:allow-exists",
     {
-      "identifier": "fs:allow-read",
-      "allow": [{ "path": "$HOME/Code/Angular/MaxOS/argus/src/assets/tasks/tasks.json" }]
-    },
-    {
-      "identifier": "fs:allow-write",
-      "allow": [{ "path": "$HOME/Code/Angular/MaxOS/argus/src/assets/tasks/tasks.json" }]
-    },
-    {
-      "identifier": "fs:allow-exists",
-      "allow": [{ "path": "$HOME/Code/Angular/MaxOS/argus/src/assets/tasks/tasks.json" }]
+      "identifier": "fs:scope",
+      "allow": ["/home/maxgeller/Code/Angular/MaxOS/argus/src/assets/tasks/tasks.json"]
     }
   ]
 }
