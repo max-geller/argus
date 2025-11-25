@@ -1,9 +1,10 @@
 import { Routes } from '@angular/router';
 import { DocViewerComponent } from './features/docs/ui/doc-viewer/doc-viewer';
+import { DocsPageComponent } from './features/docs/docs.page';
 import { KeybindingsComponent } from './features/docs/pages/keybindings/keybindings';
 import { LandingComponent } from './features/landing/landing';
 import { NotFoundComponent } from './features/not-found/not-found';
-import { SettingsComponent } from '@features/settings/settings';
+import { SettingsPageComponent } from './features/settings/settings.page';
 import { DocsShellComponent } from './shared/layouts/docs-layout/docs.layout';
 import { SettingsShellComponent } from './shared/layouts/settings-layout/settings.layout';
 
@@ -15,7 +16,7 @@ export const routes: Routes = [
   {
     path: 'settings',
     component: SettingsShellComponent,
-    children: [{ path: '', component: SettingsComponent }]
+    children: [{ path: '', component: SettingsPageComponent }]
   },
   
   // Docs module with dedicated layout
@@ -23,8 +24,8 @@ export const routes: Routes = [
     path: 'docs',
     component: DocsShellComponent,
     children: [
-      { path: ':id', component: DocViewerComponent },
-      { path: '', redirectTo: '/docs/welcome.md', pathMatch: 'full' }
+      { path: '', component: DocsPageComponent },
+      { path: ':id', component: DocViewerComponent }
     ]
   },
   

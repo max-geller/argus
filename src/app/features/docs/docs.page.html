@@ -1,0 +1,89 @@
+<section class="docs-hero">
+  <div>
+    <p class="eyebrow">Documentation</p>
+    <h1>Knowledge Base</h1>
+    <p class="subtitle">
+      Comprehensive guides, configurations, and references for your Hyprland setup. Everything you need to remember
+      what you configured last month.
+    </p>
+    <div class="hero-actions">
+      <button mat-flat-button color="primary" [routerLink]="['/docs', 'welcome.md']">
+        Getting Started
+      </button>
+      <button mat-stroked-button color="accent" (click)="refreshDocs()" [disabled]="isLoading()">
+        Refresh Index
+      </button>
+    </div>
+  </div>
+  <div class="hero-meta">
+    <div class="meta-card">
+      <span class="metric">{{ docCount() }}</span>
+      <p>documents</p>
+    </div>
+    <div class="meta-card" *ngIf="lastRefresh() as refreshed">
+      <span class="metric">{{ categoryCount() }}</span>
+      <p>categories</p>
+    </div>
+  </div>
+</section>
+
+<ng-container *ngIf="!isLoading(); else loadingState">
+  <section *ngIf="cards().length; else emptyState">
+    <div class="category-section" *ngFor="let category of categories">
+      <h2 class="category-title">{{ category }}</h2>
+      <div class="docs-grid">
+        <mat-card class="doc-card" *ngFor="let card of getCategoryCards(category); trackBy: trackByPath">
+          <div class="card-header">
+            <div class="icon-badge">{{ card.icon }}</div>
+            <div>
+              <h3>{{ card.title }}</h3>
+              <p class="card-description">{{ card.description }}</p>
+            </div>
+          </div>
+
+          <div class="card-actions">
+            <a mat-flat-button color="primary" [routerLink]="['/docs', card.docPath]">
+              Open
+            </a>
+          </div>
+        </mat-card>
+      </div>
+    </div>
+  </section>
+</ng-container>
+
+<section class="quick-links">
+  <h2>Quick Actions</h2>
+  <div class="link-grid">
+    <a class="link-card" routerLink="/keybindings">
+      <span>⌨️</span>
+      <div>
+        <h3>Keyboard Shortcuts</h3>
+        <p>View all Hyprland keybindings at a glance.</p>
+      </div>
+    </a>
+    <a class="link-card" routerLink="/settings">
+      <span>⚙️</span>
+      <div>
+        <h3>Configuration Hub</h3>
+        <p>Manage dotfiles and system settings.</p>
+      </div>
+    </a>
+  </div>
+</section>
+
+<ng-template #loadingState>
+  <div class="loading-state">
+    <mat-progress-spinner mode="indeterminate" diameter="48"></mat-progress-spinner>
+    <p>Loading documentation index…</p>
+  </div>
+</ng-template>
+
+<ng-template #emptyState>
+  <div class="empty-state">
+    <h3>No documents yet</h3>
+    <p>Drop markdown files under <code>~/.config/argus/docs</code> and refresh the index.</p>
+    <button mat-stroked-button color="accent" (click)="refreshDocs()">Try Again</button>
+  </div>
+</ng-template>
+

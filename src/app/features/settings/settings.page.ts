@@ -48,10 +48,10 @@ const CONFIG_METADATA: Record<string, ConfigMetadata> = {
     MatProgressSpinnerModule,
     MatSnackBarModule
   ],
-  templateUrl: './settings.html',
-  styleUrl: './settings.scss'
+  templateUrl: './settings.page.html',
+  styleUrl: './settings.page.scss'
 })
-export class SettingsComponent implements OnInit {
+export class SettingsPageComponent implements OnInit {
   private contentService = inject(ContentService);
   private snackBar = inject(MatSnackBar);
 
