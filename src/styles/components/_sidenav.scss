@@ -16,11 +16,13 @@ app-sidenav {
     border-radius: 0;
     padding: 0.2rem 1rem 1rem 2rem;
     min-width: 310px !important;
+    overflow-x: hidden;
   }
 }
 
 .sidenav-header {
   padding: $spacing-lg $spacing-md;
+  padding-bottom: 2rem;
   font-weight: 700;
   font-size: 1.2rem;
   color: var(--vp-c-text-1);
@@ -40,7 +42,7 @@ app-sidenav {
 
 .nav-group-header {
   @include flex-between;
-  padding: 4px $spacing-md;
+  padding: 1px $spacing-md;
   cursor: pointer;
   user-select: none;
   transition: color $transition-base;
@@ -53,9 +55,9 @@ app-sidenav {
 }
 
 .nav-group-title {
-  font-size: 1rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  color: var(--vp-c-text-2);
+  color: var(--vp-c-text-1);
   text-transform: uppercase;
   letter-spacing: 0.8px;
 }
@@ -86,7 +88,7 @@ app-sidenav {
   color: var(--vp-c-text-2);
   text-decoration: none;
   text-align: left;
-  font-size: 0.85rem;
+  font-size: 0.80rem;
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
@@ -114,7 +116,7 @@ app-sidenav {
 
 .nav-divider {
   height: 1px;
-  width: 100%;
+  width: auto;
   margin: $spacing-sm $spacing-md;
   background: var(--vp-c-border);
 }
