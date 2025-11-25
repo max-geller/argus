@@ -11,11 +11,12 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 $spacing-xl;
-  background-color: var(--vp-nav-bg);
+  background-color: var(--vp-c-bg);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--vp-c-border);
   z-index: $z-sticky;
+  
 }
 
 .nav-left,

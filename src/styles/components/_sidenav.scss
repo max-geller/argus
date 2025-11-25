@@ -10,10 +10,19 @@ app-sidenav {
 
 }
 
+.sidenav-container {
+  mat-sidenav {
+    background-color: var(--vp-c-bg);
+    border-radius: 0;
+    padding: 0.2rem 1rem 1rem 2rem;
+    min-width: 310px !important;
+  }
+}
+
 .sidenav-header {
   padding: $spacing-lg $spacing-md;
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   color: var(--vp-c-text-1);
 }
 
