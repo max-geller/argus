@@ -9,14 +9,35 @@
       "createdAt": "2025-11-25T17:50:23.630Z",
       "updatedAt": "2025-11-25T17:50:26.049Z",
       "order": 3
+    },
+    {
+      "id": "6cabaffa-b6f1-40b9-8fba-71aad196913e",
+      "title": "Kitty Configuration in Settings",
+      "description": "Allow user to modify Kitty configuration",
+      "status": "todo",
+      "releaseId": "d3f36c77-e859-46c9-8fb6-427bfb4a8b98",
+      "createdAt": "2025-11-25T17:58:10.238Z",
+      "updatedAt": "2025-11-25T17:58:10.238Z",
+      "order": 1
     }
   ],
   "releases": [
     {
       "id": "initial-release",
       "version": "v0.0.1",
+      "status": "released",
+      "releasedAt": "2025-11-25T17:57:11.254Z"
+    },
+    {
+      "id": "d3f36c77-e859-46c9-8fb6-427bfb4a8b98",
+      "version": "v0.0.2",
+      "status": "active"
+    },
+    {
+      "id": "2f34fce6-dff5-47fa-910e-b6e62fba15e2",
+      "version": "v0.1.0",
       "status": "active"
     }
   ],
-  "currentVersion": "v0.0.1"
+  "currentVersion": "v0.0.2"
 }
