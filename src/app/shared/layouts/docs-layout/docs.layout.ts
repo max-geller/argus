@@ -3,6 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { CommonModule } from '@angular/common';
 import { SidenavComponent, SidenavConfig, NavGroup } from '@shared/ui/sidenav/sidenav';
+import { NavbarComponent } from '@shared/ui/navbar/navbar';
 import { ContentService, DocEntry } from '@core/services/content.service';
 
 @Component({
@@ -14,7 +15,8 @@ import { ContentService, DocEntry } from '@core/services/content.service';
     CommonModule,
     RouterOutlet,
     MatSidenavModule,
-    SidenavComponent
+    SidenavComponent,
+    NavbarComponent
   ]
 })
 export class DocsShellComponent implements OnInit {

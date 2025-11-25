@@ -3,6 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { SidenavComponent, SidenavConfig } from '@shared/ui/sidenav/sidenav';
+import { NavbarComponent } from '@shared/ui/navbar/navbar';
 
 @Component({
   selector: 'app-settings-shell',
@@ -13,7 +14,8 @@ import { SidenavComponent, SidenavConfig } from '@shared/ui/sidenav/sidenav';
     CommonModule,
     RouterOutlet,
     MatSidenavModule,
-    SidenavComponent
+    SidenavComponent,
+    NavbarComponent
   ]
 })
 export class SettingsShellComponent {
