@@ -1,6 +1,6 @@
 <div class="top-navbar">
   <div class="nav-left">
-    <button class="icon-btn" (click)="sidenav.toggle()">
+    <button class="icon-btn" (click)="toggleSidenav()" *ngIf="sidenav">
       <i class="fas fa-bars"></i>
     </button>
     <button class="icon-btn" routerLink="/">

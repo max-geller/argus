@@ -1,11 +1,9 @@
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav #settingsNav mode="side" opened class="sidenav flat-sidenav">
-    <app-settings-sidenav></app-settings-sidenav>
+    <app-sidenav [config]="sidenavConfig"></app-sidenav>
   </mat-sidenav>
 
   <mat-sidenav-content>
-    <app-navbar [sidenav]="settingsNav"></app-navbar>
-
     <div class="content-wrapper">
       <router-outlet></router-outlet>
     </div>

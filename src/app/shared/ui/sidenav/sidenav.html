@@ -1,0 +1,40 @@
+<div class="sidenav-header">
+  <a class="brand-logo" [routerLink]="config.brandLink">{{ config.brandText }}</a>
+</div>
+
+<ng-container *ngFor="let group of config.groups; let idx = index">
+  <div class="nav-group">
+    <div class="nav-group-header" (click)="toggleGroup(group)">
+      <span class="nav-group-title">{{ group.title }}</span>
+      <i class="fas fa-chevron-right group-icon" [class.expanded]="group.expanded"></i>
+    </div>
+    
+    <div class="nav-group-items" [@expandCollapse]="group.expanded ? 'expanded' : 'collapsed'">
+      <ng-container *ngFor="let item of group.items">
+        <!-- Router-based links -->
+        <a *ngIf="isRouterLink(item)"
+           class="nav-link" 
+           [routerLink]="item.path"
+           routerLinkActive="active"
+           [routerLinkActiveOptions]="{ exact: false }"
+           (click)="handleItemClick(item)">
+          <span class="nav-link-icon" *ngIf="item.icon">{{ item.icon }}</span>
+          {{ item.title }}
+        </a>
+
+        <!-- Fragment/anchor-based buttons -->
+        <button
+          *ngIf="!isRouterLink(item)"
+          type="button"
+          class="nav-link"
+          (click)="handleItemClick(item, $event)">
+          <span class="nav-link-icon" *ngIf="item.icon">{{ item.icon }}</span>
+          {{ item.title }}
+        </button>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="nav-divider" *ngIf="idx !== config.groups.length - 1"></div>
+</ng-container>
+

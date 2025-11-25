@@ -1,6 +1,6 @@
-# Argus 
+# Argus
 
-**Argus** is a custom "Control Center" and documentation hub for the MaxOS (a customized Hyprland/Fedora 43 rice). It serves as an onboarding dashboard to help you remember keybindings, view cheat sheets, and manage your system configuration after time away.
+**Argus** is a custom "Control Center" and documentation hub for MaxOS (a customized Hyprland/Fedora 43 rice). It serves as an onboarding dashboard to help you remember keybindings, view cheat sheets, and manage your system configuration after time away.
 
 Built with **Tauri v2**, **Angular 18+**, and **Angular Material**.
 
@@ -16,13 +16,18 @@ Built with **Tauri v2**, **Angular 18+**, and **Angular Material**.
 
 - Rust & Cargo (`curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`)
 - Node.js & npm
-- Linux build tools:
-  ```bash
-  sudo dnf install glib2-devel gobject-introspection-devel pango-devel \
-      gdk-pixbuf2-devel atk-devel gtk3-devel webkit2gtk4.1-devel \
-      libappindicator-gtk3-devel librsvg2-devel openssl-devel cairo-devel \
+- Required packages:
+    - glib2-devel
+    - gobject-introspection-devel
+      pango-devel
+      gdk-pixbuf2-devel
+      atk-devel
+      gtk3-devel
+      webkit2gtk4.1-devel
+      libappindicator-gtk3-devel
+      librsvg2-devel openssl-devel
+      cairo-devel
       libsoup3-devel
-  ```
 
 ### Running Locally
 

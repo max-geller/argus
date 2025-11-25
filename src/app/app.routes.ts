@@ -8,19 +8,33 @@ import { DocsShellComponent } from './shared/layouts/docs-layout/docs.layout';
 import { SettingsShellComponent } from './shared/layouts/settings-layout/settings.layout';
 
 export const routes: Routes = [
+  // Landing page (no shell/layout)
+  { path: '', component: LandingComponent },
+  
+  // Settings module with dedicated layout
   {
     path: 'settings',
     component: SettingsShellComponent,
     children: [{ path: '', component: SettingsComponent }]
   },
+  
+  // Docs module with dedicated layout
   {
-    path: '',
+    path: 'docs',
     component: DocsShellComponent,
     children: [
-      { path: '', component: LandingComponent },
-      { path: 'docs/:id', component: DocViewerComponent },
-      { path: 'keybindings', component: KeybindingsComponent },
-      { path: '**', component: NotFoundComponent }
+      { path: ':id', component: DocViewerComponent },
+      { path: '', redirectTo: '/docs/welcome.md', pathMatch: 'full' }
     ]
-  }
+  },
+  
+  // Keybindings under docs layout
+  {
+    path: 'keybindings',
+    component: DocsShellComponent,
+    children: [{ path: '', component: KeybindingsComponent }]
+  },
+  
+  // 404 fallback
+  { path: '**', component: NotFoundComponent }
 ];

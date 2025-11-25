@@ -1,4 +1,4 @@
-/* VitePress Sidebar Style */
+/* VitePress Sidebar Style - Unified */
 :host {
   display: block;
   width: 280px;
@@ -65,13 +65,20 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  width: 100%;
   padding: 8px 24px;
+  border: none;
+  border-left: 2px solid transparent;
+  border-radius: 0;
+  background: none;
   color: var(--vp-c-text-2);
   text-decoration: none;
+  text-align: left;
   font-size: 14px;
   font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
   transition: color 0.25s, background-color 0.25s;
-  border-left: 2px solid transparent;
 }
 
 .nav-link:hover {

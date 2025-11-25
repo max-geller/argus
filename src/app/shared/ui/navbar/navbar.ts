@@ -14,7 +14,7 @@ import { SearchDialogComponent } from './search-dialog/search-dialog';
   styleUrl: './navbar.scss'
 })
 export class NavbarComponent {
-  @Input() sidenav!: MatSidenav;
+  @Input() sidenav?: MatSidenav;
   themeService = inject(ThemeService);
   private dialog = inject(MatDialog);
 
@@ -24,6 +24,12 @@ export class NavbarComponent {
     if (isCmdK) {
       event.preventDefault();
       this.openSearchDialog();
+    }
+  }
+
+  toggleSidenav() {
+    if (this.sidenav) {
+      this.sidenav.toggle();
     }
   }
 
