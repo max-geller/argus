@@ -4,5 +4,11 @@
 .sidenav-container {
   height: 100vh;
   background: radial-gradient(circle at top left, rgba(58, 92, 249, 0.12), transparent 45%);
+  mat-sidenav {
+    background-color: var(--vp-c-bg);
+    border-radius: 0;
+    padding: 0.2rem 1rem 1rem 2rem;
+    min-width: 310px !important;
+  }
 }
 
