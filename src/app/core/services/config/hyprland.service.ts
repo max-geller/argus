@@ -14,6 +14,7 @@ export interface HyprlandConfig {
   animations: AnimationsConfig | null;
   environment: EnvironmentVar[];
   autostart: AutostartApp[];
+  keybindings: Keybinding[];      // Now structured for GUI editing
   
   // Raw preserved sections (not lost, just not GUI-editable yet)
   rawSections: RawSections;
@@ -23,7 +24,6 @@ export interface HyprlandConfig {
 }
 
 export interface RawSections {
-  keybindings: string[];       // all bind/bindm/binde lines
   windowRules: string[];        // all windowrulev2/windowrule lines
   layouts: string[];            // dwindle/master blocks
   animationLines: string[];     // bezier/animation directive lines
@@ -93,6 +93,31 @@ export interface AutostartApp {
 export interface EnvironmentVar {
   key: string;
   value: string;
+}
+
+// Keybinding types
+export type KeybindingType = 'bind' | 'binde' | 'bindm';
+
+export type KeybindingCategory = 
+  | 'applications'
+  | 'window-management'
+  | 'workspaces'
+  | 'focus'
+  | 'system'
+  | 'media'
+  | 'mouse'
+  | 'custom';
+
+export interface Keybinding {
+  id: string;                    // Unique ID for tracking
+  type: KeybindingType;
+  modifiers: string[];           // ['$mainMod', 'SHIFT'], etc.
+  key: string;                   // 'RETURN', 'mouse:272', 'XF86AudioRaiseVolume'
+  action: string;                // 'exec', 'workspace', 'killactive', etc.
+  params: string;                // Command or parameter (e.g., 'kitty', '1')
+  description?: string;          // Optional user description
+  category: KeybindingCategory;  // For organization
+  originalLine: string;          // Preserve original for comments/formatting
 }
 
 // ========== SERVICE ==========
@@ -301,8 +326,8 @@ export class HyprlandService {
       animations: null,
       environment: [],
       autostart: [],
+      keybindings: [],
       rawSections: {
-        keybindings: [],
         windowRules: [],
         layouts: [],
         animationLines: [],
@@ -389,7 +414,10 @@ export class HyprlandService {
         config.rawSections.variables.push(line);
       } else if (trimmed.startsWith('bind')) {
         config.sectionOrder.push('bind');
-        config.rawSections.keybindings.push(line);
+        const keybinding = this.parseKeybindingLine(line);
+        if (keybinding) {
+          config.keybindings.push(keybinding);
+        }
       } else if (trimmed.startsWith('windowrule')) {
         config.sectionOrder.push('windowrule');
         config.rawSections.windowRules.push(line);
@@ -661,6 +689,101 @@ export class HyprlandService {
     return animations;
   }
 
+  /**
+   * Parse a single keybinding line into a structured object
+   */
+  private parseKeybindingLine(line: string): Keybinding | null {
+    const trimmed = line.trim();
+    
+    // Match: bind[em] = MODIFIERS, KEY, ACTION, PARAMS
+    const match = trimmed.match(/^(bind[em]?)\s*=\s*(.+)$/);
+    if (!match) return null;
+
+    const type = match[1] as KeybindingType;
+    const parts = match[2].split(',').map(p => p.trim());
+    
+    if (parts.length < 3) return null;
+
+    const [modifiersStr, key, action, ...paramsParts] = parts;
+    const modifiers = modifiersStr ? modifiersStr.split(/\s+/).filter(m => m) : [];
+    const params = paramsParts.join(',').trim();
+
+    const keybinding: Keybinding = {
+      id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      type,
+      modifiers,
+      key,
+      action,
+      params,
+      category: this.categorizeKeybinding(action, key, params),
+      originalLine: line
+    };
+
+    return keybinding;
+  }
+
+  /**
+   * Automatically categorize a keybinding based on its action and key
+   */
+  private categorizeKeybinding(action: string, key: string, params: string): KeybindingCategory {
+    // Media keys
+    if (key.startsWith('XF86Audio') || key.startsWith('XF86MonBrightness')) {
+      return 'media';
+    }
+
+    // Mouse bindings
+    if (key.startsWith('mouse:')) {
+      return 'mouse';
+    }
+
+    // Action-based categorization
+    switch (action) {
+      case 'exec':
+        // Determine if it's a system command or application launch
+        if (params.includes('lock') || params.includes('power') || params.includes('sleep')) {
+          return 'system';
+        }
+        return 'applications';
+      
+      case 'workspace':
+      case 'movetoworkspace':
+        return 'workspaces';
+      
+      case 'movefocus':
+      case 'focusmonitor':
+        return 'focus';
+      
+      case 'killactive':
+      case 'togglefloating':
+      case 'fullscreen':
+      case 'pseudo':
+      case 'togglesplit':
+      case 'movewindow':
+      case 'resizewindow':
+        return 'window-management';
+      
+      case 'exit':
+        return 'system';
+      
+      default:
+        return 'custom';
+    }
+  }
+
+  /**
+   * Convert keybindings back to Hyprland config format
+   */
+  private stringifyKeybindings(keybindings: Keybinding[]): string[] {
+    return keybindings.map(kb => {
+      const modifiersStr = kb.modifiers.join(' ');
+      const parts = [modifiersStr, kb.key, kb.action];
+      if (kb.params) {
+        parts.push(kb.params);
+      }
+      return `${kb.type} = ${parts.join(', ')}`;
+    });
+  }
+
   // ========== STRINGIFY ==========
 
   /**
@@ -784,7 +907,7 @@ export class HyprlandService {
           break;
 
         case 'bind':
-          lines.push(...config.rawSections.keybindings);
+          lines.push(...this.stringifyKeybindings(config.keybindings));
           lines.push('');
           break;
 
@@ -861,8 +984,8 @@ export class HyprlandService {
       },
       autostart: [],
       environment: [],
+      keybindings: [],
       rawSections: {
-        keybindings: [],
         windowRules: [],
         layouts: [],
         animationLines: [],
