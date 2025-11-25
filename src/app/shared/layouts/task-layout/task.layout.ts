@@ -46,7 +46,7 @@ export class TaskLayoutComponent {
         expanded: true,
         items: [
           { title: 'Board', path: '/tasks/board', icon: '<i class="fas fa-columns"></i>' },
-          // { title: 'List', path: '/tasks/list', icon: '<i class="fas fa-list"></i>' } // Future
+          { title: 'List', path: '/tasks/list', icon: '<i class="fas fa-list"></i>' }
         ]
       },
       // {

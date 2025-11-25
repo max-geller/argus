@@ -1,0 +1,81 @@
+<div class="list-container">
+  <div class="list-header">
+    <h1>Task List</h1>
+    <button mat-flat-button color="primary" (click)="openAddTask()">
+      <i class="fas fa-plus"></i> Add Task
+    </button>
+  </div>
+
+  <div class="table-container">
+    <table mat-table [dataSource]="dataSource" matSort class="task-table">
+
+      <!-- Status Column -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+        <td mat-cell *matCellDef="let task">
+          <span class="status-badge" [class]="task.status">
+            {{ formatStatus(task.status) }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Title Column -->
+      <ng-container matColumnDef="title">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Title</th>
+        <td mat-cell *matCellDef="let task" class="title-cell">
+          <div class="cell-content">
+            <span class="title-text">{{ task.title }}</span>
+            <span class="description-text" *ngIf="task.description">{{ task.description }}</span>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Created At Column -->
+      <ng-container matColumnDef="createdAt">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Created</th>
+        <td mat-cell *matCellDef="let task" class="meta-cell">
+          {{ task.createdAt | date:'MMM d, y' }}
+        </td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let task" class="actions-cell">
+          <button mat-icon-button [matMenuTriggerFor]="menu">
+            <i class="fas fa-ellipsis-v"></i>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="updateStatus(task, 'todo')">
+              <i class="fas fa-circle status-icon todo"></i> Mark as Todo
+            </button>
+            <button mat-menu-item (click)="updateStatus(task, 'in_progress')">
+              <i class="fas fa-spinner status-icon in-progress"></i> Mark as In Progress
+            </button>
+            <button mat-menu-item (click)="updateStatus(task, 'done')">
+              <i class="fas fa-check status-icon done"></i> Mark as Done
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item class="delete-item" (click)="deleteTask(task)">
+              <i class="fas fa-trash"></i> Delete
+            </button>
+          </mat-menu>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+      <!-- Empty State -->
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="4">
+          <div class="empty-state">
+            <i class="fas fa-clipboard-list"></i>
+            <p>No tasks found</p>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+
