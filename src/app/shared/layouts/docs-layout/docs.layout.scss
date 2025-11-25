@@ -1,20 +1,8 @@
+// Layout-specific styles for docs shell
+// Most layout styles are in /styles/components/_layouts.scss
+
 .sidenav-container {
   height: 100vh;
   background: radial-gradient(circle at top left, rgba(58, 92, 249, 0.12), transparent 45%);
-}
-
-// Material Design 3 standard navigation drawer width
-.sidenav {
-  width: 256px !important;
-  min-width: 256px !important;
-  max-width: 256px !important;
-}
-
-.content-wrapper {
-  padding: 40px;
-  max-width: 100%;
-  box-sizing: border-box;
-  overflow-y: auto;
-  height: calc(100vh - 64px);
 }
 

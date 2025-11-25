@@ -1,0 +1,80 @@
+// Global Button Styles
+// Extends Material buttons with custom variants
+
+@use '../index' as *;
+
+// Custom button variants (non-Material)
+.btn {
+  @include interactive-base;
+  padding: $spacing-md 22px;
+  border-radius: $radius-pill;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-sm;
+  border: none;
+  font-family: inherit;
+  font-size: 14px;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+
+  @include focus-ring;
+}
+
+.btn.primary {
+  background: var(--vp-c-brand);
+  color: #fff;
+
+  &:hover {
+    background: var(--vp-c-brand-dark, #2d3f8f);
+  }
+}
+
+.btn.secondary {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--vp-c-text-1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+}
+
+.btn.accent {
+  background: rgba(58, 92, 249, 0.15);
+  color: var(--vp-c-brand);
+  border: 1px solid rgba(58, 92, 249, 0.35);
+
+  &:hover {
+    background: rgba(58, 92, 249, 0.25);
+  }
+}
+
+.btn.ghost {
+  background: transparent;
+  color: var(--vp-c-text-2);
+
+  &:hover {
+    color: var(--vp-c-text-1);
+    background: rgba(255, 255, 255, 0.05);
+  }
+}
+
+// Material Button Overrides
+.mat-mdc-button,
+.mat-mdc-raised-button,
+.mat-mdc-outlined-button,
+.mat-mdc-unelevated-button {
+  border-radius: $radius-md !important;
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+
+.mat-mdc-icon-button {
+  @include focus-ring;
+}
+

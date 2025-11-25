@@ -1,0 +1,110 @@
+// Global Sidenav Styles (Material Design 3 Navigation Drawer)
+// Component: app-sidenav
+
+@use '../index' as *;
+
+app-sidenav {
+  display: block;
+  box-sizing: border-box;
+}
+
+.sidenav-header {
+  padding: $spacing-lg $spacing-md;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--vp-c-text-1);
+}
+
+.brand-logo {
+  text-decoration: none;
+  color: inherit;
+  letter-spacing: 0.1em;
+  display: inline-block;
+  text-transform: uppercase;
+}
+
+.nav-group {
+  margin-bottom: 4px;
+}
+
+.nav-group-header {
+  @include flex-between;
+  padding: 4px $spacing-md;
+  cursor: pointer;
+  user-select: none;
+  transition: color $transition-base;
+  min-height: 32px;
+
+  &:hover .nav-group-title {
+    color: var(--vp-c-text-1);
+  }
+}
+
+.nav-group-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--vp-c-text-2);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.group-icon {
+  font-size: 10px;
+  color: var(--vp-c-text-2);
+  transition: transform $transition-base;
+
+  &.expanded {
+    transform: rotate(90deg);
+  }
+}
+
+.nav-group-items {
+  overflow: hidden;
+  display: block;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  width: calc(100% - 16px);
+  padding: 10px $spacing-md;
+  margin: 0 $spacing-sm;
+  border: none;
+  border-radius: $radius-pill;
+  background: none;
+  color: var(--vp-c-text-2);
+  text-decoration: none;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background-color $transition-base, color $transition-base;
+  min-height: 40px; // MD3 touch target
+
+  &:hover {
+    color: var(--vp-c-text-1);
+    background-color: rgba(100, 100, 100, 0.08);
+  }
+
+  &.active {
+    color: var(--vp-c-brand);
+    background-color: rgba(58, 92, 249, 0.12);
+    font-weight: 600;
+  }
+
+  @include focus-ring;
+}
+
+.nav-link-icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.nav-divider {
+  height: 1px;
+  margin: $spacing-sm $spacing-md;
+  background: rgba(255, 255, 255, 0.06);
+}
+

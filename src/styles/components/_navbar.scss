@@ -1,0 +1,105 @@
+// Global Navbar Styles
+// Component: app-navbar
+
+@use '../index' as *;
+
+.top-navbar {
+  position: sticky;
+  top: 0;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 $spacing-xl;
+  background-color: var(--vp-nav-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--vp-c-border);
+  z-index: $z-sticky;
+}
+
+.nav-left,
+.nav-center,
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+}
+
+.nav-center {
+  flex: 1;
+  justify-content: center;
+  max-width: 600px;
+}
+
+// Icon Buttons in Navbar
+.icon-btn {
+  @include interactive-base;
+  background: none;
+  border: none;
+  color: var(--vp-c-text-2);
+  font-size: 18px;
+  padding: $spacing-sm;
+  border-radius: $radius-sm;
+
+  &:hover {
+    color: var(--vp-c-brand);
+    background-color: rgba(128, 128, 128, 0.1);
+  }
+
+  @include focus-ring;
+}
+
+// Text Links in Navbar
+.nav-link {
+  text-decoration: none;
+  color: var(--vp-c-text-2);
+  font-size: 14px;
+  font-weight: 500;
+  padding: $spacing-sm $spacing-md;
+  border-radius: 6px;
+  transition: color $transition-base, background-color $transition-base;
+
+  &:hover {
+    color: var(--vp-c-brand);
+    background-color: rgba(128, 128, 128, 0.1);
+  }
+
+  &.active {
+    color: var(--vp-c-brand);
+    background-color: rgba(128, 128, 128, 0.15);
+  }
+}
+
+// Search Bar
+.search-bar {
+  @include interactive-base;
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  background-color: var(--vp-c-bg-alt);
+  border: 1px solid transparent;
+  padding: 6px $spacing-md;
+  border-radius: $radius-md;
+  color: var(--vp-c-text-2);
+  font-size: 13px;
+  width: 100%;
+  max-width: 280px;
+  transition: border-color $transition-base;
+
+  &:hover {
+    border-color: var(--vp-c-brand);
+    color: var(--vp-c-text-1);
+  }
+
+  kbd {
+    margin-left: auto;
+    font-size: 10px;
+    border: 1px solid var(--vp-c-border);
+    border-radius: $radius-sm;
+    padding: 2px 4px;
+    background-color: var(--vp-c-bg);
+    font-family: inherit;
+  }
+}
+

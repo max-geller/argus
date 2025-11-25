@@ -1,0 +1,202 @@
+// Angular Material Component Overrides
+// Customizations to align Material with our design system
+
+@use '../index' as *;
+
+// Base Material Container
+.mat-mdc-sidenav-container {
+  background-color: var(--vp-c-bg) !important;
+}
+
+.mat-mdc-sidenav {
+  background-color: var(--vp-sidebar-bg) !important;
+  border-right: 1px solid var(--vp-c-border) !important;
+  box-shadow: none !important;
+}
+
+// Toolbar
+.mat-toolbar {
+  background: transparent !important;
+  color: var(--vp-c-text-1) !important;
+}
+
+// Cards
+.mat-mdc-card {
+  border-radius: $spacing-lg !important;
+  background: rgba(12, 16, 28, 0.35) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: none !important;
+
+  &:hover {
+    border-color: var(--vp-c-brand);
+  }
+}
+
+// Form Fields
+.mat-mdc-form-field {
+  width: 100%;
+
+  .mat-mdc-text-field-wrapper {
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .mdc-text-field--outlined .mdc-notched-outline {
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+  }
+
+  &:hover .mdc-text-field--outlined .mdc-notched-outline {
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+  }
+
+  // Focused state
+  &.mat-focused .mdc-notched-outline {
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: var(--vp-c-brand) !important;
+      border-width: 2px !important;
+    }
+  }
+}
+
+// Slide Toggle
+.mat-mdc-slide-toggle {
+  .mdc-switch__track {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  &.mat-mdc-slide-toggle-checked .mdc-switch__track {
+    background: var(--vp-c-brand);
+  }
+}
+
+// Sliders
+.mat-mdc-slider {
+  .mdc-slider__track {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .mdc-slider__track--active_fill {
+    background: var(--vp-c-brand);
+  }
+
+  .mdc-slider__thumb-knob {
+    background: var(--vp-c-brand);
+    border-color: var(--vp-c-brand);
+  }
+
+  .mdc-slider__value-indicator {
+    background: var(--vp-c-brand);
+  }
+}
+
+// Tabs
+.mat-mdc-tab-group {
+  background: transparent;
+
+  .mat-mdc-tab-labels {
+    background: rgba(12, 16, 28, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: $radius-lg $radius-lg 0 0;
+  }
+
+  .mat-mdc-tab {
+    color: var(--vp-c-text-2);
+    min-width: 120px;
+
+    &.mdc-tab--active {
+      color: var(--vp-c-brand);
+    }
+  }
+
+  .mat-mdc-tab-body-wrapper {
+    background: rgba(12, 16, 28, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: none;
+    border-radius: 0 0 $radius-lg $radius-lg;
+  }
+
+  .mdc-tab-indicator__content--underline {
+    border-color: var(--vp-c-brand);
+  }
+}
+
+// Chips
+.mat-mdc-chip {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: var(--vp-c-text-2) !important;
+  border-radius: $radius-lg !important;
+  font-size: 0.85rem;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.12) !important;
+  }
+}
+
+// Progress Spinner
+.mat-mdc-progress-spinner {
+  circle {
+    stroke: var(--vp-c-brand);
+  }
+}
+
+// Dialogs
+.mat-mdc-dialog-container {
+  background: var(--vp-c-bg) !important;
+  border: 1px solid var(--vp-c-border);
+  border-radius: $spacing-lg !important;
+
+  .mat-mdc-dialog-surface {
+    background: transparent;
+  }
+}
+
+// Snackbar
+.mat-mdc-snack-bar-container {
+  background: var(--vp-c-bg-alt) !important;
+  border: 1px solid var(--vp-c-border);
+  border-radius: $radius-lg !important;
+  color: var(--vp-c-text-1) !important;
+}
+
+// Select
+.mat-mdc-select-panel {
+  background: var(--vp-c-bg) !important;
+  border: 1px solid var(--vp-c-border);
+  border-radius: $radius-md !important;
+}
+
+.mat-mdc-option {
+  color: var(--vp-c-text-2) !important;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05) !important;
+  }
+
+  &.mat-mdc-option-active {
+    background: rgba(58, 92, 249, 0.12) !important;
+    color: var(--vp-c-brand) !important;
+  }
+}
+
+// Expansion Panel
+.mat-expansion-panel {
+  background: rgba(12, 16, 28, 0.35) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: $radius-lg !important;
+  margin-bottom: $spacing-md;
+  box-shadow: none !important;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+}
+
