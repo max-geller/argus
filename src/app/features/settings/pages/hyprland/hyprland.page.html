@@ -17,7 +17,21 @@
     </div>
   </header>
 
-  <mat-tab-group class="config-tabs" animationDuration="200ms">
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading()">
+    <mat-progress-spinner mode="indeterminate" diameter="48"></mat-progress-spinner>
+    <p>Loading Hyprland configuration...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="empty-state" *ngIf="error() && !isLoading()">
+    <h3>Failed to Load Configuration</h3>
+    <p>{{ error() }}</p>
+    <button mat-stroked-button color="accent" (click)="resetConfig()">Try Again</button>
+  </div>
+
+  <!-- Config Form -->
+  <mat-tab-group class="config-tabs" animationDuration="200ms" *ngIf="config() as cfg">
     <!-- General Settings -->
     <mat-tab label="General">
       <div class="tab-content">
@@ -27,7 +41,7 @@
           <div class="form-row">
             <mat-form-field appearance="outline">
               <mat-label>Window Layout</mat-label>
-              <mat-select [(ngModel)]="config().general.layout" (ngModelChange)="onConfigChange()">
+              <mat-select [(ngModel)]="cfg.general.layout" (ngModelChange)="onConfigChange()">
                 <mat-option *ngFor="let layout of layouts" [value]="layout">
                   {{ layout | titlecase }}
                 </mat-option>
@@ -37,27 +51,27 @@
 
           <div class="form-row">
             <div class="slider-field">
-              <label>Inner Gaps: {{ config().general.gaps_in }}px</label>
+              <label>Inner Gaps: {{ cfg.general.gaps_in }}px</label>
               <mat-slider min="0" max="50" step="1" discrete showTickMarks>
-                <input matSliderThumb [(ngModel)]="config().general.gaps_in" (ngModelChange)="onConfigChange()">
+                <input matSliderThumb [(ngModel)]="cfg.general.gaps_in" (ngModelChange)="onConfigChange()">
               </mat-slider>
             </div>
           </div>
 
           <div class="form-row">
             <div class="slider-field">
-              <label>Outer Gaps: {{ config().general.gaps_out }}px</label>
+              <label>Outer Gaps: {{ cfg.general.gaps_out }}px</label>
               <mat-slider min="0" max="50" step="1" discrete showTickMarks>
-                <input matSliderThumb [(ngModel)]="config().general.gaps_out" (ngModelChange)="onConfigChange()">
+                <input matSliderThumb [(ngModel)]="cfg.general.gaps_out" (ngModelChange)="onConfigChange()">
               </mat-slider>
             </div>
           </div>
 
           <div class="form-row">
             <div class="slider-field">
-              <label>Border Size: {{ config().general.border_size }}px</label>
+              <label>Border Size: {{ cfg.general.border_size }}px</label>
               <mat-slider min="0" max="10" step="1" discrete showTickMarks>
-                <input matSliderThumb [(ngModel)]="config().general.border_size" (ngModelChange)="onConfigChange()">
+                <input matSliderThumb [(ngModel)]="cfg.general.border_size" (ngModelChange)="onConfigChange()">
               </mat-slider>
             </div>
           </div>
@@ -65,12 +79,12 @@
           <div class="form-row">
             <mat-form-field appearance="outline">
               <mat-label>Active Border Color</mat-label>
-              <input matInput [(ngModel)]="config().general.col_active_border" (ngModelChange)="onConfigChange()" placeholder="rgba(33ccffee)">
+              <input matInput [(ngModel)]="cfg.general.col_active_border" (ngModelChange)="onConfigChange()" placeholder="rgba(33ccffee)">
             </mat-form-field>
 
             <mat-form-field appearance="outline">
               <mat-label>Inactive Border Color</mat-label>
-              <input matInput [(ngModel)]="config().general.col_inactive_border" (ngModelChange)="onConfigChange()" placeholder="rgba(595959aa)">
+              <input matInput [(ngModel)]="cfg.general.col_inactive_border" (ngModelChange)="onConfigChange()" placeholder="rgba(595959aa)">
             </mat-form-field>
           </div>
         </mat-card>
@@ -85,9 +99,9 @@
           
           <div class="form-row">
             <div class="slider-field">
-              <label>Corner Rounding: {{ config().decoration.rounding }}px</label>
+              <label>Corner Rounding: {{ cfg.decoration.rounding }}px</label>
               <mat-slider min="0" max="30" step="1" discrete showTickMarks>
-                <input matSliderThumb [(ngModel)]="config().decoration.rounding" (ngModelChange)="onConfigChange()">
+                <input matSliderThumb [(ngModel)]="cfg.decoration.rounding" (ngModelChange)="onConfigChange()">
               </mat-slider>
             </div>
           </div>
@@ -97,27 +111,27 @@
           <div class="section-header">
             <h3>Blur Effects</h3>
             <mat-slide-toggle 
-              [(ngModel)]="config().decoration.blur_enabled" 
+              [(ngModel)]="cfg.decoration.blur_enabled" 
               (ngModelChange)="onConfigChange()"
               color="primary">
               Enable Blur
             </mat-slide-toggle>
           </div>
 
-          <div class="form-row" *ngIf="config().decoration.blur_enabled">
+          <div class="form-row" *ngIf="cfg.decoration.blur_enabled">
             <div class="slider-field">
-              <label>Blur Size: {{ config().decoration.blur_size }}</label>
+              <label>Blur Size: {{ cfg.decoration.blur_size }}</label>
               <mat-slider min="1" max="20" step="1" discrete showTickMarks>
-                <input matSliderThumb [(ngModel)]="config().decoration.blur_size" (ngModelChange)="onConfigChange()">
+                <input matSliderThumb [(ngModel)]="cfg.decoration.blur_size" (ngModelChange)="onConfigChange()">
               </mat-slider>
             </div>
           </div>
 
-          <div class="form-row" *ngIf="config().decoration.blur_enabled">
+          <div class="form-row" *ngIf="cfg.decoration.blur_enabled">
             <div class="slider-field">
-              <label>Blur Passes: {{ config().decoration.blur_passes }}</label>
+              <label>Blur Passes: {{ cfg.decoration.blur_passes }}</label>
               <mat-slider min="1" max="5" step="1" discrete showTickMarks>
-                <input matSliderThumb [(ngModel)]="config().decoration.blur_passes" (ngModelChange)="onConfigChange()">
+                <input matSliderThumb [(ngModel)]="cfg.decoration.blur_passes" (ngModelChange)="onConfigChange()">
               </mat-slider>
             </div>
           </div>
@@ -127,18 +141,18 @@
           <div class="section-header">
             <h3>Drop Shadow</h3>
             <mat-slide-toggle 
-              [(ngModel)]="config().decoration.shadow_enabled" 
+              [(ngModel)]="cfg.decoration.shadow_enabled" 
               (ngModelChange)="onConfigChange()"
               color="primary">
               Enable Shadow
             </mat-slide-toggle>
           </div>
 
-          <div class="form-row" *ngIf="config().decoration.shadow_enabled">
+          <div class="form-row" *ngIf="cfg.decoration.shadow_enabled">
             <div class="slider-field">
-              <label>Shadow Range: {{ config().decoration.shadow_range }}</label>
+              <label>Shadow Range: {{ cfg.decoration.shadow_range }}</label>
               <mat-slider min="1" max="20" step="1" discrete showTickMarks>
-                <input matSliderThumb [(ngModel)]="config().decoration.shadow_range" (ngModelChange)="onConfigChange()">
+                <input matSliderThumb [(ngModel)]="cfg.decoration.shadow_range" (ngModelChange)="onConfigChange()">
               </mat-slider>
             </div>
           </div>
@@ -153,23 +167,23 @@
           <div class="section-header">
             <h3>Window Animations</h3>
             <mat-slide-toggle 
-              [(ngModel)]="config().animations.enabled" 
+              [(ngModel)]="cfg.animations.enabled" 
               (ngModelChange)="onConfigChange()"
               color="primary">
               Enable Animations
             </mat-slide-toggle>
           </div>
 
-          <div class="form-row" *ngIf="config().animations.enabled">
+          <div class="form-row" *ngIf="cfg.animations.enabled">
             <div class="slider-field">
-              <label>Animation Speed: {{ config().animations.speed }}</label>
+              <label>Animation Speed: {{ cfg.animations.speed }}</label>
               <mat-slider min="1" max="20" step="1" discrete showTickMarks>
-                <input matSliderThumb [(ngModel)]="config().animations.speed" (ngModelChange)="onConfigChange()">
+                <input matSliderThumb [(ngModel)]="cfg.animations.speed" (ngModelChange)="onConfigChange()">
               </mat-slider>
             </div>
           </div>
 
-          <p class="muted" *ngIf="config().animations.enabled">
+          <p class="muted" *ngIf="cfg.animations.enabled">
             Higher values = faster animations. Recommended: 6-8 for smooth transitions.
           </p>
         </mat-card>
@@ -185,7 +199,7 @@
           <div class="form-row">
             <mat-form-field appearance="outline">
               <mat-label>Keyboard Layout</mat-label>
-              <mat-select [(ngModel)]="config().input.kb_layout" (ngModelChange)="onConfigChange()">
+              <mat-select [(ngModel)]="cfg.input.kb_layout" (ngModelChange)="onConfigChange()">
                 <mat-option *ngFor="let layout of keyboardLayouts" [value]="layout">
                   {{ layout | uppercase }}
                 </mat-option>
@@ -195,7 +209,7 @@
 
           <div class="form-row">
             <mat-slide-toggle 
-              [(ngModel)]="config().input.follow_mouse" 
+              [(ngModel)]="cfg.input.follow_mouse" 
               (ngModelChange)="onConfigChange()"
               color="primary">
               Focus Follows Mouse
@@ -204,7 +218,7 @@
 
           <div class="form-row">
             <mat-slide-toggle 
-              [(ngModel)]="config().input.natural_scroll" 
+              [(ngModel)]="cfg.input.natural_scroll" 
               (ngModelChange)="onConfigChange()"
               color="primary">
               Natural Scrolling (Touchpad)
@@ -213,9 +227,9 @@
 
           <div class="form-row">
             <div class="slider-field">
-              <label>Mouse Sensitivity: {{ config().input.sensitivity }}</label>
+              <label>Mouse Sensitivity: {{ cfg.input.sensitivity }}</label>
               <mat-slider min="-1" max="1" step="0.1" discrete>
-                <input matSliderThumb [(ngModel)]="config().input.sensitivity" (ngModelChange)="onConfigChange()">
+                <input matSliderThumb [(ngModel)]="cfg.input.sensitivity" (ngModelChange)="onConfigChange()">
               </mat-slider>
             </div>
           </div>
@@ -234,10 +248,10 @@
           </button>
         </div>
 
-        <mat-card class="config-section" *ngFor="let monitor of config().monitors; let i = index">
+        <mat-card class="config-section" *ngFor="let monitor of cfg.monitors; let i = index">
           <div class="section-header">
             <h4>{{ monitor.name }}</h4>
-            <button mat-icon-button color="warn" (click)="removeMonitor(i)" *ngIf="config().monitors.length > 1">
+            <button mat-icon-button color="warn" (click)="removeMonitor(i)" *ngIf="cfg.monitors.length > 1">
               <mat-icon>delete</mat-icon>
             </button>
           </div>
@@ -292,7 +306,7 @@
           </button>
         </div>
 
-        <mat-card class="config-section app-item" *ngFor="let app of config().autostart; let i = index">
+        <mat-card class="config-section app-item" *ngFor="let app of cfg.autostart; let i = index">
           <div class="app-header">
             <mat-form-field appearance="outline" class="flex-grow">
               <mat-label>Command</mat-label>
@@ -331,7 +345,7 @@
           </button>
         </div>
 
-        <mat-card class="config-section env-item" *ngFor="let env of config().environment; let i = index">
+        <mat-card class="config-section env-item" *ngFor="let env of cfg.environment; let i = index">
           <div class="form-row">
             <mat-form-field appearance="outline">
               <mat-label>Variable Name</mat-label>
