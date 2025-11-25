@@ -1,6 +1,6 @@
 import { Component, HostListener, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ThemeService } from '@core/services/theme.service';
@@ -9,7 +9,7 @@ import { SearchDialogComponent } from './search-dialog/search-dialog';
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatDialogModule],
+  imports: [CommonModule, RouterLink, RouterLinkActive, MatDialogModule],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss'
 })

@@ -65,3 +65,24 @@
   background-color: var(--vp-c-bg);
 }
 
+/* Nav Links */
+.nav-link {
+  text-decoration: none;
+  color: var(--vp-c-text-2);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.nav-link:hover {
+  color: var(--vp-c-brand);
+  background-color: rgba(128, 128, 128, 0.1);
+}
+
+.nav-link.active {
+  color: var(--vp-c-brand);
+  background-color: rgba(128, 128, 128, 0.15);
+}
+
