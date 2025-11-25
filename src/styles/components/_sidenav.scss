@@ -6,12 +6,14 @@
 app-sidenav {
   display: block;
   box-sizing: border-box;
+ 
+
 }
 
 .sidenav-header {
   padding: $spacing-lg $spacing-md;
-  font-weight: 600;
-  font-size: 0.875rem;
+  font-weight: 700;
+  font-size: 1.1rem;
   color: var(--vp-c-text-1);
 }
 
@@ -24,7 +26,7 @@ app-sidenav {
 }
 
 .nav-group {
-  margin-bottom: 4px;
+  margin-bottom: 1px;
 }
 
 .nav-group-header {
@@ -35,13 +37,14 @@ app-sidenav {
   transition: color $transition-base;
   min-height: 32px;
 
+
   &:hover .nav-group-title {
     color: var(--vp-c-text-1);
   }
 }
 
 .nav-group-title {
-  font-size: 11px;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--vp-c-text-2);
   text-transform: uppercase;
@@ -68,20 +71,19 @@ app-sidenav {
   align-items: center;
   gap: $spacing-md;
   width: calc(100% - 16px);
-  padding: 10px $spacing-md;
   margin: 0 $spacing-sm;
   border: none;
-  border-radius: $radius-pill;
+  border-radius: 0;
   background: none;
   color: var(--vp-c-text-2);
   text-decoration: none;
   text-align: left;
-  font-size: 14px;
+  font-size: 0.85rem;
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
   transition: background-color $transition-base, color $transition-base;
-  min-height: 40px; // MD3 touch target
+  min-height: 20px; // MD3 touch target
 
   &:hover {
     color: var(--vp-c-text-1);
@@ -104,6 +106,7 @@ app-sidenav {
 
 .nav-divider {
   height: 1px;
+  width: 100%;
   margin: $spacing-sm $spacing-md;
   background: rgba(255, 255, 255, 0.06);
 }
