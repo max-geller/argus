@@ -78,6 +78,7 @@
   display: flex;
   align-items: center;
   cursor: default;
+  background: var(--bg-card);
 
   &:last-child {
     margin-bottom: 0;
