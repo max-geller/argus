@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { SettingsSidenavComponent } from '@features/settings/settings-sidenav/settings-sidenav';
+import { SettingsSidenavComponent } from '@shared/layouts/settings-layout/settings-sidenav/settings-sidenav';
 import { NavbarComponent } from '@shared/ui/navbar/navbar';
 
 @Component({

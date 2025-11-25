@@ -6,7 +6,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { ContentService, DocEntry } from '../../../core/services/content.service';
+import { ContentService, DocEntry } from '@core/services/content.service';
 
 type ConfigStatus = 'managed' | 'manual' | 'experimental';
 

@@ -20,8 +20,8 @@ interface NavGroup {
   selector: 'app-sidenav',
   standalone: true,
   imports: [CommonModule, RouterLink, RouterLinkActive],
-  templateUrl: './sidenav.html',
-  styleUrl: './sidenav.scss',
+  templateUrl: './docs.sidenav.html',
+  styleUrl: './docs.sidenav.scss',
   animations: [
     trigger('expandCollapse', [
       state('collapsed', style({ height: '0px', opacity: 0, overflow: 'hidden' })),
