@@ -24,7 +24,7 @@ interface Keybinding {
     MatSortModule
   ],
   templateUrl: './keybindings.html',
-  styleUrl: './keybindings.css'
+  styleUrl: './keybindings.scss'
 })
 export class KeybindingsComponent implements OnInit {
   displayedColumns: string[] = ['category', 'key', 'action', 'description'];

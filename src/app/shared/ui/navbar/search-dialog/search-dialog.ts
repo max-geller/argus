@@ -9,7 +9,7 @@ import { SearchService, SearchResult } from '../../services/search.service';
   standalone: true,
   imports: [CommonModule, MatDialogModule],
   templateUrl: './search-dialog.html',
-  styleUrl: './search-dialog.css'
+  styleUrl: './search-dialog.scss'
 })
 export class SearchDialogComponent implements AfterViewInit {
   results: SearchResult[] = [];

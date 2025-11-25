@@ -2,7 +2,7 @@ import { Component, ElementRef, ViewChild, inject, AfterViewInit, OnInit } from 
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { MarkdownComponent } from 'ngx-markdown';
-import { ContentService } from '../../../core/services/content.service';
+import { ContentService } from '../../../../core/services/content.service';
 import { TocComponent } from '../toc/toc';
 
 @Component({
@@ -10,7 +10,7 @@ import { TocComponent } from '../toc/toc';
   standalone: true,
   imports: [CommonModule, MarkdownComponent, TocComponent],
   templateUrl: './doc-viewer.html',
-  styleUrl: './doc-viewer.css'
+  styleUrl: './doc-viewer.scss'
 })
 export class DocViewerComponent implements OnInit, AfterViewInit {
   content: string = 'Loading...';

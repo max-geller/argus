@@ -1,11 +1,11 @@
 import { Routes } from '@angular/router';
-import { DocViewerComponent } from './features/docs/doc-viewer/doc-viewer';
-import { KeybindingsComponent } from './features/keybindings/keybindings/keybindings';
+import { DocViewerComponent } from './features/docs/ui/doc-viewer/doc-viewer';
+import { KeybindingsComponent } from './features/docs/pages/keybindings/keybindings';
 import { LandingComponent } from './features/landing/landing/landing';
 import { NotFoundComponent } from './features/not-found/not-found/not-found';
 import { SettingsComponent } from './features/settings/settings/settings';
-import { DocsShellComponent } from './layouts/docs-shell/docs-shell';
-import { SettingsShellComponent } from './layouts/settings-shell/settings-shell';
+import { DocsShellComponent } from './shared/layouts/docs-layout/docs.layout';
+import { SettingsShellComponent } from './shared/layouts/settings-layout/settings.layout';
 
 export const routes: Routes = [
   {

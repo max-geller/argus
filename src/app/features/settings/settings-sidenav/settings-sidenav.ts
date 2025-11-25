@@ -22,7 +22,7 @@ interface SettingsNavGroup {
   standalone: true,
   imports: [CommonModule, RouterLink],
   templateUrl: './settings-sidenav.html',
-  styleUrl: './settings-sidenav.css',
+  styleUrl: './settings-sidenav.scss',
   animations: [
     trigger('expandCollapse', [
       state('collapsed', style({ height: '0px', opacity: 0, overflow: 'hidden' })),

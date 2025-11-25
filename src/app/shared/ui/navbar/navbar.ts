@@ -3,15 +3,15 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { ThemeService } from '../../services/theme.service';
-import { SearchDialogComponent } from '../search-dialog/search-dialog';
+import { ThemeService } from '../../../core/services/theme.service';
+import { SearchDialogComponent } from './search-dialog/search-dialog';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
   imports: [CommonModule, RouterLink, MatDialogModule],
   templateUrl: './navbar.html',
-  styleUrl: './navbar.css'
+  styleUrl: './navbar.scss'
 })
 export class NavbarComponent {
   @Input() sidenav!: MatSidenav;

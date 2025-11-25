@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { ContentService, DocEntry } from '../../services/content.service';
+import { ContentService, DocEntry } from '@core/services/content.service';
 
 interface NavItem {
   title: string;
@@ -21,7 +21,7 @@ interface NavGroup {
   standalone: true,
   imports: [CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './sidenav.html',
-  styleUrl: './sidenav.css',
+  styleUrl: './sidenav.scss',
   animations: [
     trigger('expandCollapse', [
       state('collapsed', style({ height: '0px', opacity: 0, overflow: 'hidden' })),

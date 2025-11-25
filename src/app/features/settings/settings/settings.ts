@@ -49,7 +49,7 @@ const CONFIG_METADATA: Record<string, ConfigMetadata> = {
     MatSnackBarModule
   ],
   templateUrl: './settings.html',
-  styleUrl: './settings.css'
+  styleUrl: './settings.scss'
 })
 export class SettingsComponent implements OnInit {
   private contentService = inject(ContentService);

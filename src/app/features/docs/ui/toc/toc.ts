@@ -13,7 +13,7 @@ export interface TocItem {
   standalone: true,
   imports: [CommonModule],
   templateUrl: './toc.html',
-  styleUrl: './toc.css'
+  styleUrl: './toc.scss'
 })
 export class TocComponent implements OnChanges, OnDestroy {
   @Input() content: string = '';
