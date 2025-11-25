@@ -340,6 +340,33 @@ fn list_docs() -> Result<Vec<DocEntry>, String> {
 }
 
 fn docs_root() -> Result<PathBuf, String> {
+    // Check if we are running in development (debug) mode
+    #[cfg(debug_assertions)]
+    {
+        // In 'tauri dev', the current working directory is usually the project root.
+        // We check for the local assets folder relative to the project root.
+        if let Ok(cwd) = std::env::current_dir() {
+            // Try standard project root path
+            let dev_path = cwd.join("src/assets/docs");
+            if dev_path.exists() {
+                println!("Development Mode: Serving docs from {:?}", dev_path);
+                return Ok(dev_path);
+            } 
+            
+            // Try parent directory (if running from src-tauri)
+            let parent_dev_path = cwd.parent().map(|p| p.join("src/assets/docs"));
+            if let Some(path) = parent_dev_path {
+                if path.exists() {
+                    println!("Development Mode: Serving docs from {:?}", path);
+                    return Ok(path);
+                }
+            }
+
+            // Fallback logging if path isn't found
+            println!("Development Mode: Could not find docs in {:?} or parent", dev_path);
+        }
+    }
+
     dirs::config_dir()
         .ok_or_else(|| "Could not determine config directory".to_string())
         .map(|config| config.join("argus/docs"))
