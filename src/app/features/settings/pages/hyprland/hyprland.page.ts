@@ -69,14 +69,14 @@ export class HyprlandPageComponent {
   }
 
   async resetConfig(): Promise<void> {
-    await this.hyprlandService.resetConfig();
+    this.hyprlandService.resetConfig();
     this.snackBar.open('Configuration reset to saved values', 'Close', {
       duration: 3000
     });
   }
 
   onConfigChange(): void {
-    this.hyprlandService.hasUnsavedChanges.set(true);
+    // hasUnsavedChanges is a computed signal, it updates automatically
   }
 
   addMonitor(): void {

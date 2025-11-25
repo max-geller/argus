@@ -1,8 +1,9 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;
+use std::time::{SystemTime, UNIX_EPOCH};
 use walkdir::WalkDir;
 
 #[tauri::command]
@@ -95,6 +96,172 @@ fn get_hyprland_config_path() -> Result<PathBuf, String> {
     
     println!("  ✓ Config file exists");
     Ok(config_path)
+}
+
+// Snapshot-related structures and functions
+
+#[derive(Serialize, Deserialize, Clone)]
+struct SnapshotMetadata {
+    id: String,
+    timestamp: u64,
+    description: String,
+    #[serde(rename = "configType")]
+    config_type: String,
+    filename: String,
+}
+
+fn get_snapshot_dir(config_type: &str) -> Result<PathBuf, String> {
+    let home = std::env::var("HOME")
+        .map_err(|_| "Could not determine HOME directory".to_string())?;
+    
+    let snapshot_dir = PathBuf::from(home)
+        .join(".config/argus")
+        .join(config_type)
+        .join("snapshots");
+    
+    // Create directory if it doesn't exist
+    if !snapshot_dir.exists() {
+        fs::create_dir_all(&snapshot_dir)
+            .map_err(|e| format!("Failed to create snapshot directory: {}", e))?;
+    }
+    
+    Ok(snapshot_dir)
+}
+
+fn sanitize_description(description: &str) -> String {
+    description
+        .chars()
+        .map(|c| match c {
+            'a'..='z' | 'A'..='Z' | '0'..='9' | '-' | '_' => c,
+            ' ' => '-',
+            _ => '_',
+        })
+        .collect::<String>()
+        .chars()
+        .take(50)
+        .collect()
+}
+
+#[tauri::command]
+fn create_snapshot(config_type: String, description: String, content: String) -> Result<String, String> {
+    println!("Creating snapshot for {}: {}", config_type, description);
+    
+    let snapshot_dir = get_snapshot_dir(&config_type)?;
+    let timestamp = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_secs();
+    
+    let sanitized_desc = sanitize_description(&description);
+    let snapshot_id = format!("{}-{}", timestamp, sanitized_desc);
+    let config_filename = format!("{}.conf", snapshot_id);
+    let meta_filename = format!("{}.meta.json", snapshot_id);
+    
+    let config_path = snapshot_dir.join(&config_filename);
+    let meta_path = snapshot_dir.join(&meta_filename);
+    
+    // Write config content
+    fs::write(&config_path, content)
+        .map_err(|e| format!("Failed to write snapshot config: {}", e))?;
+    
+    // Write metadata
+    let metadata = SnapshotMetadata {
+        id: snapshot_id.clone(),
+        timestamp,
+        description,
+        config_type,
+        filename: config_filename,
+    };
+    
+    let meta_json = serde_json::to_string_pretty(&metadata)
+        .map_err(|e| format!("Failed to serialize metadata: {}", e))?;
+    
+    fs::write(&meta_path, meta_json)
+        .map_err(|e| format!("Failed to write snapshot metadata: {}", e))?;
+    
+    println!("✓ Snapshot created: {}", snapshot_id);
+    Ok(snapshot_id)
+}
+
+#[tauri::command]
+fn list_snapshots(config_type: String) -> Result<Vec<SnapshotMetadata>, String> {
+    println!("Listing snapshots for {}", config_type);
+    
+    let snapshot_dir = get_snapshot_dir(&config_type)?;
+    
+    if !snapshot_dir.exists() {
+        return Ok(vec![]);
+    }
+    
+    let mut snapshots = Vec::new();
+    
+    for entry in fs::read_dir(&snapshot_dir)
+        .map_err(|e| format!("Failed to read snapshot directory: {}", e))? 
+    {
+        let entry = entry.map_err(|e| format!("Failed to read directory entry: {}", e))?;
+        let path = entry.path();
+        
+        // Only process .meta.json files
+        if path.extension().and_then(|s| s.to_str()) == Some("json") {
+            if let Ok(meta_content) = fs::read_to_string(&path) {
+                if let Ok(metadata) = serde_json::from_str::<SnapshotMetadata>(&meta_content) {
+                    snapshots.push(metadata);
+                }
+            }
+        }
+    }
+    
+    // Sort by timestamp (newest first)
+    snapshots.sort_by(|a, b| b.timestamp.cmp(&a.timestamp));
+    
+    println!("✓ Found {} snapshots", snapshots.len());
+    Ok(snapshots)
+}
+
+#[tauri::command]
+fn restore_snapshot(config_type: String, snapshot_id: String) -> Result<String, String> {
+    println!("Restoring snapshot: {} ({})", snapshot_id, config_type);
+    
+    let snapshot_dir = get_snapshot_dir(&config_type)?;
+    let config_filename = format!("{}.conf", snapshot_id);
+    let config_path = snapshot_dir.join(&config_filename);
+    
+    if !config_path.exists() {
+        return Err(format!("Snapshot not found: {}", snapshot_id));
+    }
+    
+    let content = fs::read_to_string(&config_path)
+        .map_err(|e| format!("Failed to read snapshot: {}", e))?;
+    
+    println!("✓ Snapshot restored ({} bytes)", content.len());
+    Ok(content)
+}
+
+#[tauri::command]
+fn delete_snapshot(config_type: String, snapshot_id: String) -> Result<(), String> {
+    println!("Deleting snapshot: {} ({})", snapshot_id, config_type);
+    
+    let snapshot_dir = get_snapshot_dir(&config_type)?;
+    let config_filename = format!("{}.conf", snapshot_id);
+    let meta_filename = format!("{}.meta.json", snapshot_id);
+    
+    let config_path = snapshot_dir.join(&config_filename);
+    let meta_path = snapshot_dir.join(&meta_filename);
+    
+    // Delete config file
+    if config_path.exists() {
+        fs::remove_file(&config_path)
+            .map_err(|e| format!("Failed to delete snapshot config: {}", e))?;
+    }
+    
+    // Delete metadata file
+    if meta_path.exists() {
+        fs::remove_file(&meta_path)
+            .map_err(|e| format!("Failed to delete snapshot metadata: {}", e))?;
+    }
+    
+    println!("✓ Snapshot deleted");
+    Ok(())
 }
 
 #[tauri::command]
@@ -216,7 +383,11 @@ pub fn run() {
             list_docs,
             read_hyprland_config,
             write_hyprland_config,
-            reload_hyprland
+            reload_hyprland,
+            create_snapshot,
+            list_snapshots,
+            restore_snapshot,
+            delete_snapshot
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
