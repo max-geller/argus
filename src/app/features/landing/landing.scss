@@ -1,7 +1,7 @@
 :host {
   display: block;
-  padding: 80px 40px 120px;
   background: radial-gradient(circle at top, rgba(52, 81, 178, 0.12), transparent 55%);
+  min-height: 100vh;
 }
 
 .hero {
@@ -10,6 +10,14 @@
   align-items: center;
   gap: 48px;
   margin-bottom: 80px;
+  padding: 80px 40px 40px;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  padding: 0 40px 120px;
 }
 
 .hero-content {
@@ -129,11 +137,6 @@
   margin-bottom: 12px;
 }
 
-.feature-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
-}
 
 .feature-card {
   background: rgba(255, 255, 255, 0.04);
