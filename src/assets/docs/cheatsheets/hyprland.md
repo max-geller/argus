@@ -1,4 +1,4 @@
-# Keybindings Cheatsheet
+# Hyprland Cheatsheet
 
 ## Window Management
 - `Super + Q` – Close window

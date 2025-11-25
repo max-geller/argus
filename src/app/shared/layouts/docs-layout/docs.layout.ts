@@ -70,16 +70,10 @@ export class DocsShellComponent implements OnInit {
 
   private appendStaticItems(grouped: Map<string, any[]>) {
     const extras: Record<string, any[]> = {
-      Configs: [
-        {
-          title: 'Settings Hub',
-          path: '/settings'
-        }
-      ],
       Tools: [
         {
           title: 'Keybindings',
-          path: '/keybindings'
+          path: '/docs/keybindings'
         }
       ]
     };
