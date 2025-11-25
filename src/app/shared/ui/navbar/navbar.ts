@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { ThemeService } from '../../../core/services/theme.service';
+import { ThemeService } from '@core/services/theme.service';
 import { SearchDialogComponent } from './search-dialog/search-dialog';
 
 @Component({

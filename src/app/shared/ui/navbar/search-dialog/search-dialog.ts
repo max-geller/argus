@@ -2,7 +2,7 @@ import { Component, inject, ElementRef, ViewChild, AfterViewInit } from '@angula
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { SearchService, SearchResult } from '../../services/search.service';
+import { SearchService, SearchResult } from '@core/services/search.service';
 
 @Component({
   selector: 'app-search-dialog',

@@ -15,7 +15,8 @@
     "baseUrl": "./src",
     "paths": {
       "@core/*": ["app/core/*"],
-      "@shared/*": ["app/shared/*"]
+      "@shared/*": ["app/shared/*"],
+      "@features/*": ["app/features/*"]
     },
     "target": "ES2022",
     "module": "preserve"
