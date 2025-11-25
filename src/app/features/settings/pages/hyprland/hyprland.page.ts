@@ -57,9 +57,89 @@ export class HyprlandPageComponent implements OnInit {
   layouts = ['dwindle', 'master'];
   keyboardLayouts = ['us', 'gb', 'de', 'fr', 'es', 'it'];
 
+  // Color picker values
+  activeBorderColorHex = '#33ccff';
+  inactiveBorderColorHex = '#595959';
+
   async ngOnInit() {
     // Load snapshots
     await this.hyprlandService.listSnapshots();
+    
+    // Initialize color pickers from config
+    this.updateColorPickers();
+  }
+
+  private updateColorPickers() {
+    const cfg = this.config();
+    if (cfg?.general) {
+      if (cfg.general.col_active_border) {
+        this.activeBorderColorHex = this.rgbaToHex(cfg.general.col_active_border);
+      }
+      if (cfg.general.col_inactive_border) {
+        this.inactiveBorderColorHex = this.rgbaToHex(cfg.general.col_inactive_border);
+      }
+    }
+  }
+
+  /**
+   * Convert rgba() or rgb() string to hex for color picker
+   */
+  private rgbaToHex(rgba: string): string {
+    // Extract rgba values - handle formats like "rgba(51, 204, 255, 238)" or "rgba(33ccffee)"
+    const hexMatch = rgba.match(/rgba?\(([0-9a-fA-F]+)\)/);
+    if (hexMatch) {
+      // Already in hex format like rgba(33ccffee)
+      const hex = hexMatch[1];
+      return '#' + hex.substring(0, 6);
+    }
+
+    const rgbMatch = rgba.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+    if (rgbMatch) {
+      const r = parseInt(rgbMatch[1]).toString(16).padStart(2, '0');
+      const g = parseInt(rgbMatch[2]).toString(16).padStart(2, '0');
+      const b = parseInt(rgbMatch[3]).toString(16).padStart(2, '0');
+      return `#${r}${g}${b}`;
+    }
+
+    return '#33ccff'; // Default
+  }
+
+  /**
+   * Convert hex color to rgba() format for Hyprland
+   */
+  private hexToRgba(hex: string, alpha: string = 'ee'): string {
+    const r = hex.substring(1, 3);
+    const g = hex.substring(3, 5);
+    const b = hex.substring(5, 7);
+    return `rgba(${r}${g}${b}${alpha})`;
+  }
+
+  onActiveBorderColorChange(hex: string) {
+    const cfg = this.config();
+    if (cfg?.general) {
+      // Preserve alpha channel if it exists
+      const currentAlpha = this.extractAlpha(cfg.general.col_active_border || '');
+      cfg.general.col_active_border = this.hexToRgba(hex, currentAlpha);
+      this.onConfigChange();
+    }
+  }
+
+  onInactiveBorderColorChange(hex: string) {
+    const cfg = this.config();
+    if (cfg?.general) {
+      const currentAlpha = this.extractAlpha(cfg.general.col_inactive_border || '');
+      cfg.general.col_inactive_border = this.hexToRgba(hex, currentAlpha);
+      this.onConfigChange();
+    }
+  }
+
+  private extractAlpha(rgba: string): string {
+    // Extract alpha from rgba(33ccffee) format
+    const hexMatch = rgba.match(/rgba?\(([0-9a-fA-F]+)\)/);
+    if (hexMatch && hexMatch[1].length >= 8) {
+      return hexMatch[1].substring(6, 8);
+    }
+    return 'ee'; // Default alpha
   }
 
   async saveConfig(): Promise<void> {

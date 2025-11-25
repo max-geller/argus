@@ -163,6 +163,45 @@ mat-form-field {
   }
 }
 
+.color-field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  mat-form-field {
+    flex: 1;
+  }
+
+  .color-picker {
+    width: 60px;
+    height: 60px;
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    cursor: pointer;
+    background: transparent;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: rgba(255, 255, 255, 0.24);
+      transform: scale(1.05);
+    }
+
+    &::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+
+    &::-webkit-color-swatch {
+      border: none;
+      border-radius: 10px;
+    }
+
+    &::-moz-color-swatch {
+      border: none;
+      border-radius: 10px;
+    }
+  }
+}
+
 .list-header {
   display: flex;
   justify-content: space-between;
