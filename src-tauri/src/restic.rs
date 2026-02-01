@@ -266,6 +266,7 @@ pub fn restic_list_snapshots() -> Result<Vec<Snapshot>, String> {
 #[tauri::command]
 pub fn restic_create_backup(name: Option<String>) -> Result<Snapshot, String> {
     let config = restic_load_config()?;
+    let start_time = std::time::Instant::now();
 
     // Filter paths to only existing ones
     let existing_paths: Vec<String> = config.backup.paths.iter()
@@ -277,13 +278,13 @@ pub fn restic_create_backup(name: Option<String>) -> Result<Snapshot, String> {
     // Only fall back to script if no name and no paths
     let use_direct_restic = name.is_some() || !existing_paths.is_empty();
 
-    if use_direct_restic && !existing_paths.is_empty() {
+    let snapshot = if use_direct_restic && !existing_paths.is_empty() {
         // Use restic directly - this allows proper tagging
         println!("Running restic backup directly with {} paths...", existing_paths.len());
 
         let mut cmd = Command::new("restic");
         cmd.arg("backup")
-           .arg("--verbose");
+           .arg("--json");  // Use JSON output for parsing
 
         // Add tags (matching restic-tui convention)
         cmd.arg("--tag").arg("manual");
@@ -319,12 +320,10 @@ pub fn restic_create_backup(name: Option<String>) -> Result<Snapshot, String> {
 
         // Get the latest snapshot to return
         let snapshots = restic_list_snapshots()?;
-        return snapshots.into_iter().next()
-            .ok_or_else(|| "Backup succeeded but could not find snapshot".to_string());
-    }
-
-    // Fall back to script if available - pass name via environment variable
-    if let Some(ref script) = config.backup.script {
+        snapshots.into_iter().next()
+            .ok_or_else(|| "Backup succeeded but could not find snapshot".to_string())?
+    } else if let Some(ref script) = config.backup.script {
+        // Fall back to script if available - pass name via environment variable
         let script_path = expand_path(script);
         if std::path::Path::new(&script_path).exists() {
             println!("Running backup script: {}", script_path);
@@ -355,12 +354,35 @@ pub fn restic_create_backup(name: Option<String>) -> Result<Snapshot, String> {
 
             // Get the latest snapshot to return
             let snapshots = restic_list_snapshots()?;
-            return snapshots.into_iter().next()
-                .ok_or_else(|| "Backup succeeded but could not find snapshot".to_string());
+            snapshots.into_iter().next()
+                .ok_or_else(|| "Backup succeeded but could not find snapshot".to_string())?
+        } else {
+            return Err("Backup script not found".to_string());
         }
+    } else {
+        return Err("No backup paths configured. Add paths in Settings tab to enable named backups.".to_string());
+    };
+
+    // Record to history database
+    let duration = start_time.elapsed().as_secs_f64();
+    let stats = restic_get_stats().ok();
+
+    let history_entry = crate::history::BackupHistoryEntry {
+        id: None,
+        timestamp: chrono::Utc::now().to_rfc3339(),
+        snapshot_id: snapshot.short_id.clone(),
+        source: "manual".to_string(),
+        total_size: stats.as_ref().map(|s| s.total_size).unwrap_or(0),
+        files_count: stats.as_ref().map(|s| s.total_file_count).unwrap_or(0),
+        data_added: 0, // Would need to parse backup output to get this
+        duration,
+    };
+
+    if let Err(e) = crate::history::history_record_backup(history_entry) {
+        println!("Warning: Failed to record backup history: {}", e);
     }
 
-    Err("No backup paths configured. Add paths in Settings tab to enable named backups.".to_string())
+    Ok(snapshot)
 }
 
 #[tauri::command]

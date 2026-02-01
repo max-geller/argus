@@ -26,8 +26,8 @@ import { MatButtonModule } from '@angular/material/button';
 
       <ng-template #empty>
         <div class="empty-state">
-          <mat-icon>description</mat-icon>
-          <p>No logs available</p>
+          <p class="muted">-- No entries --</p>
+          <p class="hint">Logs from scheduled backups will appear here after the next timer run.</p>
         </div>
       </ng-template>
     </div>
@@ -93,19 +93,20 @@ import { MatButtonModule } from '@angular/material/button';
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 40px 20px;
+      padding: 24px 20px;
       color: var(--vp-c-text-3);
+      text-align: center;
 
-      mat-icon {
-        font-size: 32px;
-        width: 32px;
-        height: 32px;
-        margin-bottom: 8px;
-        opacity: 0.5;
+      .muted {
+        margin: 0;
+        font-family: monospace;
+        opacity: 0.7;
       }
 
-      p {
-        margin: 0;
+      .hint {
+        margin: 8px 0 0;
+        font-size: 0.85rem;
+        opacity: 0.6;
       }
     }
 
