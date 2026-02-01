@@ -28,6 +28,15 @@
       "createdAt": "2025-11-25T18:18:32.995Z",
       "updatedAt": "2025-11-25T18:18:32.995Z",
       "order": 2
+    },
+    {
+      "id": "d2c164c3-ec41-41fa-ada5-3bd75d3d345d",
+      "title": "Configure Restic backup management in the Settings module",
+      "status": "in_progress",
+      "releaseId": "d3f36c77-e859-46c9-8fb6-427bfb4a8b98",
+      "createdAt": "2026-02-01T22:09:20.371Z",
+      "updatedAt": "2026-02-01T22:09:32.689Z",
+      "order": 3
     }
   ],
   "releases": [

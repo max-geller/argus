@@ -1,0 +1,408 @@
+<div class="restic-page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">Backup</p>
+      <h1>Restic Backup Management</h1>
+      <p class="subtitle">
+        Manage NAS backups compatible with restic-tui. View snapshots, create backups, and configure retention policies.
+      </p>
+    </div>
+    <div class="header-actions">
+      <button mat-stroked-button (click)="refresh()" [disabled]="isLoading()">
+        <mat-icon>refresh</mat-icon>
+        Refresh
+      </button>
+      <button mat-flat-button color="primary" (click)="openCreateBackupDialog()"
+              [disabled]="isCreatingBackup() || !isNasMounted()">
+        <mat-icon>backup</mat-icon>
+        Create Backup
+      </button>
+    </div>
+  </header>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading() && !snapshots().length">
+    <mat-progress-spinner mode="indeterminate" diameter="48"></mat-progress-spinner>
+    <p>Loading backup data...</p>
+  </div>
+
+  <!-- Main Content -->
+  <mat-tab-group class="restic-tabs" animationDuration="200ms">
+    <!-- ========== Tab 1: Overview ========== -->
+    <mat-tab label="Overview">
+      <div class="tab-content">
+        <!-- Status Cards -->
+        <div class="status-grid">
+          <!-- NAS Status -->
+          <div class="status-card" [class.healthy]="isNasMounted()" [class.error]="!isNasMounted()">
+            <div class="status-indicator"></div>
+            <div class="card-content">
+              <div class="label">NAS Status</div>
+              <div class="metric">{{ isNasMounted() ? 'Connected' : 'Disconnected' }}</div>
+              <div class="detail" *ngIf="mountStatus()">{{ mountStatus()?.path }}</div>
+            </div>
+          </div>
+
+          <!-- Repository Health -->
+          <div class="status-card" [class.healthy]="repoStats()">
+            <div class="status-indicator"></div>
+            <div class="card-content">
+              <div class="label">Repository</div>
+              <div class="metric" *ngIf="repoStats()">{{ formatBytes(repoStats()!.total_size) }}</div>
+              <div class="metric" *ngIf="!repoStats()">--</div>
+              <div class="detail" *ngIf="repoStats()">{{ repoStats()!.snapshots_count }} snapshots</div>
+            </div>
+          </div>
+
+          <!-- Last Backup -->
+          <div class="status-card" [class.healthy]="lastBackup()">
+            <div class="status-indicator"></div>
+            <div class="card-content">
+              <div class="label">Last Backup</div>
+              <div class="metric" *ngIf="lastBackup()">{{ lastBackup()!.date | date:'shortDate' }}</div>
+              <div class="metric" *ngIf="!lastBackup()">Never</div>
+              <div class="detail" *ngIf="lastBackup()">{{ lastBackup()!.date | date:'shortTime' }}</div>
+            </div>
+          </div>
+
+          <!-- Next Scheduled -->
+          <div class="status-card" [class.healthy]="timerEnabled()">
+            <div class="status-indicator"></div>
+            <div class="card-content">
+              <div class="label">Scheduled Backup</div>
+              <div class="metric">{{ timerEnabled() ? 'Active' : 'Disabled' }}</div>
+              <div class="detail" *ngIf="nextScheduledRun()">Next: {{ nextScheduledRun() }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <mat-card class="config-section">
+          <h3>Quick Actions</h3>
+          <div class="action-buttons">
+            <button mat-stroked-button (click)="openCreateBackupDialog()" [disabled]="isCreatingBackup()">
+              <mat-icon>backup</mat-icon>
+              Create Backup
+            </button>
+            <button mat-stroked-button (click)="checkRepository()" [disabled]="isRunningCheck()">
+              <mat-icon>verified</mat-icon>
+              Check Repository
+            </button>
+            <button mat-stroked-button (click)="loadPrunePreview()">
+              <mat-icon>cleaning_services</mat-icon>
+              Preview Prune
+            </button>
+          </div>
+        </mat-card>
+
+        <!-- Recent Snapshots -->
+        <mat-card class="config-section">
+          <div class="section-header">
+            <h3>Recent Snapshots</h3>
+            <a mat-button color="primary">View All</a>
+          </div>
+
+          <div class="recent-snapshots" *ngIf="snapshots().length > 0">
+            <div class="snapshot-row" *ngFor="let snapshot of snapshots().slice(0, 5)">
+              <div class="snapshot-info">
+                <span class="snapshot-name" *ngIf="snapshot.name">{{ snapshot.name }}</span>
+                <span class="snapshot-name no-name" *ngIf="!snapshot.name">{{ snapshot.shortId }}</span>
+                <span class="source-badge" [class.manual]="snapshot.source === 'manual'"
+                      [class.scheduled]="snapshot.source === 'scheduled'">
+                  {{ snapshot.source }}
+                </span>
+              </div>
+              <div class="snapshot-date">{{ snapshot.date | date:'medium' }}</div>
+              <button mat-icon-button (click)="browseSnapshot(snapshot)" matTooltip="Browse files">
+                <mat-icon>folder_open</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <div class="empty-state" *ngIf="snapshots().length === 0 && !isLoadingSnapshots()">
+            <p>No snapshots yet. Create your first backup to get started.</p>
+          </div>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- ========== Tab 2: Snapshots ========== -->
+    <mat-tab label="Snapshots">
+      <div class="tab-content">
+        <!-- Toolbar -->
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <mat-checkbox [checked]="selectedCount() === snapshots().length && snapshots().length > 0"
+                          [indeterminate]="selectedCount() > 0 && selectedCount() < snapshots().length"
+                          (change)="selectAll($event.checked)">
+              Select All
+            </mat-checkbox>
+            <button mat-stroked-button color="warn" [disabled]="selectedCount() === 0" (click)="deleteSelected()">
+              <mat-icon>delete</mat-icon>
+              Delete Selected ({{ selectedCount() }})
+            </button>
+          </div>
+          <div class="toolbar-right">
+            <mat-form-field appearance="outline" class="search-field">
+              <mat-label>Search snapshots</mat-label>
+              <input matInput placeholder="Filter by name or ID...">
+              <mat-icon matSuffix>search</mat-icon>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Snapshot Table -->
+        <app-snapshot-table
+          [snapshots]="snapshots()"
+          (toggle)="toggleSelection($event)"
+          (browse)="browseSnapshot($event)"
+          (setDiff1)="setDiffSnapshot($event, 1)"
+          (setDiff2)="setDiffSnapshot($event, 2)">
+        </app-snapshot-table>
+
+        <!-- Loading -->
+        <div class="loading-state" *ngIf="isLoadingSnapshots()">
+          <mat-progress-spinner mode="indeterminate" diameter="32"></mat-progress-spinner>
+          <p>Loading snapshots...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" *ngIf="snapshots().length === 0 && !isLoadingSnapshots()">
+          <h3>No Snapshots Found</h3>
+          <p>Create your first backup to see snapshots here.</p>
+          <button mat-stroked-button color="accent" (click)="openCreateBackupDialog()">
+            Create Backup
+          </button>
+        </div>
+      </div>
+
+      <!-- Snapshot Browser Overlay -->
+      <app-snapshot-browser
+        *ngIf="currentSnapshot()"
+        [snapshot]="currentSnapshot()!"
+        [files]="currentFiles()"
+        [path]="currentPath()"
+        [breadcrumbs]="breadcrumbs()"
+        [selectedFiles]="selectedFiles()"
+        (navigate)="navigateToPath($event)"
+        (close)="closeBrowser()"
+        (restore)="openRestoreDialog()"
+        (toggleFileSelection)="toggleFileSelection($event)">
+      </app-snapshot-browser>
+
+      <!-- Diff Viewer -->
+      <app-snapshot-diff
+        *ngIf="diffSnapshot1() && diffSnapshot2()"
+        [snapshot1]="diffSnapshot1()!"
+        [snapshot2]="diffSnapshot2()!"
+        [result]="diffResult()"
+        (compute)="computeDiff()"
+        (close)="clearDiff()">
+      </app-snapshot-diff>
+    </mat-tab>
+
+    <!-- ========== Tab 3: Schedule ========== -->
+    <mat-tab label="Schedule">
+      <div class="tab-content">
+        <!-- Timer Status -->
+        <mat-card class="config-section" *ngIf="timers().length > 0">
+          <div class="section-header">
+            <h3>Backup Timer</h3>
+            <mat-slide-toggle
+              [checked]="timerEnabled()"
+              (change)="toggleTimer()"
+              color="primary">
+              {{ timerEnabled() ? 'Enabled' : 'Disabled' }}
+            </mat-slide-toggle>
+          </div>
+
+          <div class="timer-info" *ngIf="timers()[0] as timer">
+            <div class="info-row">
+              <span class="label">Timer Name:</span>
+              <span class="value">{{ timer.name }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Status:</span>
+              <span class="value status-badge" [class.active]="timer.active">
+                {{ timer.active ? 'Active' : 'Inactive' }}
+              </span>
+            </div>
+            <div class="info-row" *ngIf="timer.next_run">
+              <span class="label">Next Run:</span>
+              <span class="value">{{ timer.next_run }}</span>
+            </div>
+            <div class="info-row" *ngIf="timer.last_run">
+              <span class="label">Last Run:</span>
+              <span class="value">{{ timer.last_run }}</span>
+            </div>
+            <div class="info-row" *ngIf="timer.last_result">
+              <span class="label">Last Result:</span>
+              <span class="value" [class.success]="timer.last_result === 'success'"
+                    [class.error]="timer.last_result !== 'success'">
+                {{ timer.last_result }}
+              </span>
+            </div>
+          </div>
+        </mat-card>
+
+        <!-- Retention Policy -->
+        <mat-card class="config-section" *ngIf="config() as cfg">
+          <h3>Retention Policy</h3>
+          <p class="muted">Configure how many snapshots to keep when pruning.</p>
+
+          <div class="retention-grid">
+            <div class="retention-item">
+              <span class="retention-label">Daily</span>
+              <span class="retention-value">{{ cfg.retention.daily }}</span>
+            </div>
+            <div class="retention-item">
+              <span class="retention-label">Weekly</span>
+              <span class="retention-value">{{ cfg.retention.weekly }}</span>
+            </div>
+            <div class="retention-item">
+              <span class="retention-label">Monthly</span>
+              <span class="retention-value">{{ cfg.retention.monthly }}</span>
+            </div>
+          </div>
+        </mat-card>
+
+        <!-- Logs Viewer -->
+        <mat-card class="config-section">
+          <div class="section-header">
+            <h3>Backup Logs</h3>
+            <button mat-stroked-button (click)="refreshLogs()">
+              <mat-icon>refresh</mat-icon>
+              Refresh
+            </button>
+          </div>
+
+          <app-logs-viewer [logs]="logs()"></app-logs-viewer>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- ========== Tab 4: Repository ========== -->
+    <mat-tab label="Repository">
+      <div class="tab-content">
+        <!-- Repository Stats -->
+        <mat-card class="config-section">
+          <h3>Repository Statistics</h3>
+
+          <div class="stats-grid" *ngIf="repoStats() as stats">
+            <div class="stat-item">
+              <span class="stat-value">{{ formatBytes(stats.total_size) }}</span>
+              <span class="stat-label">Total Size</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value">{{ stats.total_file_count | number }}</span>
+              <span class="stat-label">Total Files</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value">{{ stats.snapshots_count }}</span>
+              <span class="stat-label">Snapshots</span>
+            </div>
+          </div>
+
+          <div class="loading-state" *ngIf="isLoadingStats() && !repoStats()">
+            <mat-progress-spinner mode="indeterminate" diameter="32"></mat-progress-spinner>
+          </div>
+        </mat-card>
+
+        <!-- Health Actions -->
+        <mat-card class="config-section">
+          <h3>Repository Health</h3>
+
+          <div class="action-buttons">
+            <button mat-stroked-button (click)="checkRepository()" [disabled]="isRunningCheck()">
+              <mat-icon>verified</mat-icon>
+              Run Integrity Check
+              <mat-progress-spinner *ngIf="isRunningCheck()" mode="indeterminate" diameter="20"></mat-progress-spinner>
+            </button>
+            <button mat-stroked-button (click)="unlockRepository()">
+              <mat-icon>lock_open</mat-icon>
+              Remove Stale Locks
+            </button>
+          </div>
+        </mat-card>
+
+        <!-- Prune Section -->
+        <mat-card class="config-section">
+          <h3>Prune Operations</h3>
+          <p class="muted">Apply retention policy and reclaim disk space.</p>
+
+          <div class="prune-actions">
+            <button mat-stroked-button (click)="loadPrunePreview()" [disabled]="isPruning()">
+              <mat-icon>preview</mat-icon>
+              Preview Prune
+            </button>
+            <button mat-flat-button color="warn" (click)="executePrune()"
+                    [disabled]="!prunePreview() || isPruning()">
+              <mat-icon>cleaning_services</mat-icon>
+              Execute Prune
+            </button>
+          </div>
+
+          <!-- Prune Preview -->
+          <div class="prune-preview" *ngIf="prunePreview() as preview">
+            <mat-divider></mat-divider>
+            <h4>Prune Preview</h4>
+            <div class="preview-stats">
+              <div class="preview-stat keep">
+                <span class="count">{{ preview.keep.length }}</span>
+                <span class="label">To Keep</span>
+              </div>
+              <div class="preview-stat remove">
+                <span class="count">{{ preview.remove.length }}</span>
+                <span class="label">To Remove</span>
+              </div>
+            </div>
+            <div class="preview-list" *ngIf="preview.remove.length > 0">
+              <p class="warning-text">The following snapshots will be removed:</p>
+              <ul>
+                <li *ngFor="let id of preview.remove.slice(0, 10)">{{ id }}</li>
+                <li *ngIf="preview.remove.length > 10">... and {{ preview.remove.length - 10 }} more</li>
+              </ul>
+            </div>
+          </div>
+        </mat-card>
+
+        <!-- History Charts -->
+        <mat-card class="config-section">
+          <h3>Backup History</h3>
+          <app-history-chart [stats]="historyStats()"></app-history-chart>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- ========== Tab 5: Settings ========== -->
+    <mat-tab label="Settings">
+      <div class="tab-content">
+        <div class="settings-header">
+          <div>
+            <h3>Configuration Editor</h3>
+            <p class="muted">Edit restic-tui configuration. Changes are compatible with the CLI tool.</p>
+          </div>
+          <div class="settings-actions">
+            <button mat-stroked-button (click)="resetConfig()" [disabled]="!hasUnsavedChanges()">
+              Reset Changes
+            </button>
+            <button mat-flat-button color="primary" (click)="saveConfig()" [disabled]="!hasUnsavedChanges()">
+              Save Configuration
+            </button>
+          </div>
+        </div>
+
+        <app-config-editor
+          *ngIf="config() as cfg"
+          [config]="cfg"
+          (configChange)="onConfigChange($event)">
+        </app-config-editor>
+
+        <div class="compatibility-warning">
+          <mat-icon>info</mat-icon>
+          <span>Changes made here are fully compatible with restic-tui CLI.</span>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

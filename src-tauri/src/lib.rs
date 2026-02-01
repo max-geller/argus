@@ -6,6 +6,13 @@ use std::process::Command;
 use std::time::{SystemTime, UNIX_EPOCH};
 use walkdir::WalkDir;
 
+// Restic backup management modules
+mod restic;
+mod mount;
+mod systemd;
+mod history;
+mod notify;
+
 #[tauri::command]
 fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
@@ -415,7 +422,40 @@ pub fn run() {
             create_snapshot,
             list_snapshots,
             restore_snapshot,
-            delete_snapshot
+            delete_snapshot,
+            // Restic commands
+            restic::restic_load_config,
+            restic::restic_save_config,
+            restic::restic_list_snapshots,
+            restic::restic_create_backup,
+            restic::restic_delete_snapshots,
+            restic::restic_browse_snapshot,
+            restic::restic_restore,
+            restic::restic_diff_snapshots,
+            restic::restic_get_stats,
+            restic::restic_check_repo,
+            restic::restic_unlock_repo,
+            restic::restic_prune_preview,
+            restic::restic_prune,
+            // Mount commands
+            mount::mount_check_status,
+            mount::mount_check_nas_status,
+            // Systemd commands
+            systemd::systemd_list_timers,
+            systemd::systemd_get_timer_status,
+            systemd::systemd_enable_timer,
+            systemd::systemd_disable_timer,
+            systemd::systemd_get_logs,
+            systemd::systemd_get_service_logs,
+            // History commands
+            history::history_record_backup,
+            history::history_get_entries,
+            history::history_get_stats,
+            history::history_delete_old,
+            // Notification commands
+            notify::send_notification,
+            notify::send_notification_with_urgency,
+            notify::send_backup_notification
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

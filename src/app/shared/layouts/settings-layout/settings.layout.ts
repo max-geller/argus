@@ -53,6 +53,13 @@ export class SettingsShellComponent {
           { title: 'Palette Tokens', fragment: 'theme', icon: '🎨' },
           { title: 'Export Targets', fragment: 'theme-exports', icon: '🔗' }
         ]
+      },
+      {
+        title: 'Backup',
+        expanded: true,
+        items: [
+          { title: 'Restic Backups', path: '/settings/restic', icon: '💾' }
+        ]
       }
     ]
   };
