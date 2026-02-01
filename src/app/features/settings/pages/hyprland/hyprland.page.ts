@@ -15,7 +15,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { HyprlandService } from '@core/services/config/hyprland.service';
-import { SnapshotService } from '@core/services/snapshot.service';
 import { KeybindingEditorComponent } from '../../components/keybinding-editor/keybinding-editor.component';
 
 @Component({
@@ -44,7 +43,6 @@ import { KeybindingEditorComponent } from '../../components/keybinding-editor/ke
 })
 export class HyprlandPageComponent implements OnInit {
   private hyprlandService = inject(HyprlandService);
-  private snapshotService = inject(SnapshotService);
   private snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
 
@@ -53,7 +51,6 @@ export class HyprlandPageComponent implements OnInit {
   isLoading = this.hyprlandService.isLoading;
   hasUnsavedChanges = this.hyprlandService.hasUnsavedChanges;
   error = this.hyprlandService.error;
-  snapshots = this.snapshotService.snapshots;
 
   // Options for dropdowns
   layouts = ['dwindle', 'master'];
@@ -64,9 +61,6 @@ export class HyprlandPageComponent implements OnInit {
   inactiveBorderColorHex = '#595959';
 
   async ngOnInit() {
-    // Load snapshots
-    await this.hyprlandService.listSnapshots();
-    
     // Initialize color pickers from config
     this.updateColorPickers();
   }
@@ -230,42 +224,6 @@ export class HyprlandPageComponent implements OnInit {
 
   formatLabel(value: number): string {
     return `${value}`;
-  }
-
-  async createSnapshot(): Promise<void> {
-    const description = prompt('Enter a description for this snapshot:');
-    if (!description) return;
-
-    try {
-      await this.hyprlandService.createSnapshot(description);
-      this.snackBar.open('Snapshot created successfully', 'Close', { duration: 3000 });
-    } catch (error) {
-      this.snackBar.open('Failed to create snapshot', 'Close', { duration: 5000 });
-    }
-  }
-
-  async restoreSnapshot(snapshotId: string): Promise<void> {
-    const confirmed = confirm('Are you sure you want to restore this snapshot? Any unsaved changes will be lost.');
-    if (!confirmed) return;
-
-    try {
-      await this.hyprlandService.restoreSnapshot(snapshotId);
-      this.snackBar.open('Snapshot restored successfully', 'Close', { duration: 3000 });
-    } catch (error) {
-      this.snackBar.open('Failed to restore snapshot', 'Close', { duration: 5000 });
-    }
-  }
-
-  async deleteSnapshot(snapshotId: string): Promise<void> {
-    const confirmed = confirm('Are you sure you want to delete this snapshot?');
-    if (!confirmed) return;
-
-    try {
-      await this.hyprlandService.deleteSnapshot(snapshotId);
-      this.snackBar.open('Snapshot deleted', 'Close', { duration: 3000 });
-    } catch (error) {
-      this.snackBar.open('Failed to delete snapshot', 'Close', { duration: 5000 });
-    }
   }
 
   /**

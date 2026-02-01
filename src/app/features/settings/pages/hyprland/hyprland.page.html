@@ -323,51 +323,6 @@
       </div>
     </mat-tab>
 
-    <!-- Snapshots -->
-    <mat-tab label="Snapshots">
-      <div class="tab-content">
-        <mat-card class="config-section">
-          <div class="section-header">
-            <h3>Configuration Snapshots</h3>
-            <button mat-flat-button color="primary" (click)="createSnapshot()">
-              <mat-icon>save</mat-icon>
-              Create Snapshot
-            </button>
-          </div>
-
-          <p class="muted">
-            Create snapshots of your configuration to easily restore previous settings.
-            Snapshots preserve your entire Hyprland configuration including keybindings and window rules.
-          </p>
-
-          <!-- Snapshot List -->
-          <div class="snapshot-list" *ngIf="snapshots().length > 0">
-            <div class="snapshot-item" *ngFor="let snapshot of snapshots()">
-              <div class="snapshot-info">
-                <h4>{{ snapshot.description }}</h4>
-                <p class="snapshot-meta">
-                  {{ snapshot.timestamp * 1000 | date:'medium' }}
-                </p>
-              </div>
-              <div class="snapshot-actions">
-                <button mat-stroked-button (click)="restoreSnapshot(snapshot.id)">
-                  <mat-icon>restore</mat-icon>
-                  Restore
-                </button>
-                <button mat-icon-button color="warn" (click)="deleteSnapshot(snapshot.id)">
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="empty-state" *ngIf="snapshots().length === 0">
-            <p>No snapshots yet. Create your first snapshot to preserve your current configuration.</p>
-          </div>
-        </mat-card>
-      </div>
-    </mat-tab>
-
     <!-- Advanced -->
     <mat-tab label="Advanced">
       <div class="tab-content">
