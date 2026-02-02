@@ -1,5 +1,6 @@
 // Angular Material Component Overrides
 // Customizations to align Material with our design system
+// Uses CSS variables for theme-aware styling (light/dark mode)
 
 @use '../index' as *;
 
@@ -23,12 +24,13 @@
 // Cards
 .mat-mdc-card {
   border-radius: $spacing-lg !important;
-  background: rgba(12, 16, 28, 0.35) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--card-bg) !important;
+  border: 1px solid var(--card-border);
   box-shadow: none !important;
 
   &:hover {
-    border-color: var(--vp-c-brand);
+    background: var(--card-bg-hover) !important;
+    border-color: var(--card-border-hover);
   }
 }
 
@@ -37,14 +39,14 @@
   width: 100%;
 
   .mat-mdc-text-field-wrapper {
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--input-bg) !important;
   }
 
   .mdc-text-field--outlined .mdc-notched-outline {
     .mdc-notched-outline__leading,
     .mdc-notched-outline__notch,
     .mdc-notched-outline__trailing {
-      border-color: rgba(255, 255, 255, 0.12);
+      border-color: var(--card-border-hover) !important;
     }
   }
 
@@ -52,7 +54,7 @@
     .mdc-notched-outline__leading,
     .mdc-notched-outline__notch,
     .mdc-notched-outline__trailing {
-      border-color: rgba(255, 255, 255, 0.2);
+      border-color: var(--vp-c-brand) !important;
     }
   }
 
@@ -65,36 +67,46 @@
       border-width: 2px !important;
     }
   }
+
+  // Input text color
+  .mat-mdc-input-element {
+    color: var(--vp-c-text-1) !important;
+  }
+
+  // Label color
+  .mdc-floating-label {
+    color: var(--vp-c-text-2) !important;
+  }
 }
 
 // Slide Toggle
 .mat-mdc-slide-toggle {
   .mdc-switch__track {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--card-border) !important;
   }
 
   &.mat-mdc-slide-toggle-checked .mdc-switch__track {
-    background: var(--vp-c-brand);
+    background: var(--vp-c-brand) !important;
   }
 }
 
 // Sliders
 .mat-mdc-slider {
   .mdc-slider__track {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--card-border) !important;
   }
 
   .mdc-slider__track--active_fill {
-    background: var(--vp-c-brand);
+    background: var(--vp-c-brand) !important;
   }
 
   .mdc-slider__thumb-knob {
-    background: var(--vp-c-brand);
-    border-color: var(--vp-c-brand);
+    background: var(--vp-c-brand) !important;
+    border-color: var(--vp-c-brand) !important;
   }
 
   .mdc-slider__value-indicator {
-    background: var(--vp-c-brand);
+    background: var(--vp-c-brand) !important;
   }
 }
 
@@ -103,41 +115,43 @@
   background: transparent;
 
   .mat-mdc-tab-labels {
-    background: rgba(12, 16, 28, 0.35);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--tab-bg) !important;
+    border: 1px solid var(--tab-border) !important;
     border-radius: $radius-lg $radius-lg 0 0;
   }
 
   .mat-mdc-tab {
-    color: var(--vp-c-text-2);
+    color: var(--vp-c-text-2) !important;
     min-width: 120px;
 
     &.mdc-tab--active {
-      color: var(--vp-c-brand);
+      color: var(--vp-c-brand) !important;
     }
   }
 
   .mat-mdc-tab-body-wrapper {
-    background: rgba(12, 16, 28, 0.35);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--tab-bg) !important;
+    border: 1px solid var(--tab-border) !important;
     border-top: none;
     border-radius: 0 0 $radius-lg $radius-lg;
   }
 
   .mdc-tab-indicator__content--underline {
-    border-color: var(--vp-c-brand);
+    border-color: var(--vp-c-brand) !important;
   }
 }
 
 // Chips
 .mat-mdc-chip {
-  background: rgba(255, 255, 255, 0.08) !important;
+  background: var(--card-bg) !important;
+  border: 1px solid var(--card-border) !important;
   color: var(--vp-c-text-2) !important;
   border-radius: $radius-lg !important;
   font-size: 0.85rem;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.12) !important;
+    background: var(--card-bg-hover) !important;
+    border-color: var(--card-border-hover) !important;
   }
 }
 
@@ -155,7 +169,7 @@
   border-radius: $spacing-lg !important;
 
   .mat-mdc-dialog-surface {
-    background: transparent;
+    background: transparent !important;
   }
 }
 
@@ -168,6 +182,14 @@
 }
 
 // Select
+.mat-mdc-select {
+  color: var(--vp-c-text-1) !important;
+
+  .mat-mdc-select-arrow {
+    color: var(--vp-c-text-2) !important;
+  }
+}
+
 .mat-mdc-select-panel {
   background: var(--vp-c-bg) !important;
   border: 1px solid var(--vp-c-border);
@@ -175,28 +197,149 @@
 }
 
 .mat-mdc-option {
-  color: var(--vp-c-text-2) !important;
+  color: var(--vp-c-text-1) !important;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.05) !important;
+    background: var(--card-bg-hover) !important;
   }
 
-  &.mat-mdc-option-active {
-    background: rgba(58, 92, 249, 0.12) !important;
+  &.mat-mdc-option-active,
+  &.mdc-list-item--selected {
+    background: var(--card-bg) !important;
     color: var(--vp-c-brand) !important;
   }
 }
 
 // Expansion Panel
 .mat-expansion-panel {
-  background: rgba(12, 16, 28, 0.35) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--card-bg) !important;
+  border: 1px solid var(--card-border) !important;
   border-radius: $radius-lg !important;
   margin-bottom: $spacing-md;
   box-shadow: none !important;
 
   &:hover {
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: var(--card-border-hover) !important;
   }
+
+  .mat-expansion-panel-header {
+    background: transparent !important;
+    color: var(--vp-c-text-1) !important;
+
+    &:hover {
+      background: var(--card-bg-hover) !important;
+    }
+
+    .mat-expansion-panel-header-title {
+      color: var(--vp-c-text-1) !important;
+    }
+
+    .mat-expansion-panel-header-description {
+      color: var(--vp-c-text-2) !important;
+    }
+
+    .mat-expansion-indicator::after {
+      color: var(--vp-c-text-2) !important;
+    }
+  }
+
+  .mat-expansion-panel-body {
+    color: var(--vp-c-text-1) !important;
+  }
+}
+
+// Menu
+.mat-mdc-menu-panel {
+  background: var(--vp-c-bg) !important;
+  border: 1px solid var(--vp-c-border);
+  border-radius: $radius-md !important;
+}
+
+.mat-mdc-menu-item {
+  color: var(--vp-c-text-1) !important;
+
+  &:hover {
+    background: var(--card-bg-hover) !important;
+  }
+
+  .mat-icon {
+    color: var(--vp-c-text-2) !important;
+  }
+}
+
+// Checkbox
+.mat-mdc-checkbox {
+  .mdc-checkbox__background {
+    border-color: var(--card-border-hover) !important;
+  }
+
+  &.mat-mdc-checkbox-checked .mdc-checkbox__background {
+    background-color: var(--vp-c-brand) !important;
+    border-color: var(--vp-c-brand) !important;
+  }
+}
+
+// Radio
+.mat-mdc-radio-button {
+  .mdc-radio__outer-circle {
+    border-color: var(--card-border-hover) !important;
+  }
+
+  &.mat-mdc-radio-checked {
+    .mdc-radio__outer-circle {
+      border-color: var(--vp-c-brand) !important;
+    }
+    .mdc-radio__inner-circle {
+      background-color: var(--vp-c-brand) !important;
+    }
+  }
+}
+
+// Divider
+.mat-divider {
+  border-color: var(--vp-c-border) !important;
+}
+
+// Table
+.mat-mdc-table {
+  background: transparent !important;
+
+  .mat-mdc-header-row {
+    background: var(--card-bg) !important;
+  }
+
+  .mat-mdc-header-cell {
+    color: var(--vp-c-text-2) !important;
+    border-bottom-color: var(--card-border) !important;
+  }
+
+  .mat-mdc-row {
+    &:hover {
+      background: var(--card-bg-hover) !important;
+    }
+  }
+
+  .mat-mdc-cell {
+    color: var(--vp-c-text-1) !important;
+    border-bottom-color: var(--card-border) !important;
+  }
+}
+
+// Paginator
+.mat-mdc-paginator {
+  background: transparent !important;
+  color: var(--vp-c-text-1) !important;
+
+  .mat-mdc-paginator-page-size-label,
+  .mat-mdc-paginator-range-label {
+    color: var(--vp-c-text-2) !important;
+  }
+}
+
+// Tooltip
+.mat-mdc-tooltip {
+  background: var(--vp-c-bg-alt) !important;
+  color: var(--vp-c-text-1) !important;
+  border: 1px solid var(--vp-c-border);
 }
 

@@ -23,10 +23,10 @@
     {
       "id": "40eb8c8f-f9dc-4fab-9b76-8b3b88f1ee6e",
       "title": "Fix Manage Documentation UI in Light Mode",
-      "status": "todo",
+      "status": "done",
       "releaseId": "d3f36c77-e859-46c9-8fb6-427bfb4a8b98",
       "createdAt": "2025-11-25T18:18:32.995Z",
-      "updatedAt": "2025-11-25T18:18:32.995Z",
+      "updatedAt": "2026-02-02T00:03:08.475Z",
       "order": 2
     },
     {

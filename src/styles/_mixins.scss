@@ -1,23 +1,25 @@
 // Common Mixins for Consistency
+// Uses CSS variables for theme-aware styling (light/dark mode)
 
 // Card Styles
 @mixin card-base {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: var(--radius-lg, 12px);
-  transition: border-color 0.2s, transform 0.2s;
+  transition: border-color 0.2s, transform 0.2s, background-color 0.2s;
 }
 
 @mixin card-hover {
   &:hover {
-    border-color: var(--vp-c-brand);
+    background: var(--card-bg-hover);
+    border-color: var(--card-border-hover);
     transform: translateY(-2px);
   }
 }
 
 @mixin card-elevated {
-  background: rgba(12, 16, 28, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: var(--radius-lg, 12px);
 }
 
@@ -96,15 +98,15 @@
   }
 
   &::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--card-bg);
   }
 
   &::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--card-border-hover);
     border-radius: 4px;
 
     &:hover {
-      background: rgba(255, 255, 255, 0.25);
+      background: var(--vp-c-text-3);
     }
   }
 }

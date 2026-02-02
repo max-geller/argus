@@ -8,7 +8,7 @@
 }
 
 .quick-links {
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--card-border);
   padding-top: 32px;
   margin-top: 40px;
 
@@ -27,7 +27,8 @@
 
 // Note card specific layout (if not fully covered by card)
 .note-card {
-  background-color: rgba(8, 12, 22, 0.85); // Slightly darker than standard card
+  background-color: var(--vp-c-bg-alt);
+  border: 1px solid var(--card-border);
 
   ul {
     margin: 0;

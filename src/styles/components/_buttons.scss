@@ -34,13 +34,13 @@
 }
 
 .btn.secondary {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--card-bg);
   color: var(--vp-c-text-1);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--card-border);
 
   &:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.15);
+    background: var(--card-bg-hover);
+    border-color: var(--card-border-hover);
   }
 }
 
@@ -60,7 +60,7 @@
 
   &:hover {
     color: var(--vp-c-text-1);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--card-bg);
   }
 }
 
