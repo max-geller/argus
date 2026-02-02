@@ -68,28 +68,28 @@
     {
       "id": "9a001ffe-556f-4fdf-9aa7-195087f7914e",
       "title": "Hyprland Setup",
-      "status": "todo",
+      "status": "in_progress",
       "releaseId": "d3f36c77-e859-46c9-8fb6-427bfb4a8b98",
       "createdAt": "2026-02-02T01:10:07.649Z",
-      "updatedAt": "2026-02-02T01:10:07.649Z",
+      "updatedAt": "2026-02-02T02:08:59.685Z",
       "order": 7
     },
     {
       "id": "622c7dde-4cd3-4af8-a721-d6d9716cefd3",
       "title": "Custom Theming & Scheduling",
-      "status": "todo",
+      "status": "in_progress",
       "releaseId": "d3f36c77-e859-46c9-8fb6-427bfb4a8b98",
       "createdAt": "2026-02-02T01:10:15.959Z",
-      "updatedAt": "2026-02-02T01:10:15.959Z",
+      "updatedAt": "2026-02-02T02:09:04.933Z",
       "order": 8
     },
     {
       "id": "0b88b3e6-8bc6-40dd-b967-9e307b45bc0f",
       "title": "Customize Waybar",
-      "status": "todo",
+      "status": "in_progress",
       "releaseId": "d3f36c77-e859-46c9-8fb6-427bfb4a8b98",
       "createdAt": "2026-02-02T01:10:24.026Z",
-      "updatedAt": "2026-02-02T01:10:24.026Z",
+      "updatedAt": "2026-02-02T02:09:02.363Z",
       "order": 9
     }
   ],
