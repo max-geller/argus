@@ -50,8 +50,10 @@ export class SettingsShellComponent {
         title: 'System Theme',
         expanded: true,
         items: [
-          { title: 'Palette Tokens', fragment: 'theme', icon: '🎨' },
-          { title: 'Export Targets', fragment: 'theme-exports', icon: '🔗' }
+          { title: 'HyprPaper', path: '/settings/theme/hyprpaper', icon: '🎨' },
+          { title: 'Gallery', path: '/settings/theme/gallery', icon: '🖼️' },
+          { title: 'Editor', path: '/settings/theme/editor', icon: '✏️' },
+          { title: 'Schedule', path: '/settings/theme/schedule', icon: '📅' }
         ]
       },
       {

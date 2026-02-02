@@ -16,6 +16,10 @@ mod notify;
 // Terminal configuration module
 mod terminal;
 
+// Theme management modules
+mod theme;
+mod solar;
+
 #[tauri::command]
 fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
@@ -415,6 +419,7 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_dialog::init())
         .invoke_handler(tauri::generate_handler![
             greet,
             get_content,
@@ -468,7 +473,28 @@ pub fn run() {
             terminal::terminal_list_backups,
             terminal::terminal_restore_backup,
             terminal::terminal_delete_backup,
-            terminal::terminal_create_default
+            terminal::terminal_create_default,
+            // Theme management commands
+            theme::theme_list,
+            theme::theme_get,
+            theme::theme_save,
+            theme::theme_delete,
+            theme::theme_get_current,
+            theme::theme_apply,
+            theme::theme_preview,
+            theme::theme_get_schedule,
+            theme::theme_save_schedule,
+            theme::theme_get_active_for_date,
+            theme::theme_generate_hyprland,
+            theme::theme_generate_waybar_css,
+            theme::theme_generate_kitty_conf,
+            theme::theme_generate_starship_palette,
+            theme::theme_generate_rofi_theme,
+            theme::theme_setup_systemd_timer,
+            // Solar calculation commands
+            solar::solar_get_times,
+            solar::solar_is_day,
+            solar::solar_get_next_transition
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
