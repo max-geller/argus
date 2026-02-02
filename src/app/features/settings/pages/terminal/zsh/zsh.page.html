@@ -1,0 +1,303 @@
+<div class="terminal-config zsh-config">
+  <header class="config-header">
+    <div>
+      <p class="eyebrow">Terminal</p>
+      <h1>Zsh Configuration</h1>
+      <p class="subtitle">
+        Manage your Zsh shell configuration including aliases, plugins, environment variables, and shell options.
+      </p>
+      <p class="config-path" *ngIf="configPath()">{{ configPath() }}</p>
+    </div>
+    <div class="header-actions">
+      <button mat-stroked-button (click)="resetConfig()" [disabled]="!hasUnsavedChanges()">
+        Reset Changes
+      </button>
+      <button mat-flat-button color="primary" (click)="saveConfig()" [disabled]="!hasUnsavedChanges()">
+        Save Configuration
+      </button>
+    </div>
+  </header>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading()">
+    <mat-progress-spinner mode="indeterminate" diameter="48"></mat-progress-spinner>
+    <p>Loading Zsh configuration...</p>
+  </div>
+
+  <!-- Config Does Not Exist -->
+  <div class="empty-state" *ngIf="!configExists() && !isLoading()">
+    <mat-icon class="empty-icon">terminal</mat-icon>
+    <h3>No Zsh Configuration Found</h3>
+    <p>Create a default configuration to get started.</p>
+    <button mat-flat-button color="primary" (click)="createDefaultConfig()">
+      Create Default Config
+    </button>
+  </div>
+
+  <!-- Config Form -->
+  <mat-tab-group class="config-tabs" animationDuration="200ms" *ngIf="config() as cfg">
+    <!-- General Tab -->
+    <mat-tab label="General">
+      <div class="tab-content">
+        <mat-card class="config-section">
+          <h3>History Settings</h3>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>History File</mat-label>
+              <input matInput [(ngModel)]="cfg.history.file" (ngModelChange)="onConfigChange()" placeholder="~/.zsh_history">
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <div class="slider-field">
+              <label>History Size: {{ cfg.history.size }}</label>
+              <mat-slider min="1000" max="100000" step="1000" discrete>
+                <input matSliderThumb [(ngModel)]="cfg.history.size" (ngModelChange)="onConfigChange()">
+              </mat-slider>
+            </div>
+
+            <div class="slider-field">
+              <label>Save History Size: {{ cfg.history.saveSize }}</label>
+              <mat-slider min="1000" max="100000" step="1000" discrete>
+                <input matSliderThumb [(ngModel)]="cfg.history.saveSize" (ngModelChange)="onConfigChange()">
+              </mat-slider>
+            </div>
+          </div>
+
+          <h4>History Options</h4>
+          <div class="option-chips">
+            <mat-chip-set>
+              <mat-chip *ngFor="let opt of ['SHARE_HISTORY', 'HIST_IGNORE_DUPS', 'HIST_IGNORE_ALL_DUPS', 'HIST_IGNORE_SPACE', 'HIST_FIND_NO_DUPS', 'HIST_REDUCE_BLANKS', 'HIST_VERIFY', 'APPEND_HISTORY', 'INC_APPEND_HISTORY']"
+                [highlighted]="isHistoryOptionEnabled(opt)"
+                (click)="toggleHistoryOption(opt)"
+                class="option-chip">
+                {{ opt }}
+              </mat-chip>
+            </mat-chip-set>
+          </div>
+        </mat-card>
+
+        <mat-card class="config-section">
+          <h3>Shell Options (setopt)</h3>
+          <p class="muted">Click to toggle shell options</p>
+
+          <div class="option-chips">
+            <mat-chip-set>
+              <mat-chip *ngFor="let opt of zshOptions"
+                [highlighted]="isOptionEnabled(opt)"
+                (click)="toggleOption(opt)"
+                class="option-chip">
+                {{ opt }}
+              </mat-chip>
+            </mat-chip-set>
+          </div>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Environment Tab -->
+    <mat-tab label="Environment">
+      <div class="tab-content">
+        <app-env-editor
+          [variables]="cfg.environment"
+          (variablesChange)="cfg.environment = $event"
+          (configChanged)="onConfigChange()"
+          title="Environment Variables"
+          [showExport]="true">
+        </app-env-editor>
+      </div>
+    </mat-tab>
+
+    <!-- Plugins Tab -->
+    <mat-tab label="Plugins">
+      <div class="tab-content">
+        <mat-card class="config-section">
+          <div class="section-header">
+            <h3>Sourced Plugins</h3>
+            <button mat-stroked-button color="primary" (click)="addPlugin()">
+              <mat-icon>add</mat-icon>
+              Add Plugin
+            </button>
+          </div>
+
+          <div class="plugin-list" *ngIf="cfg.plugins.length > 0">
+            <div class="plugin-item" *ngFor="let plugin of cfg.plugins; let i = index" [class.disabled]="!plugin.enabled">
+              <div class="plugin-info">
+                <mat-form-field appearance="outline" class="plugin-name-field">
+                  <mat-label>Plugin Name</mat-label>
+                  <input matInput [(ngModel)]="plugin.name" (ngModelChange)="onConfigChange()">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="plugin-path-field">
+                  <mat-label>Source Path</mat-label>
+                  <input matInput [(ngModel)]="plugin.path" (ngModelChange)="onConfigChange()">
+                </mat-form-field>
+              </div>
+
+              <div class="plugin-actions">
+                <mat-slide-toggle
+                  [(ngModel)]="plugin.enabled"
+                  (ngModelChange)="onConfigChange()"
+                  color="primary">
+                </mat-slide-toggle>
+
+                <button mat-icon-button color="warn" (click)="removePlugin(i)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <p class="muted" *ngIf="cfg.plugins.length === 0">
+            No plugins configured. Add plugins to source them in your zshrc.
+          </p>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Aliases Tab -->
+    <mat-tab label="Aliases">
+      <div class="tab-content">
+        <app-alias-editor
+          [aliases]="cfg.aliases"
+          (aliasesChange)="cfg.aliases = $event"
+          (configChanged)="onConfigChange()"
+          title="Shell Aliases"
+          [showDescription]="true">
+        </app-alias-editor>
+      </div>
+    </mat-tab>
+
+    <!-- Keybindings Tab -->
+    <mat-tab label="Keybindings">
+      <div class="tab-content">
+        <mat-card class="config-section">
+          <div class="section-header">
+            <h3>Key Bindings (bindkey)</h3>
+            <button mat-stroked-button color="primary" (click)="addKeybinding()">
+              <mat-icon>add</mat-icon>
+              Add Keybinding
+            </button>
+          </div>
+
+          <div class="keybinding-list" *ngIf="cfg.keybindings.length > 0">
+            <div class="keybinding-item" *ngFor="let kb of cfg.keybindings; let i = index">
+              <mat-form-field appearance="outline" class="kb-key">
+                <mat-label>Key Sequence</mat-label>
+                <input matInput [(ngModel)]="kb.key" (ngModelChange)="onConfigChange()" placeholder="^[[A">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="kb-action">
+                <mat-label>Widget</mat-label>
+                <input matInput [(ngModel)]="kb.widget" (ngModelChange)="onConfigChange()" placeholder="history-search-backward">
+              </mat-form-field>
+
+              <button mat-icon-button color="warn" (click)="removeKeybinding(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <p class="muted" *ngIf="cfg.keybindings.length === 0">
+            No custom keybindings. Click "Add Keybinding" to create one.
+          </p>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Autosuggestions Tab -->
+    <mat-tab label="Autosuggestions">
+      <div class="tab-content">
+        <mat-card class="config-section">
+          <h3>Zsh Autosuggestions</h3>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Suggestion Strategy</mat-label>
+              <mat-select [(ngModel)]="cfg.autosuggestions.strategy" (ngModelChange)="onConfigChange()" multiple>
+                <mat-option *ngFor="let strategy of autosuggestionStrategies" [value]="strategy">
+                  {{ strategy }}
+                </mat-option>
+              </mat-select>
+              <mat-hint>Order determines priority</mat-hint>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Highlight Style</mat-label>
+              <input matInput [(ngModel)]="cfg.autosuggestions.highlightStyle" (ngModelChange)="onConfigChange()" placeholder="fg=#666666">
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <div class="slider-field">
+              <label>Buffer Max Size: {{ cfg.autosuggestions.bufferMaxSize }}</label>
+              <mat-slider min="1" max="100" step="1" discrete>
+                <input matSliderThumb [(ngModel)]="cfg.autosuggestions.bufferMaxSize" (ngModelChange)="onConfigChange()">
+              </mat-slider>
+            </div>
+          </div>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Syntax Highlighting Tab -->
+    <mat-tab label="Syntax Highlighting">
+      <div class="tab-content">
+        <mat-card class="config-section">
+          <h3>Zsh Syntax Highlighting Styles</h3>
+          <p class="muted">
+            Configure colors for different token types in your terminal.
+          </p>
+
+          <div class="highlight-tokens">
+            <div class="token-row" *ngFor="let token of ['default', 'unknown-token', 'reserved-word', 'alias', 'builtin', 'function', 'command', 'path', 'globbing']">
+              <mat-form-field appearance="outline">
+                <mat-label>{{ token }}</mat-label>
+                <input matInput [(ngModel)]="cfg.syntaxHighlighting[token]" (ngModelChange)="onConfigChange()" placeholder="fg=green,bold">
+              </mat-form-field>
+            </div>
+          </div>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Backups Tab -->
+    <mat-tab label="Backups">
+      <div class="tab-content">
+        <mat-card class="config-section">
+          <div class="section-header">
+            <h3>Configuration Backups</h3>
+            <button mat-stroked-button color="primary" (click)="createBackup()">
+              <mat-icon>backup</mat-icon>
+              Create Backup
+            </button>
+          </div>
+
+          <div class="backup-list" *ngIf="backups().length > 0">
+            <div class="backup-item" *ngFor="let backup of backups()">
+              <div class="backup-info">
+                <p class="backup-date">{{ formatTimestamp(backup.timestamp) }}</p>
+                <p class="backup-path">{{ backup.filename }}</p>
+              </div>
+              <div class="backup-actions">
+                <button mat-stroked-button (click)="restoreBackup(backup.path)">
+                  Restore
+                </button>
+                <button mat-icon-button color="warn" (click)="deleteBackup(backup.path)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <p class="muted" *ngIf="backups().length === 0">
+            No backups available. Backups are automatically created when you save changes.
+          </p>
+        </mat-card>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

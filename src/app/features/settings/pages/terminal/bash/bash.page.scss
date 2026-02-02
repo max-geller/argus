@@ -1,0 +1,18 @@
+@import '../terminal-shared';
+
+.sources-list {
+  .source-item {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 12px;
+
+    mat-form-field {
+      flex: 1;
+    }
+  }
+}
+
+.flex-grow {
+  flex: 1;
+}

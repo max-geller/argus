@@ -1,0 +1,305 @@
+<div class="terminal-config tmux-config">
+  <header class="config-header">
+    <div>
+      <p class="eyebrow">Terminal</p>
+      <h1>Tmux Configuration</h1>
+      <p class="subtitle">
+        Manage your Tmux terminal multiplexer settings including prefix key, keybindings, and status bar.
+      </p>
+      <p class="config-path" *ngIf="configPath()">{{ configPath() }}</p>
+    </div>
+    <div class="header-actions">
+      <button mat-stroked-button (click)="resetConfig()" [disabled]="!hasUnsavedChanges()">
+        Reset Changes
+      </button>
+      <button mat-flat-button color="primary" (click)="saveConfig()" [disabled]="!hasUnsavedChanges()">
+        Save Configuration
+      </button>
+    </div>
+  </header>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading()">
+    <mat-progress-spinner mode="indeterminate" diameter="48"></mat-progress-spinner>
+    <p>Loading Tmux configuration...</p>
+  </div>
+
+  <!-- Config Does Not Exist -->
+  <div class="empty-state" *ngIf="!configExists() && !isLoading()">
+    <mat-icon class="empty-icon">view_column</mat-icon>
+    <h3>No Tmux Configuration Found</h3>
+    <p>Create a default configuration to get started with Tmux.</p>
+    <button mat-flat-button color="primary" (click)="createDefaultConfig()">
+      Create Default Config
+    </button>
+  </div>
+
+  <!-- Config Form -->
+  <mat-tab-group class="config-tabs" animationDuration="200ms" *ngIf="config() as cfg">
+    <!-- General Tab -->
+    <mat-tab label="General">
+      <div class="tab-content">
+        <mat-card class="config-section">
+          <h3>Prefix Key</h3>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Prefix Key</mat-label>
+              <input matInput [(ngModel)]="cfg.general.prefix" (ngModelChange)="onConfigChange()" placeholder="C-a">
+              <mat-hint>C-a = Ctrl+a, C-b = Ctrl+b (default)</mat-hint>
+            </mat-form-field>
+          </div>
+        </mat-card>
+
+        <mat-card class="config-section">
+          <h3>General Settings</h3>
+
+          <div class="form-row">
+            <mat-slide-toggle
+              [(ngModel)]="cfg.general.mouse"
+              (ngModelChange)="onConfigChange()"
+              color="primary">
+              Enable Mouse Support
+            </mat-slide-toggle>
+          </div>
+
+          <div class="form-row">
+            <div class="slider-field">
+              <label>History Limit: {{ cfg.general.historyLimit }}</label>
+              <mat-slider min="1000" max="100000" step="1000" discrete>
+                <input matSliderThumb [(ngModel)]="cfg.general.historyLimit" (ngModelChange)="onConfigChange()">
+              </mat-slider>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="slider-field">
+              <label>Base Index: {{ cfg.general.baseIndex }}</label>
+              <mat-slider min="0" max="1" step="1" discrete>
+                <input matSliderThumb [(ngModel)]="cfg.general.baseIndex" (ngModelChange)="onConfigChange()">
+              </mat-slider>
+            </div>
+
+            <div class="slider-field">
+              <label>Pane Base Index: {{ cfg.general.paneBaseIndex }}</label>
+              <mat-slider min="0" max="1" step="1" discrete>
+                <input matSliderThumb [(ngModel)]="cfg.general.paneBaseIndex" (ngModelChange)="onConfigChange()">
+              </mat-slider>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <mat-slide-toggle
+              [(ngModel)]="cfg.general.renumberWindows"
+              (ngModelChange)="onConfigChange()"
+              color="primary">
+              Renumber Windows on Close
+            </mat-slide-toggle>
+          </div>
+
+          <div class="form-row">
+            <div class="slider-field">
+              <label>Escape Time: {{ cfg.general.escapeTime }}ms</label>
+              <mat-slider min="0" max="500" step="10" discrete>
+                <input matSliderThumb [(ngModel)]="cfg.general.escapeTime" (ngModelChange)="onConfigChange()">
+              </mat-slider>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Default Terminal</mat-label>
+              <input matInput [(ngModel)]="cfg.general.defaultTerminal" (ngModelChange)="onConfigChange()" placeholder="tmux-256color">
+            </mat-form-field>
+          </div>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Appearance Tab -->
+    <mat-tab label="Appearance">
+      <div class="tab-content">
+        <mat-card class="config-section">
+          <h3>Status Bar</h3>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Status Position</mat-label>
+              <mat-select [(ngModel)]="cfg.appearance.statusPosition" (ngModelChange)="onConfigChange()">
+                <mat-option *ngFor="let pos of statusPositions" [value]="pos">
+                  {{ pos | titlecase }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Status Style</mat-label>
+              <input matInput [(ngModel)]="cfg.appearance.statusStyle" (ngModelChange)="onConfigChange()" placeholder="bg=#1e1e2e fg=#cdd6f4">
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Status Left</mat-label>
+              <input matInput [(ngModel)]="cfg.appearance.statusLeft" (ngModelChange)="onConfigChange()" placeholder="#[fg=#89b4fa,bold] #S ">
+            </mat-form-field>
+
+            <div class="slider-field">
+              <label>Left Length: {{ cfg.appearance.statusLeftLength }}</label>
+              <mat-slider min="10" max="100" step="5" discrete>
+                <input matSliderThumb [(ngModel)]="cfg.appearance.statusLeftLength" (ngModelChange)="onConfigChange()">
+              </mat-slider>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Status Right</mat-label>
+              <input matInput [(ngModel)]="cfg.appearance.statusRight" (ngModelChange)="onConfigChange()" placeholder="#[fg=#a6adc8] %H:%M ">
+            </mat-form-field>
+
+            <div class="slider-field">
+              <label>Right Length: {{ cfg.appearance.statusRightLength }}</label>
+              <mat-slider min="10" max="100" step="5" discrete>
+                <input matSliderThumb [(ngModel)]="cfg.appearance.statusRightLength" (ngModelChange)="onConfigChange()">
+              </mat-slider>
+            </div>
+          </div>
+        </mat-card>
+
+        <mat-card class="config-section">
+          <h3>Window Status</h3>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Window Status Format</mat-label>
+              <input matInput [(ngModel)]="cfg.appearance.windowStatusFormat" (ngModelChange)="onConfigChange()" placeholder="#[fg=#6c7086] #I:#W ">
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Current Window Format</mat-label>
+              <input matInput [(ngModel)]="cfg.appearance.windowStatusCurrentFormat" (ngModelChange)="onConfigChange()" placeholder="#[fg=#89b4fa,bold] #I:#W ">
+            </mat-form-field>
+          </div>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Keybindings Tab -->
+    <mat-tab label="Keybindings">
+      <div class="tab-content">
+        <mat-card class="config-section">
+          <div class="section-header">
+            <h3>Custom Keybindings</h3>
+            <button mat-stroked-button color="primary" (click)="addKeybinding()">
+              <mat-icon>add</mat-icon>
+              Add Keybinding
+            </button>
+          </div>
+
+          <div class="keybinding-list" *ngIf="cfg.keybindings.length > 0">
+            <div class="keybinding-item" *ngFor="let kb of cfg.keybindings; let i = index">
+              <mat-form-field appearance="outline" class="kb-key">
+                <mat-label>Key</mat-label>
+                <input matInput [(ngModel)]="kb.key" (ngModelChange)="onConfigChange()" placeholder="h">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="kb-action">
+                <mat-label>Command</mat-label>
+                <input matInput [(ngModel)]="kb.command" (ngModelChange)="onConfigChange()" placeholder="select-pane -L">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="kb-flags">
+                <mat-label>Flags</mat-label>
+                <input matInput [(ngModel)]="kb.flags" (ngModelChange)="onConfigChange()" placeholder="-r">
+                <mat-hint>-r for repeat, -n for no prefix</mat-hint>
+              </mat-form-field>
+
+              <button mat-icon-button color="warn" (click)="removeKeybinding(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <p class="muted" *ngIf="cfg.keybindings.length === 0">
+            No custom keybindings. Click "Add Keybinding" to create one.
+          </p>
+        </mat-card>
+
+        <mat-card class="config-section">
+          <h3>Common Keybindings Reference</h3>
+          <p class="muted">
+            These are commonly used tmux commands for reference:
+          </p>
+
+          <div class="reference-list">
+            <div class="reference-item">
+              <code>split-window -h</code>
+              <span>Split pane horizontally</span>
+            </div>
+            <div class="reference-item">
+              <code>split-window -v</code>
+              <span>Split pane vertically</span>
+            </div>
+            <div class="reference-item">
+              <code>select-pane -L/-R/-U/-D</code>
+              <span>Move to pane in direction</span>
+            </div>
+            <div class="reference-item">
+              <code>resize-pane -L/-R/-U/-D N</code>
+              <span>Resize pane by N cells</span>
+            </div>
+            <div class="reference-item">
+              <code>select-window -t N</code>
+              <span>Switch to window N</span>
+            </div>
+            <div class="reference-item">
+              <code>source-file ~/.tmux.conf</code>
+              <span>Reload configuration</span>
+            </div>
+          </div>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Backups Tab -->
+    <mat-tab label="Backups">
+      <div class="tab-content">
+        <mat-card class="config-section">
+          <div class="section-header">
+            <h3>Configuration Backups</h3>
+            <button mat-stroked-button color="primary" (click)="createBackup()" [disabled]="!configExists()">
+              <mat-icon>backup</mat-icon>
+              Create Backup
+            </button>
+          </div>
+
+          <div class="backup-list" *ngIf="backups().length > 0">
+            <div class="backup-item" *ngFor="let backup of backups()">
+              <div class="backup-info">
+                <p class="backup-date">{{ formatTimestamp(backup.timestamp) }}</p>
+                <p class="backup-path">{{ backup.filename }}</p>
+              </div>
+              <div class="backup-actions">
+                <button mat-stroked-button (click)="restoreBackup(backup.path)">
+                  Restore
+                </button>
+                <button mat-icon-button color="warn" (click)="deleteBackup(backup.path)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <p class="muted" *ngIf="backups().length === 0">
+            No backups available. Backups are automatically created when you save changes.
+          </p>
+        </mat-card>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

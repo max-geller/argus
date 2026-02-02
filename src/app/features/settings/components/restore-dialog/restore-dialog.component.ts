@@ -41,7 +41,7 @@ interface DialogData {
         <h3>Files to Restore ({{ data.files.length }})</h3>
         <div class="files-list">
           <div class="file-item" *ngFor="let file of data.files.slice(0, 5)">
-            <mat-icon>{{ file.node_type === 'dir' ? 'folder' : 'insert_drive_file' }}</mat-icon>
+            <mat-icon>{{ file.type === 'dir' ? 'folder' : 'insert_drive_file' }}</mat-icon>
             <span>{{ file.path }}</span>
           </div>
           <div class="more-files" *ngIf="data.files.length > 5">

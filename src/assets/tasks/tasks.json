@@ -14,10 +14,10 @@
       "id": "6cabaffa-b6f1-40b9-8fba-71aad196913e",
       "title": "Kitty Configuration in Settings",
       "description": "Allow user to modify Kitty configuration",
-      "status": "in_progress",
+      "status": "done",
       "releaseId": "d3f36c77-e859-46c9-8fb6-427bfb4a8b98",
       "createdAt": "2025-11-25T17:58:10.238Z",
-      "updatedAt": "2026-02-01T23:48:37.148Z",
+      "updatedAt": "2026-02-02T00:54:34.646Z",
       "order": 1
     },
     {
@@ -37,6 +37,33 @@
       "createdAt": "2026-02-01T22:09:20.371Z",
       "updatedAt": "2026-02-01T23:48:28.801Z",
       "order": 3
+    },
+    {
+      "id": "51df93e9-809a-44ef-ac1d-71b487fe2504",
+      "title": "zsh/bash Configuration in Settings",
+      "status": "done",
+      "releaseId": "d3f36c77-e859-46c9-8fb6-427bfb4a8b98",
+      "createdAt": "2026-02-02T00:19:30.758Z",
+      "updatedAt": "2026-02-02T00:54:37.163Z",
+      "order": 4
+    },
+    {
+      "id": "f14867a5-ecee-4302-8568-db653b7d8a55",
+      "title": "TMux Configuration in Settings",
+      "status": "in_progress",
+      "releaseId": "d3f36c77-e859-46c9-8fb6-427bfb4a8b98",
+      "createdAt": "2026-02-02T00:19:41.878Z",
+      "updatedAt": "2026-02-02T00:20:12.623Z",
+      "order": 5
+    },
+    {
+      "id": "81307e7c-98e9-4ea2-8882-a032334d4295",
+      "title": "Starship Configuration in Settings",
+      "status": "in_progress",
+      "releaseId": "d3f36c77-e859-46c9-8fb6-427bfb4a8b98",
+      "createdAt": "2026-02-02T00:19:59.068Z",
+      "updatedAt": "2026-02-02T00:20:17.256Z",
+      "order": 6
     }
   ],
   "releases": [

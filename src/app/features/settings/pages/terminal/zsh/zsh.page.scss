@@ -1,0 +1,55 @@
+@import '../terminal-shared';
+
+.plugin-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  margin-bottom: 12px;
+
+  &.disabled {
+    opacity: 0.6;
+  }
+}
+
+.plugin-info {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 12px;
+}
+
+.plugin-name-field {
+  width: 100%;
+}
+
+.plugin-path-field {
+  width: 100%;
+}
+
+.plugin-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.highlight-tokens {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.token-row {
+  mat-form-field {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .plugin-info {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,272 @@
+<div class="terminal-config starship-config">
+  <header class="config-header">
+    <div>
+      <p class="eyebrow">Terminal</p>
+      <h1>Starship Configuration</h1>
+      <p class="subtitle">
+        Customize your Starship cross-shell prompt with format strings, modules, and color palettes.
+      </p>
+      <p class="config-path" *ngIf="configPath()">{{ configPath() }}</p>
+    </div>
+    <div class="header-actions">
+      <button mat-stroked-button (click)="resetConfig()" [disabled]="!hasUnsavedChanges()">
+        Reset Changes
+      </button>
+      <button mat-flat-button color="primary" (click)="saveConfig()" [disabled]="!hasUnsavedChanges()">
+        Save Configuration
+      </button>
+    </div>
+  </header>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading()">
+    <mat-progress-spinner mode="indeterminate" diameter="48"></mat-progress-spinner>
+    <p>Loading Starship configuration...</p>
+  </div>
+
+  <!-- Config Does Not Exist -->
+  <div class="empty-state" *ngIf="!configExists() && !isLoading()">
+    <mat-icon class="empty-icon">auto_awesome</mat-icon>
+    <h3>No Starship Configuration Found</h3>
+    <p>Create a default configuration to get started with Starship prompt.</p>
+    <button mat-flat-button color="primary" (click)="createDefaultConfig()">
+      Create Default Config
+    </button>
+  </div>
+
+  <!-- Config Form -->
+  <mat-tab-group class="config-tabs" animationDuration="200ms" *ngIf="config() as cfg">
+    <!-- Format Tab -->
+    <mat-tab label="Format">
+      <div class="tab-content">
+        <mat-card class="config-section">
+          <h3>Prompt Format</h3>
+          <p class="muted">
+            Define your prompt format using module variables like $directory, $git_branch, etc.
+          </p>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="format-field">
+              <mat-label>Prompt Format</mat-label>
+              <textarea matInput [(ngModel)]="cfg.format" (ngModelChange)="onConfigChange()"
+                rows="4" placeholder="$os$username$directory$git_branch$git_status$line_break$character"></textarea>
+              <mat-hint>Use $module_name to include modules. Use $line_break for multi-line prompts.</mat-hint>
+            </mat-form-field>
+          </div>
+
+          <div class="format-preview" *ngIf="cfg.format">
+            <strong>Format Preview:</strong>
+            <code>{{ cfg.format }}</code>
+          </div>
+        </mat-card>
+
+        <mat-card class="config-section">
+          <h3>Right Format</h3>
+          <p class="muted">
+            Optional right-side prompt content (not supported by all shells).
+          </p>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="format-field">
+              <mat-label>Right Prompt Format</mat-label>
+              <input matInput [(ngModel)]="cfg.rightFormat" (ngModelChange)="onConfigChange()"
+                placeholder="$time">
+            </mat-form-field>
+          </div>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Palette Tab -->
+    <mat-tab label="Palette">
+      <div class="tab-content">
+        <mat-card class="config-section">
+          <h3>Color Palette</h3>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Active Palette</mat-label>
+              <input matInput [(ngModel)]="cfg.palette" (ngModelChange)="onConfigChange()"
+                placeholder="catppuccin_macchiato">
+              <mat-hint>Name of the palette to use</mat-hint>
+            </mat-form-field>
+          </div>
+        </mat-card>
+
+        <mat-card class="config-section" *ngIf="cfg.palette">
+          <div class="section-header">
+            <h3>Palette Colors: {{ cfg.palette }}</h3>
+            <button mat-stroked-button color="primary" (click)="addPaletteColor()">
+              <mat-icon>add</mat-icon>
+              Add Color
+            </button>
+          </div>
+
+          <div class="palette-grid" *ngIf="getPaletteColors().length > 0">
+            <div class="palette-item" *ngFor="let color of getPaletteColors()">
+              <div class="color-preview" [style.background-color]="color.value"></div>
+              <span class="color-name">{{ color.name }}</span>
+              <input type="color" [value]="color.value"
+                (change)="updatePaletteColor(color.name, $any($event.target).value)">
+            </div>
+          </div>
+
+          <p class="muted" *ngIf="getPaletteColors().length === 0">
+            No colors defined for this palette. Add colors or check that the palette name is correct.
+          </p>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Modules Tab -->
+    <mat-tab label="Modules">
+      <div class="tab-content">
+        <mat-card class="config-section">
+          <h3>Available Modules</h3>
+          <p class="muted">
+            Click a module to toggle it on/off. Enabled modules will appear in your prompt based on the format string.
+          </p>
+
+          <div class="module-grid">
+            <div class="module-card"
+              *ngFor="let module of moduleNames"
+              [class.disabled]="isModuleDisabled(module)"
+              (click)="toggleModule(module)">
+              <span class="module-name">{{ module }}</span>
+              <span class="module-symbol">{{ getModuleSymbol(module) }}</span>
+            </div>
+          </div>
+        </mat-card>
+
+        <mat-card class="config-section">
+          <h3>Module Settings</h3>
+          <p class="muted">
+            Expand a module to configure its specific settings.
+          </p>
+
+          <mat-accordion>
+            <mat-expansion-panel *ngFor="let module of moduleNames">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  {{ module }}
+                </mat-panel-title>
+                <mat-panel-description>
+                  <mat-chip *ngIf="!isModuleDisabled(module)" color="primary">enabled</mat-chip>
+                  <mat-chip *ngIf="isModuleDisabled(module)">disabled</mat-chip>
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+
+              <div class="module-settings" *ngIf="getModuleConfig(module) as moduleConfig">
+                <div class="form-row">
+                  <mat-form-field appearance="outline" *ngIf="moduleConfig['symbol'] !== undefined">
+                    <mat-label>Symbol</mat-label>
+                    <input matInput [ngModel]="moduleConfig['symbol']"
+                      (ngModelChange)="updateModuleConfig(module, 'symbol', $event)">
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" *ngIf="moduleConfig['format'] !== undefined">
+                    <mat-label>Format</mat-label>
+                    <input matInput [ngModel]="moduleConfig['format']"
+                      (ngModelChange)="updateModuleConfig(module, 'format', $event)">
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" *ngIf="moduleConfig['style'] !== undefined">
+                    <mat-label>Style</mat-label>
+                    <input matInput [ngModel]="moduleConfig['style']"
+                      (ngModelChange)="updateModuleConfig(module, 'style', $event)">
+                  </mat-form-field>
+                </div>
+
+                <p class="muted" *ngIf="Object.keys(moduleConfig).length <= 1">
+                  This module is using default settings. Add custom values to override.
+                </p>
+              </div>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Symbols Tab -->
+    <mat-tab label="Symbols">
+      <div class="tab-content">
+        <mat-card class="config-section">
+          <h3>Module Symbols</h3>
+          <p class="muted">
+            Customize the symbols displayed for each module. These require a Nerd Font to display correctly.
+          </p>
+
+          <div class="symbol-grid">
+            <div class="symbol-item" *ngFor="let module of ['character', 'directory', 'git_branch', 'nodejs', 'rust', 'golang', 'python', 'docker_context', 'kubernetes', 'time']">
+              <mat-form-field appearance="outline">
+                <mat-label>{{ module }}</mat-label>
+                <input matInput [ngModel]="getModuleConfig(module)['symbol'] || getModuleSymbol(module)"
+                  (ngModelChange)="updateModuleConfig(module, 'symbol', $event)"
+                  [placeholder]="getModuleSymbol(module)">
+              </mat-form-field>
+            </div>
+          </div>
+        </mat-card>
+
+        <mat-card class="config-section">
+          <h3>Character Module</h3>
+          <p class="muted">
+            The character module shows different symbols based on the last command's exit status.
+          </p>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Success Symbol</mat-label>
+              <input matInput [ngModel]="getModuleConfig('character')['success_symbol']"
+                (ngModelChange)="updateModuleConfig('character', 'success_symbol', $event)"
+                placeholder="[❯](green)">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Error Symbol</mat-label>
+              <input matInput [ngModel]="getModuleConfig('character')['error_symbol']"
+                (ngModelChange)="updateModuleConfig('character', 'error_symbol', $event)"
+                placeholder="[❯](red)">
+            </mat-form-field>
+          </div>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Backups Tab -->
+    <mat-tab label="Backups">
+      <div class="tab-content">
+        <mat-card class="config-section">
+          <div class="section-header">
+            <h3>Configuration Backups</h3>
+            <button mat-stroked-button color="primary" (click)="createBackup()">
+              <mat-icon>backup</mat-icon>
+              Create Backup
+            </button>
+          </div>
+
+          <div class="backup-list" *ngIf="backups().length > 0">
+            <div class="backup-item" *ngFor="let backup of backups()">
+              <div class="backup-info">
+                <p class="backup-date">{{ formatTimestamp(backup.timestamp) }}</p>
+                <p class="backup-path">{{ backup.filename }}</p>
+              </div>
+              <div class="backup-actions">
+                <button mat-stroked-button (click)="restoreBackup(backup.path)">
+                  Restore
+                </button>
+                <button mat-icon-button color="warn" (click)="deleteBackup(backup.path)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <p class="muted" *ngIf="backups().length === 0">
+            No backups available. Backups are automatically created when you save changes.
+          </p>
+        </mat-card>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

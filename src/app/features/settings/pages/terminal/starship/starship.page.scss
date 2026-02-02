@@ -1,0 +1,58 @@
+@import '../terminal-shared';
+
+.format-field {
+  width: 100%;
+
+  textarea {
+    font-family: monospace;
+  }
+}
+
+.symbol-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.symbol-item {
+  mat-form-field {
+    width: 100%;
+  }
+
+  input {
+    font-size: 1.2rem;
+  }
+}
+
+.palette-item {
+  input[type="color"] {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background: transparent;
+
+    &::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+
+    &::-webkit-color-swatch {
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+    }
+  }
+}
+
+mat-expansion-panel {
+  background: var(--card-bg);
+  margin-bottom: 8px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.module-settings {
+  padding: 16px 0;
+}

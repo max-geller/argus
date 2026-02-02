@@ -1,0 +1,46 @@
+@import '../terminal-shared';
+
+.keybinding-item {
+  grid-template-columns: 120px 1fr 100px auto;
+}
+
+.kb-flags {
+  min-width: 80px;
+}
+
+.reference-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.reference-item {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+
+  code {
+    font-family: monospace;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: var(--vp-c-brand);
+    white-space: nowrap;
+  }
+
+  span {
+    color: var(--vp-c-text-2);
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .keybinding-item {
+    grid-template-columns: 1fr;
+  }
+}

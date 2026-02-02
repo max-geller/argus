@@ -60,6 +60,17 @@ export class SettingsShellComponent {
         items: [
           { title: 'Restic Backups', path: '/settings/restic', icon: '💾' }
         ]
+      },
+      {
+        title: 'Terminal',
+        expanded: true,
+        items: [
+          { title: 'Kitty', path: '/settings/terminal/kitty', icon: '🐱' },
+          { title: 'Starship', path: '/settings/terminal/starship', icon: '🚀' },
+          { title: 'Zsh', path: '/settings/terminal/zsh', icon: '⚡' },
+          { title: 'Bash', path: '/settings/terminal/bash', icon: '📟' },
+          { title: 'Tmux', path: '/settings/terminal/tmux', icon: '🪟' }
+        ]
       }
     ]
   };

@@ -1,0 +1,352 @@
+<div class="terminal-config kitty-config">
+  <header class="config-header">
+    <div>
+      <p class="eyebrow">Terminal</p>
+      <h1>Kitty Configuration</h1>
+      <p class="subtitle">
+        Manage your Kitty terminal emulator settings including fonts, appearance, and keybindings.
+      </p>
+      <p class="config-path" *ngIf="configPath()">{{ configPath() }}</p>
+    </div>
+    <div class="header-actions">
+      <button mat-stroked-button (click)="resetConfig()" [disabled]="!hasUnsavedChanges()">
+        Reset Changes
+      </button>
+      <button mat-flat-button color="primary" (click)="saveConfig()" [disabled]="!hasUnsavedChanges()">
+        Save Configuration
+      </button>
+    </div>
+  </header>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading()">
+    <mat-progress-spinner mode="indeterminate" diameter="48"></mat-progress-spinner>
+    <p>Loading Kitty configuration...</p>
+  </div>
+
+  <!-- Config Does Not Exist -->
+  <div class="empty-state" *ngIf="!configExists() && !isLoading()">
+    <mat-icon class="empty-icon">terminal</mat-icon>
+    <h3>No Kitty Configuration Found</h3>
+    <p>Create a default configuration to get started.</p>
+    <button mat-flat-button color="primary" (click)="createDefaultConfig()">
+      Create Default Config
+    </button>
+  </div>
+
+  <!-- Error State -->
+  <div class="empty-state error" *ngIf="error() && !isLoading() && configExists()">
+    <h3>Failed to Load Configuration</h3>
+    <p>{{ error() }}</p>
+    <button mat-stroked-button color="accent" (click)="resetConfig()">Try Again</button>
+  </div>
+
+  <!-- Config Form -->
+  <mat-tab-group class="config-tabs" animationDuration="200ms" *ngIf="config() as cfg">
+    <!-- Appearance Tab -->
+    <mat-tab label="Appearance">
+      <div class="tab-content">
+        <mat-card class="config-section">
+          <h3>Font Settings</h3>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Font Family</mat-label>
+              <input matInput [(ngModel)]="cfg.font.family" (ngModelChange)="onConfigChange()" placeholder="JetBrains Mono Nerd Font">
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <div class="slider-field">
+              <label>Font Size: {{ cfg.font.size }}pt</label>
+              <mat-slider min="8" max="24" step="0.5" discrete>
+                <input matSliderThumb [(ngModel)]="cfg.font.size" (ngModelChange)="onConfigChange()">
+              </mat-slider>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Bold Font</mat-label>
+              <input matInput [(ngModel)]="cfg.font.bold" (ngModelChange)="onConfigChange()" placeholder="auto">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Italic Font</mat-label>
+              <input matInput [(ngModel)]="cfg.font.italic" (ngModelChange)="onConfigChange()" placeholder="auto">
+            </mat-form-field>
+          </div>
+        </mat-card>
+
+        <mat-card class="config-section">
+          <h3>Cursor</h3>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Cursor Shape</mat-label>
+              <mat-select [(ngModel)]="cfg.appearance.cursorShape" (ngModelChange)="onConfigChange()">
+                <mat-option *ngFor="let shape of cursorShapes" [value]="shape">
+                  {{ shape | titlecase }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-slide-toggle
+              [(ngModel)]="cfg.appearance.cursorBlink"
+              (ngModelChange)="onConfigChange()"
+              color="primary">
+              Cursor Blink
+            </mat-slide-toggle>
+          </div>
+
+          <div class="form-row" *ngIf="cfg.appearance.cursorBlink">
+            <div class="slider-field">
+              <label>Blink Interval: {{ cfg.appearance.cursorBlinkInterval }}s</label>
+              <mat-slider min="0.1" max="2" step="0.1" discrete>
+                <input matSliderThumb [(ngModel)]="cfg.appearance.cursorBlinkInterval" (ngModelChange)="onConfigChange()">
+              </mat-slider>
+            </div>
+          </div>
+        </mat-card>
+
+        <mat-card class="config-section">
+          <h3>Background</h3>
+
+          <div class="form-row">
+            <div class="slider-field">
+              <label>Background Opacity: {{ cfg.appearance.backgroundOpacity }}</label>
+              <mat-slider min="0" max="1" step="0.05" discrete>
+                <input matSliderThumb [(ngModel)]="cfg.appearance.backgroundOpacity" (ngModelChange)="onConfigChange()">
+              </mat-slider>
+            </div>
+          </div>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Window Tab -->
+    <mat-tab label="Window">
+      <div class="tab-content">
+        <mat-card class="config-section">
+          <h3>Window Size</h3>
+
+          <div class="form-row">
+            <mat-slide-toggle
+              [(ngModel)]="cfg.window.rememberSize"
+              (ngModelChange)="onConfigChange()"
+              color="primary">
+              Remember Window Size
+            </mat-slide-toggle>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Initial Width</mat-label>
+              <input matInput [(ngModel)]="cfg.window.initialWidth" (ngModelChange)="onConfigChange()" placeholder="120c">
+              <mat-hint>Use 'c' for cells, 'px' for pixels</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Initial Height</mat-label>
+              <input matInput [(ngModel)]="cfg.window.initialHeight" (ngModelChange)="onConfigChange()" placeholder="40c">
+              <mat-hint>Use 'c' for cells, 'px' for pixels</mat-hint>
+            </mat-form-field>
+          </div>
+        </mat-card>
+
+        <mat-card class="config-section">
+          <h3>Padding & Margins</h3>
+
+          <div class="form-row">
+            <div class="slider-field">
+              <label>Padding: {{ cfg.window.paddingWidth }}px</label>
+              <mat-slider min="0" max="50" step="1" discrete>
+                <input matSliderThumb [(ngModel)]="cfg.window.paddingWidth" (ngModelChange)="onConfigChange()">
+              </mat-slider>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="slider-field">
+              <label>Margin: {{ cfg.window.marginWidth }}px</label>
+              <mat-slider min="0" max="50" step="1" discrete>
+                <input matSliderThumb [(ngModel)]="cfg.window.marginWidth" (ngModelChange)="onConfigChange()">
+              </mat-slider>
+            </div>
+          </div>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Behavior Tab -->
+    <mat-tab label="Behavior">
+      <div class="tab-content">
+        <mat-card class="config-section">
+          <h3>Shell</h3>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Shell Command</mat-label>
+              <input matInput [(ngModel)]="cfg.behavior.shell" (ngModelChange)="onConfigChange()" placeholder=".">
+              <mat-hint>Use '.' for default shell</mat-hint>
+            </mat-form-field>
+          </div>
+        </mat-card>
+
+        <mat-card class="config-section">
+          <h3>Scrollback</h3>
+
+          <div class="form-row">
+            <div class="slider-field">
+              <label>Scrollback Lines: {{ cfg.behavior.scrollbackLines }}</label>
+              <mat-slider min="1000" max="100000" step="1000" discrete>
+                <input matSliderThumb [(ngModel)]="cfg.behavior.scrollbackLines" (ngModelChange)="onConfigChange()">
+              </mat-slider>
+            </div>
+          </div>
+        </mat-card>
+
+        <mat-card class="config-section">
+          <h3>Tab Bar</h3>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Tab Bar Style</mat-label>
+              <mat-select [(ngModel)]="cfg.tabBar.style" (ngModelChange)="onConfigChange()">
+                <mat-option *ngFor="let style of tabBarStyles" [value]="style">
+                  {{ style | titlecase }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Tab Bar Position</mat-label>
+              <mat-select [(ngModel)]="cfg.tabBar.edge" (ngModelChange)="onConfigChange()">
+                <mat-option *ngFor="let edge of tabBarEdges" [value]="edge">
+                  {{ edge | titlecase }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </mat-card>
+
+        <mat-card class="config-section">
+          <h3>Other Settings</h3>
+
+          <div class="form-row">
+            <mat-slide-toggle
+              [(ngModel)]="cfg.behavior.enableAudioBell"
+              (ngModelChange)="onConfigChange()"
+              color="primary">
+              Enable Audio Bell
+            </mat-slide-toggle>
+          </div>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Keybindings Tab -->
+    <mat-tab label="Keybindings">
+      <div class="tab-content">
+        <mat-card class="config-section">
+          <div class="section-header">
+            <h3>Custom Keybindings</h3>
+            <button mat-stroked-button color="primary" (click)="addKeybinding()">
+              <mat-icon>add</mat-icon>
+              Add Keybinding
+            </button>
+          </div>
+
+          <div class="keybinding-list" *ngIf="cfg.keybindings.length > 0">
+            <div class="keybinding-item" *ngFor="let kb of cfg.keybindings; let i = index">
+              <mat-form-field appearance="outline" class="kb-key">
+                <mat-label>Key</mat-label>
+                <input matInput [(ngModel)]="kb.key" (ngModelChange)="onConfigChange()" placeholder="ctrl+shift+t">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="kb-action">
+                <mat-label>Action</mat-label>
+                <input matInput [(ngModel)]="kb.action" (ngModelChange)="onConfigChange()" placeholder="new_tab">
+              </mat-form-field>
+
+              <button mat-icon-button color="warn" (click)="removeKeybinding(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <p class="muted" *ngIf="cfg.keybindings.length === 0">
+            No custom keybindings defined. Click "Add Keybinding" to create one.
+          </p>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Theme Tab -->
+    <mat-tab label="Theme">
+      <div class="tab-content">
+        <mat-card class="config-section">
+          <h3>Theme File</h3>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Include Theme File</mat-label>
+              <input matInput [(ngModel)]="cfg.theme.includeFile" (ngModelChange)="onConfigChange()" placeholder="catppuccin.conf">
+              <mat-hint>Path to theme file to include (e.g., catppuccin.conf)</mat-hint>
+            </mat-form-field>
+          </div>
+
+          <p class="muted">
+            Theme files should be placed in ~/.config/kitty/ directory.
+            Popular themes: Catppuccin, Dracula, Nord, Gruvbox.
+          </p>
+        </mat-card>
+
+        <mat-card class="config-section">
+          <h3>Preserved Lines</h3>
+          <p class="muted">
+            {{ cfg.rawLines.length }} additional configuration lines are preserved from your config file.
+          </p>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Backups Tab -->
+    <mat-tab label="Backups">
+      <div class="tab-content">
+        <mat-card class="config-section">
+          <div class="section-header">
+            <h3>Configuration Backups</h3>
+            <button mat-stroked-button color="primary" (click)="createBackup()">
+              <mat-icon>backup</mat-icon>
+              Create Backup
+            </button>
+          </div>
+
+          <div class="backup-list" *ngIf="backups().length > 0">
+            <div class="backup-item" *ngFor="let backup of backups()">
+              <div class="backup-info">
+                <p class="backup-date">{{ formatTimestamp(backup.timestamp) }}</p>
+                <p class="backup-path">{{ backup.filename }}</p>
+              </div>
+              <div class="backup-actions">
+                <button mat-stroked-button (click)="restoreBackup(backup.path)">
+                  Restore
+                </button>
+                <button mat-icon-button color="warn" (click)="deleteBackup(backup.path)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <p class="muted" *ngIf="backups().length === 0">
+            No backups available. Backups are automatically created when you save changes.
+          </p>
+        </mat-card>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

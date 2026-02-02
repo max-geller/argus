@@ -1,0 +1,244 @@
+<div class="terminal-config bash-config">
+  <header class="config-header">
+    <div>
+      <p class="eyebrow">Terminal</p>
+      <h1>Bash Configuration</h1>
+      <p class="subtitle">
+        Manage your Bash shell configuration including aliases, environment variables, and startup commands.
+      </p>
+      <p class="config-path" *ngIf="configPath()">{{ configPath() }}</p>
+    </div>
+    <div class="header-actions">
+      <button mat-stroked-button (click)="resetConfig()" [disabled]="!hasUnsavedChanges()">
+        Reset Changes
+      </button>
+      <button mat-flat-button color="primary" (click)="saveConfig()" [disabled]="!hasUnsavedChanges()">
+        Save Configuration
+      </button>
+    </div>
+  </header>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading()">
+    <mat-progress-spinner mode="indeterminate" diameter="48"></mat-progress-spinner>
+    <p>Loading Bash configuration...</p>
+  </div>
+
+  <!-- Config Does Not Exist -->
+  <div class="empty-state" *ngIf="!configExists() && !isLoading()">
+    <mat-icon class="empty-icon">terminal</mat-icon>
+    <h3>No Bash Configuration Found</h3>
+    <p>Create a default configuration to get started.</p>
+    <button mat-flat-button color="primary" (click)="createDefaultConfig()">
+      Create Default Config
+    </button>
+  </div>
+
+  <!-- Config Form -->
+  <mat-tab-group class="config-tabs" animationDuration="200ms" *ngIf="config() as cfg">
+    <!-- Environment Tab -->
+    <mat-tab label="Environment">
+      <div class="tab-content">
+        <app-env-editor
+          [variables]="cfg.environment"
+          (variablesChange)="cfg.environment = $event"
+          (configChanged)="onConfigChange()"
+          title="Environment Variables"
+          [showExport]="true">
+        </app-env-editor>
+
+        <mat-card class="config-section">
+          <div class="section-header">
+            <h3>PATH Additions</h3>
+            <button mat-stroked-button color="primary" (click)="addPathEntry()">
+              <mat-icon>add</mat-icon>
+              Add Path
+            </button>
+          </div>
+
+          <div class="sources-list" *ngIf="cfg.pathAdditions.length > 0">
+            <div class="source-item" *ngFor="let path of cfg.pathAdditions; let i = index; trackBy: trackByIndex">
+              <mat-form-field appearance="outline" class="flex-grow">
+                <mat-label>Path</mat-label>
+                <input matInput [(ngModel)]="cfg.pathAdditions[i]" (ngModelChange)="onConfigChange()" placeholder="/path/to/add">
+              </mat-form-field>
+              <button mat-icon-button color="warn" (click)="removePathEntry(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <p class="muted" *ngIf="cfg.pathAdditions.length === 0">
+            No additional PATH entries. These will be prepended to your PATH.
+          </p>
+        </mat-card>
+
+        <mat-card class="config-section">
+          <h3>History Settings</h3>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>HISTCONTROL</mat-label>
+              <mat-select [(ngModel)]="cfg.historySettings.histControl" (ngModelChange)="onConfigChange()">
+                <mat-option value="ignoreboth">ignoreboth</mat-option>
+                <mat-option value="ignoredups">ignoredups</mat-option>
+                <mat-option value="ignorespace">ignorespace</mat-option>
+                <mat-option value="erasedups">erasedups</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <div class="slider-field">
+              <label>History Size: {{ cfg.historySettings.histSize }}</label>
+              <mat-slider min="100" max="10000" step="100" discrete>
+                <input matSliderThumb [(ngModel)]="cfg.historySettings.histSize" (ngModelChange)="onConfigChange()">
+              </mat-slider>
+            </div>
+
+            <div class="slider-field">
+              <label>History File Size: {{ cfg.historySettings.histFileSize }}</label>
+              <mat-slider min="100" max="10000" step="100" discrete>
+                <input matSliderThumb [(ngModel)]="cfg.historySettings.histFileSize" (ngModelChange)="onConfigChange()">
+              </mat-slider>
+            </div>
+          </div>
+        </mat-card>
+
+        <mat-card class="config-section">
+          <h3>Shell Options (shopt)</h3>
+          <p class="muted">Click to toggle shell options</p>
+
+          <div class="option-chips">
+            <mat-chip-set>
+              <mat-chip *ngFor="let opt of shoptOptions"
+                [highlighted]="isShoptEnabled(opt)"
+                (click)="toggleShopt(opt)"
+                class="option-chip">
+                {{ opt }}
+              </mat-chip>
+            </mat-chip-set>
+          </div>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Aliases Tab -->
+    <mat-tab label="Aliases">
+      <div class="tab-content">
+        <app-alias-editor
+          [aliases]="cfg.aliases"
+          (aliasesChange)="cfg.aliases = $event"
+          (configChanged)="onConfigChange()"
+          title="Shell Aliases">
+        </app-alias-editor>
+      </div>
+    </mat-tab>
+
+    <!-- Sources Tab -->
+    <mat-tab label="Sources">
+      <div class="tab-content">
+        <mat-card class="config-section">
+          <div class="section-header">
+            <h3>Sourced Files</h3>
+            <button mat-stroked-button color="primary" (click)="addSource()">
+              <mat-icon>add</mat-icon>
+              Add Source
+            </button>
+          </div>
+
+          <div class="sources-list" *ngIf="cfg.sources.length > 0">
+            <div class="source-item" *ngFor="let src of cfg.sources; let i = index; trackBy: trackByIndex">
+              <mat-form-field appearance="outline" class="flex-grow">
+                <mat-label>File Path</mat-label>
+                <input matInput [(ngModel)]="cfg.sources[i]" (ngModelChange)="onConfigChange()" placeholder="~/.bashrc.d/custom.sh">
+              </mat-form-field>
+              <button mat-icon-button color="warn" (click)="removeSource(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <p class="muted" *ngIf="cfg.sources.length === 0">
+            No additional files being sourced. Add paths to shell scripts to include them.
+          </p>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Startup Tab -->
+    <mat-tab label="Startup">
+      <div class="tab-content">
+        <mat-card class="config-section">
+          <div class="section-header">
+            <h3>Startup Commands</h3>
+            <button mat-stroked-button color="primary" (click)="addStartupCommand()">
+              <mat-icon>add</mat-icon>
+              Add Command
+            </button>
+          </div>
+
+          <div class="sources-list" *ngIf="cfg.startupCommands.length > 0">
+            <div class="source-item" *ngFor="let cmd of cfg.startupCommands; let i = index; trackBy: trackByIndex">
+              <mat-form-field appearance="outline" class="flex-grow">
+                <mat-label>Command</mat-label>
+                <input matInput [(ngModel)]="cfg.startupCommands[i]" (ngModelChange)="onConfigChange()" placeholder='eval "$(starship init bash)"'>
+              </mat-form-field>
+              <button mat-icon-button color="warn" (click)="removeStartupCommand(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <p class="muted" *ngIf="cfg.startupCommands.length === 0">
+            No startup commands. Add eval statements or other initialization commands here.
+          </p>
+        </mat-card>
+
+        <mat-card class="config-section">
+          <h3>Preserved Lines</h3>
+          <p class="muted">
+            {{ cfg.rawLines.length }} additional configuration lines are preserved from your config file.
+            These include complex conditionals and other syntax that cannot be represented in the GUI.
+          </p>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Backups Tab -->
+    <mat-tab label="Backups">
+      <div class="tab-content">
+        <mat-card class="config-section">
+          <div class="section-header">
+            <h3>Configuration Backups</h3>
+            <button mat-stroked-button color="primary" (click)="createBackup()">
+              <mat-icon>backup</mat-icon>
+              Create Backup
+            </button>
+          </div>
+
+          <div class="backup-list" *ngIf="backups().length > 0">
+            <div class="backup-item" *ngFor="let backup of backups()">
+              <div class="backup-info">
+                <p class="backup-date">{{ formatTimestamp(backup.timestamp) }}</p>
+                <p class="backup-path">{{ backup.filename }}</p>
+              </div>
+              <div class="backup-actions">
+                <button mat-stroked-button (click)="restoreBackup(backup.path)">
+                  Restore
+                </button>
+                <button mat-icon-button color="warn" (click)="deleteBackup(backup.path)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <p class="muted" *ngIf="backups().length === 0">
+            No backups available. Backups are automatically created when you save changes.
+          </p>
+        </mat-card>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

@@ -13,6 +13,9 @@ mod systemd;
 mod history;
 mod notify;
 
+// Terminal configuration module
+mod terminal;
+
 #[tauri::command]
 fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
@@ -455,7 +458,17 @@ pub fn run() {
             // Notification commands
             notify::send_notification,
             notify::send_notification_with_urgency,
-            notify::send_backup_notification
+            notify::send_backup_notification,
+            // Terminal configuration commands
+            terminal::terminal_read_config,
+            terminal::terminal_write_config,
+            terminal::terminal_get_path,
+            terminal::terminal_config_exists,
+            terminal::terminal_backup_config,
+            terminal::terminal_list_backups,
+            terminal::terminal_restore_backup,
+            terminal::terminal_delete_backup,
+            terminal::terminal_create_default
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
